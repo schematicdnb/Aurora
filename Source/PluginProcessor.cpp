@@ -97,7 +97,6 @@ void RGBMeterAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBloc
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
 
-    // rgbMeter.clear();
 }
 
 void RGBMeterAudioProcessor::releaseResources()
@@ -157,6 +156,7 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
         //        auto* channelData = buffer.getWritePointer (channel);
 
         // ..do something to the data...
+
 
         rgbMeter.pushBuffer(buffer);
     }

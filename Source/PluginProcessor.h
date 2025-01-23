@@ -19,50 +19,35 @@ namespace juce
     {
 
     public:
+        Array<Colour> colHistory;
+
         RGBMeter() : AudioVisualiserComponent(1)
         {
-            while (colHistory.size() < 512)
-            {
-                colHistory.add(Colour(0, 0, 0));
-            }
-
+            // while (colHistory.size() < 512)
+            // {
+            //     colHistory.add(Colour(0, 0, 0));
+            // }
+            colHistory.resize(512);
             setBufferSize(512);
-            setSamplesPerBlock(256);
-            setColours(Colours::black, Colour(255, 0, 0));
-            setRepaintRate(30);
+
+            // setSamplesPerBlock(256);
+            // setColours(Colours::black, Colour(255, 0, 0));
+            // setRepaintRate(30);
         }
 
-        // int r = 255, g = 0, b = 0;
-        int r, g, b;
-        Array<Colour> colHistory;
+        void setNextSampleColour(int nextSample, Colour c)
+        {
+            colHistory.set(nextSample, c);
+        }
 
         void paintChannel(Graphics &graphic, Rectangle<float> area,
                           const Range<float> *levels, int numLevels, int nextSample) override
         {
 
-            // if (b == 255)
-            // {
-            //     r = 255;
-            //     g = 0;
-            //     b = 0;
-            // }
-            // if (g < 255)
-            // {
-            //     g++;
-            // }
-            // //            if (r == 255) {g++;}
-            // if (g == 255)
-            // {
-            //     b++;
-            // }
-            r = 255;
-            g = Random::getSystemRandom().nextInt(256);
-            b = Random::getSystemRandom().nextInt(256);
-            //            g = 255;
-            //            b = 255;
-
-            Colour c = Colour(r, g, b);
-            colHistory.set(nextSample, c);
+            setNextSampleColour(nextSample, Colour(
+                                                255,
+                                                Random::getSystemRandom().nextInt(256),
+                                                Random::getSystemRandom().nextInt(256)));
 
             for (int i = 0; i < numLevels; ++i)
             {
@@ -73,11 +58,12 @@ namespace juce
                 // draw segment line
                 Path path;
                 path.startNewSubPath((float)i, start);
-                path.lineTo((float)i, end);
+                path.lineTo((float)i + 1, end);
                 path.closeSubPath();
 
                 // colour the segment
                 graphic.setColour(colHistory[(nextSample + i) % numLevels]);
+                // graphic.drawLine(float(i), start, (float)i, end, 1.0f);
                 graphic.strokePath(path, PathStrokeType(1.0f), AffineTransform::fromTargetPoints(0.0f, -1.0f, area.getX(), area.getY(), 0.0f, 1.0f, area.getX(), area.getBottom(), (float)numLevels, -1.0f, area.getRight(), area.getY()));
             }
         }

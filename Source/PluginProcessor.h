@@ -21,6 +21,7 @@ namespace juce
 
     public:
         Array<Colour> colHistory;
+        Colour bufferColour;
 
         RGBMeter() : AudioVisualiserComponent(1)
         {
@@ -30,10 +31,16 @@ namespace juce
             // }
             colHistory.resize(512);
             setBufferSize(512);
+            bufferColour = Colour(255, 255, 255);
 
             // setSamplesPerBlock(256);
             // setColours(Colours::black, Colour(255, 0, 0));
             // setRepaintRate(30);
+        }
+
+        void setBufferColour(Colour c)
+        {
+            bufferColour = c;
         }
 
         void setNextSampleColour(int nextSample, Colour c)
@@ -41,44 +48,51 @@ namespace juce
             colHistory.set(nextSample, c);
         }
 
-        void paintChannel(Graphics &graphic, Rectangle<float> area,
-                          const Range<float> *levels, int numLevels, int nextSample) override
-        {
+//         paint channel as freq-based colour for whole waveform
+         void paintChannel(Graphics &g, Rectangle<float> area,
+                           const Range<float> *levels, int numLevels, int nextSample)
+         {
+             Path p;
+             getChannelAsPath(p, levels, numLevels, nextSample);
 
-            //            setNextSampleColour(nextSample, Colour(
-            //                                                Random::getSystemRandom().nextInt(256),
-            //                                                Random::getSystemRandom().nextInt(256),
-            //                                                Random::getSystemRandom().nextInt(256)));
+             g.setColour(bufferColour);
 
-            setNextSampleColour(nextSample, Colour(
-                                                255,
-                                                0,
-                                                0));
+             g.fillPath(p, AffineTransform::fromTargetPoints(0.0f, -1.0f, area.getX(), area.getY(),
+                                                             0.0f, 1.0f, area.getX(), area.getBottom(),
+                                                             (float)numLevels, -1.0f, area.getRight(), area.getY()));
+         }
 
-            for (int i = 0; i < numLevels; ++i)
-            {
-                // get start and end points of segment
-                auto start = -(levels[(nextSample + i) % numLevels].getStart());
-                auto end = -(levels[(nextSample + i) % numLevels].getEnd());
-
-                // draw segment line
-
-                Path path;
-                //                if (i == 0) {
-                path.startNewSubPath((float)i, start);
-                //                } else {
-                path.lineTo((float)i, end);
-                //                }
-
-                //                path.lineTo((float)i+1, end);
-                path.closeSubPath();
-
-                // colour the segment
-                graphic.setColour(colHistory[(nextSample + i) % numLevels]);
-
-                graphic.strokePath(path, PathStrokeType(1.0f), AffineTransform::fromTargetPoints(0.0f, -1.0f, area.getX(), area.getY(), 0.0f, 1.0f, area.getX(), area.getBottom(), (float)numLevels, -1.0f, area.getRight(), area.getY()));
-            }
-        }
+//        // custom paintchannel backup
+//        void paintChannel(Graphics &graphic, Rectangle<float> area,
+//                          const Range<float> *levels, int numLevels, int nextSample) override
+//        {
+//
+//            setNextSampleColour(nextSample, bufferColour);
+//
+//            // setNextSampleColour(nextSample, Colour(
+//            //                                     Random::getSystemRandom().nextInt(256),
+//            //                                     Random::getSystemRandom().nextInt(256),
+//            //                                     Random::getSystemRandom().nextInt(256)));
+//
+//            for (int i = 0; i < numLevels; ++i)
+//            {
+//                // get start and end points of segment
+//                auto start = -(levels[(nextSample + i) % numLevels].getStart());
+//                auto end = -(levels[(nextSample + i) % numLevels].getEnd());
+//
+//                // draw segment line
+//                Path path;
+//                path.startNewSubPath((float)i, start);
+//                path.lineTo((float)i + 1, end);
+//                path.closeSubPath();
+//
+//                // colour the segment
+//                graphic.setColour(colHistory[(nextSample + i) % numLevels]);
+//                // graphic.setColour(colour);
+//
+//                graphic.strokePath(path, PathStrokeType(1.0f), AffineTransform::fromTargetPoints(0.0f, -1.0f, area.getX(), area.getY(), 0.0f, 1.0f, area.getX(), area.getBottom(), (float)numLevels, -1.0f, area.getRight(), area.getY()));
+//            }
+//        }
     };
 }
 
@@ -124,23 +138,24 @@ public:
 
     juce::RGBMeter rgbMeter;
     int r, g, b;
+    float getPower(juce::AudioBuffer<float> &buffer, int channel);
 
-//    using APVTS = juce::AudioProcessorValueTreeState;
-//    static APVTS::ParameterLayout createParameterLayout();
-//
-//    APVTS apvts {*this, nullptr, "Parameters", createParameterLayout()};
+    //    using APVTS = juce::AudioProcessorValueTreeState;
+    //    static APVTS::ParameterLayout createParameterLayout();
+    //
+    //    APVTS apvts {*this, nullptr, "Parameters", createParameterLayout()};
 
 private:
     using Filter = juce::dsp::LinkwitzRileyFilter<float>;
-    Filter LP, HP;
-    juce::AudioParameterFloat* lowCrossover {nullptr};
-    juce::AudioParameterFloat* midLowCrossover {nullptr};
-    juce::AudioParameterFloat* midHighCrossover {nullptr};
-    juce::AudioParameterFloat* highCrossover {nullptr};
-    juce::AudioParameterBool* bypassLow {nullptr};
-    juce::AudioParameterBool* bypassMid {nullptr};
-    juce::AudioParameterBool* bypassHigh {nullptr};
-    std::array<juce::AudioBuffer<float>, 2> filterBuffers;
+    Filter LP, midLP, midAP, midHP, HP;
+
+    juce::AudioParameterFloat *lowCrossover{nullptr};
+    juce::AudioParameterFloat *highCrossover{nullptr};
+    //    juce::AudioParameterBool *bypassLow{nullptr};
+    //    juce::AudioParameterBool* bypassMid {nullptr};
+    //    juce::AudioParameterBool *bypassHigh{nullptr};
+    juce::Colour colour;
+    // std::array<juce::AudioBuffer<float>, 2> filterBuffers;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RGBMeterAudioProcessor)
 };

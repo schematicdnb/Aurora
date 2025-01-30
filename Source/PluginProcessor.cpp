@@ -23,14 +23,24 @@ RGBMeterAudioProcessor::RGBMeterAudioProcessor()
       rgbMeter()
 #endif
 {
+    colour = juce::Colour(255, 255, 255);
 
-    addParameter(lowCrossover = new juce::AudioParameterFloat(juce::ParameterID{"lowCrossover", 1}, "Low Crossover", 20.0f, 20000.0f, 200.0f));
-    addParameter(midLowCrossover = new juce::AudioParameterFloat(juce::ParameterID{"midLowCrossover", 1}, "Mid Low Crossover", 20.0f, 20000.0f, 200.0f));
-    addParameter(midHighCrossover = new juce::AudioParameterFloat(juce::ParameterID{"midHighCrossover", 1}, "Mid High Crossover", 2000.0f, 20000.0f, 5000.0f));
-    addParameter(highCrossover = new juce::AudioParameterFloat(juce::ParameterID{"highCrossover", 1}, "High Crossover", 2000.0f, 20000.0f, 5000.0f));
-    addParameter(bypassLow = new juce::AudioParameterBool(juce::ParameterID{"bypassLow", 1}, "Bypass Low", false));
-    addParameter(bypassMid = new juce::AudioParameterBool(juce::ParameterID{"bypassMid", 1}, "Bypass Mid", false));
-    addParameter(bypassHigh = new juce::AudioParameterBool(juce::ParameterID{"bypassHigh", 1}, "Bypass High", false));
+    auto lowCrossoverRange = new juce::NormalisableRange<float>(20.0f, 999.0f, 1.0f, 1.0f);
+    auto highCrossoverRange = new juce::NormalisableRange<float>(1000.0f, 20000.0f, 1.0f, 1.0f);
+
+    addParameter(lowCrossover = new juce::AudioParameterFloat(juce::ParameterID("lowCrossover", 1), "Low Crossover", *lowCrossoverRange, 300.0f));
+
+    addParameter(highCrossover = new juce::AudioParameterFloat(juce::ParameterID("highCrossover", 1), "High Crossover", *highCrossoverRange, 1000.0f));
+
+    // addParameter(bypassLow = new juce::AudioParameterBool(juce::ParameterID{"bypassLow", 1}, "Bypass Low", false));
+    //    addParameter(bypassMid = new juce::AudioParameterBool(juce::ParameterID{"bypassMid", 1}, "Bypass Mid", false));
+    // addParameter(bypassHigh = new juce::AudioParameterBool(juce::ParameterID{"bypassHigh", 1}, "Bypass High", false));
+
+    LP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
+    midLP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
+    midAP.setType(juce::dsp::LinkwitzRileyFilterType::allpass);
+    midHP.setType(juce::dsp::LinkwitzRileyFilterType::highpass);
+    HP.setType(juce::dsp::LinkwitzRileyFilterType::highpass);
 }
 
 RGBMeterAudioProcessor::~RGBMeterAudioProcessor()
@@ -105,14 +115,16 @@ void RGBMeterAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBloc
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
 
-    //    juce::dsp::ProcessSpec spec;
-    //    spec.sampleRate = sampleRate;
-    //    spec.maximumBlockSize = samplesPerBlock;
-    //    spec.numChannels = getTotalNumInputChannels();
+    juce::dsp::ProcessSpec spec;
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.numChannels = getTotalNumInputChannels();
 
-    //    lowFilter.prepare(spec);
-    //    midFilter.prepare(spec);
-    //    highFilter.prepare(spec);
+    LP.prepare(spec);
+    midLP.prepare(spec);
+    midAP.prepare(spec);
+    midHP.prepare(spec);
+    HP.prepare(spec);
 }
 
 void RGBMeterAudioProcessor::releaseResources()
@@ -169,51 +181,96 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
     // interleaved by keeping the same state.
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
-        //        auto* channelData = buffer.getWritePointer (channel);
+        //    auto* channelData = buffer.getWritePointer(channel);
 
         // ..do something to the data...
 
-        // Split the signal into three frequency bands: low, mid, high
-        //        juce::dsp::LinkwitzRileyFilter<float> lowPassFilter;
-        //        juce::dsp::LinkwitzRileyFilter<float> bandPassFilter;
-        //        juce::dsp::LinkwitzRileyFilter<float> highPassFilter;
+        auto bufferPower = getPower(buffer, channel);
 
-        // Set up the filters
-        //        lowPassFilter.setCoefficients(juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(200.0f, getSampleRate(), 2)[0]);
-        //        bandPassFilter.setCoefficients(juce::dsp::FilterDesign<float>::designIIRBandpassHighOrderButterworthMethod(200.0f, 2000.0f, getSampleRate(), 2)[0]);
-        //        highPassFilter.setCoefficients(juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(2000.0f, getSampleRate(), 2)[0]);
+        juce::AudioBuffer<float> lowBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+        juce::AudioBuffer<float> midBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+        juce::AudioBuffer<float> highBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+        lowBuffer = buffer;
+        midBuffer = buffer;
 
-        // Apply the filters to the buffer
-        //        juce::AudioBuffer<float> lowBuffer(buffer);
-        //        juce::AudioBuffer<float> midBuffer(buffer);
-        //        juce::AudioBuffer<float> highBuffer(buffer);
+        LP.setCutoffFrequency(lowCrossover->get());
+        midHP.setCutoffFrequency(lowCrossover->get());
+        midAP.setCutoffFrequency(highCrossover->get());
+        midLP.setCutoffFrequency(highCrossover->get());
+        HP.setCutoffFrequency(highCrossover->get());
 
-        //        lowPassFilter.process(juce::dsp::ProcessContextReplacing<float>(lowBuffer));
-        //        bandPassFilter.process(juce::dsp::ProcessContextReplacing<float>(midBuffer));
-        //        highPassFilter.process(juce::dsp::ProcessContextReplacing<float>(highBuffer));
+        auto lowBlock = juce::dsp::AudioBlock<float>(lowBuffer);
+        auto midBlock = juce::dsp::AudioBlock<float>(midBuffer);
+        auto highBlock = juce::dsp::AudioBlock<float>(highBuffer);
 
-        // Combine the processed buffers back into the original buffer
-        //        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-        //        {
-        //            buffer.setSample(channel, sample,
-        //                             lowBuffer.getSample(channel, sample) +
-        //                                 midBuffer.getSample(channel, sample) +
-        //                                 highBuffer.getSample(channel, sample));
-        //        }
+        auto lowContext = juce::dsp::ProcessContextReplacing<float>(lowBlock);
+        auto midContext = juce::dsp::ProcessContextReplacing<float>(midBlock);
+        auto highContext = juce::dsp::ProcessContextReplacing<float>(highBlock);
+
+        LP.process(lowContext);
+        midAP.process(lowContext);
+
+        midHP.process(midContext);
+        highBuffer = midBuffer;
+        midLP.process(midContext);
+
+        HP.process(highContext);
+
+        // get band powers
+        auto lowPower = getPower(lowBuffer, channel);
+        auto midPower = getPower(midBuffer, channel);
+        auto highPower = getPower(highBuffer, channel);
+
+        // normalize
+        if (bufferPower > 0.0f)
+        {
+            lowPower /= bufferPower;
+            midPower /= bufferPower;
+            highPower /= bufferPower;
+        }
+
+        //        buffer.clear();
+        //
+        //
+        ////         Combine the processed buffers back into the original buffer
+        //         for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        //         {
+        //             buffer.setSample(channel, sample,
+        //                              lowBuffer.getSample(channel, sample) +
+        //                                  midBuffer.getSample(channel, sample) +
+        //                                  highBuffer.getSample(channel, sample));
+        //         }
+
+        colour = juce::Colour(std::floor(lowPower * 255), std::floor(midPower * 255), std::floor(highPower * 255));
+        //        std::cout << colour.toString() << std::endl;
+
+        rgbMeter.setBufferColour(colour);
 
         rgbMeter.pushBuffer(buffer);
     }
 }
 
+float RGBMeterAudioProcessor::getPower(juce::AudioBuffer<float> &buffer, int channel)
+{
+    float power = 0.0f;
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+    {
+        power += buffer.getSample(channel, sample) * buffer.getSample(channel, sample);
+    }
+    power /= buffer.getNumSamples();
+    return power;
+}
+
 //==============================================================================
 bool RGBMeterAudioProcessor::hasEditor() const
 {
-    return false; // (change this to false if you choose to not supply an editor)
+    return true; // (change this to false if you choose to not supply an editor)
 }
 
 juce::AudioProcessorEditor *RGBMeterAudioProcessor::createEditor()
 {
-    return new RGBMeterAudioProcessorEditor(*this);
+     return new juce::GenericAudioProcessorEditor(*this);
+//    return new RGBMeterAudioProcessorEditor(*this);
 }
 
 //==============================================================================
@@ -231,7 +288,7 @@ void RGBMeterAudioProcessor::setStateInformation(const void *data, int sizeInByt
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
-    auto tree = juce::ValueTree::readFromData(data, sizeInBytes);
+    // auto tree = juce::ValueTree::readFromData(data, sizeInBytes);
     //    if (tree.isValid()) {
     //        apvts.replaceState(tree);
     //    }
@@ -243,20 +300,3 @@ juce::AudioProcessor *JUCE_CALLTYPE createPluginFilter()
 {
     return new RGBMeterAudioProcessor();
 }
-
-// juce::AudioProcessorValueTreeState::ParameterLayout RGBMeterAudioProcessor::createParameterLayout()
-//{
-//
-//     using namespace juce;
-//     APVTS::ParameterLayout layout;
-//
-//     layout.add(std::make_unique<AudioParameterBool>("bypassLow", "Bypass", false));
-//     layout.add(std::make_unique<AudioParameterBool>("bypassMid", "Bypass", false));
-//     layout.add(std::make_unique<AudioParameterBool>("bypassHigh", "Bypass", false));
-//
-//     layout.add(std::make_unique<AudioParameterFloat>("lowCrossover", "Low Crossover", NormalisableRange<float>(20, 200000, 1, 1), 200));
-//
-//
-//
-//     return layout;
-// }

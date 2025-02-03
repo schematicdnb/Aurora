@@ -268,14 +268,12 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
 // float RGBMeterAudioProcessor::getPower(juce::AudioBuffer<float> &buffer, int channel)
 float RGBMeterAudioProcessor::getPower(juce::AudioBuffer<float> &buffer)
 {
-    float power = 0.0f;
-    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-    {
-        power += buffer.getSample(0, sample);
-        //        power += buffer.getSample(channel, sample) * buffer.getSample(channel, sample);
+    auto power = 0.0f;
+    auto numChannels = buffer.getNumChannels();
+    for (int channel = 0; channel < numChannels; channel++) {
+        power += buffer.getRMSLevel(channel, 0, buffer.getNumSamples());
     }
-    power /= buffer.getNumSamples();
-    return power;
+    return power/numChannels;
 }
 
 //==============================================================================

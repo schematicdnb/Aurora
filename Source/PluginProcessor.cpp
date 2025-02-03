@@ -25,18 +25,18 @@ RGBMeterAudioProcessor::RGBMeterAudioProcessor()
 {
     colour = juce::Colour(255, 255, 255);
 
-    // lowCrossover = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lowCrossover"));
-    // jassert(lowCrossover != nullptr);
+    lowCrossover = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lowCrossover"));
+    jassert(lowCrossover != nullptr);
 
     highCrossover = dynamic_cast<juce::AudioParameterFloat *>(apvts.getParameter("highCrossover"));
     jassert(highCrossover != nullptr);
-
-    auto lowCrossoverRange = new juce::NormalisableRange<float>(20.0f, 999.0f, 1.0f, 1.0f);
-    // auto highCrossoverRange = new juce::NormalisableRange<float>(1000.0f, 20000.0f, 1.0f, 1.0f);
-
-    addParameter(lowCrossover = new juce::AudioParameterFloat(juce::ParameterID("lowCrossover", 1), "Low Crossover", *lowCrossoverRange, 150.0f));
-
-    // addParameter(highCrossover = new juce::AudioParameterFloat(juce::ParameterID("highCrossover", 1), "High Crossover", *highCrossoverRange, 1000.0f));
+    
+    enableLow = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("enableLow"));
+    jassert(enableLow != nullptr);
+    enableMid = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("enableMid"));
+    jassert(enableMid != nullptr);
+    enableHigh = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("enableHigh"));
+    jassert(enableHigh != nullptr);
 
     LP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
     midLP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
@@ -234,15 +234,19 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
         std::cout << "Normalized:" << std::endl << lowPower << std::endl << midPower << std::endl << highPower << std::endl;
     }
 
-//    buffer.clear();
-//    
-//    // Combine the processed buffers back into the original buffer
-//    for (int i = 0; i < 3; i++) {
-//        auto band = std::vector<juce::AudioBuffer<float>>{lowBuffer, midBuffer, highBuffer}[i];
-//        for (int channel = 0; channel < buffer.getNumChannels(); channel++) {
-//            buffer.addFrom(channel, 0, band, channel, 0, band.getNumSamples());
-//        }
-//    }
+    buffer.clear();
+    
+    // Combine the processed buffers back into the original buffer
+    for (int i = 0; i < 3; i++) {
+        auto band = std::vector<juce::AudioBuffer<float>>{lowBuffer, midBuffer, highBuffer}[i];
+        auto enabled = std::vector<juce::AudioParameterBool*>{enableLow, enableMid, enableHigh}[i];
+        if (enabled->get()) {
+            for (int channel = 0; channel < buffer.getNumChannels(); channel++) {
+                buffer.addFrom(channel, 0, band, channel, 0, band.getNumSamples());
+            }
+        }
+        
+    }
 
 //    // Combine the processed buffers back into the original buffer
 //    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
@@ -284,8 +288,8 @@ bool RGBMeterAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor *RGBMeterAudioProcessor::createEditor()
 {
-    //    return new juce::GenericAudioProcessorEditor(*this);
-    return new RGBMeterAudioProcessorEditor(*this);
+        return new juce::GenericAudioProcessorEditor(*this);
+//    return new RGBMeterAudioProcessorEditor(*this);
 }
 
 //==============================================================================
@@ -313,24 +317,28 @@ void RGBMeterAudioProcessor::setStateInformation(const void *data, int sizeInByt
 
 juce::AudioProcessorValueTreeState::ParameterLayout RGBMeterAudioProcessor::createParameterLayout()
 {
-    APVTS::ParameterLayout layout;
+    APVTS::ParameterLayout params;
 
-    // auto lowCrossoverRange = std::make_unique<juce::NormalisableRange<float>>(20.0f, 999.0f, 1.0f, 1.0f);
+    auto lowCrossoverRange = std::make_unique<juce::NormalisableRange<float>>(20.0f, 999.0f, 1.0f, 1.0f);
     auto highCrossoverRange = std::make_unique<juce::NormalisableRange<float>>(1000.0f, 20000.0f, 1.0f, 1.0f);
 
-    // layout.add(std::make_unique<juce::AudioParameterFloat>(
-    //     juce::ParameterID("lowCrossover", 1),
-    //     "Low Crossover",
-    //     *lowCrossoverRange,
-    //     300.0f));
+    params.add(std::make_unique<juce::AudioParameterFloat>(
+         juce::ParameterID("lowCrossover", 1),
+         "Low Crossover",
+         *lowCrossoverRange,
+         150.0f));
 
-    layout.add(std::make_unique<juce::AudioParameterFloat>(
+    params.add(std::make_unique<juce::AudioParameterFloat>(
         juce::ParameterID("highCrossover", 1),
         "High Crossover",
         *highCrossoverRange,
         1000.0f));
+    
+    params.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID("enableLow", 1), "Enable Low", true));
+    params.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID("enableMid", 1), "Enable Mid", true));
+    params.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID("enableHigh", 1), "Enable High", true));
 
-    return layout;
+    return params;
 }
 
 //==============================================================================

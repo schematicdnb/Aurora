@@ -145,18 +145,19 @@ public:
 
     APVTS apvts{*this, nullptr, "Parameters", createParameterLayout()};
 
-    juce::AudioParameterFloat *lowCrossover{nullptr};
+    
 
 private:
     using Filter = juce::dsp::LinkwitzRileyFilter<float>;
-    // using Filter = juce::dsp::FIR::Filter<float>;
     Filter LP, midLP, midAP, midHP, HP;
 
-     
-     juce::AudioParameterFloat *highCrossover{nullptr};
-    //    juce::AudioParameterBool *bypassLow{nullptr};
-    //    juce::AudioParameterBool* bypassMid {nullptr};
-    //    juce::AudioParameterBool *bypassHigh{nullptr};
+    juce::AudioParameterFloat *lowCrossover{nullptr};
+    juce::AudioParameterFloat *highCrossover{nullptr};
+    
+    juce::AudioParameterBool *enableLow{nullptr};
+    juce::AudioParameterBool *enableMid{nullptr};
+    juce::AudioParameterBool *enableHigh{nullptr};
+    
     juce::Colour colour;
     // std::array<juce::AudioBuffer<float>, 2> filterBuffers;
     //==============================================================================

@@ -17,20 +17,6 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
   // editor's size to whatever you need it to be.
 
   addAndMakeVisible(audioProcessor.rgbMeter);
-  // juce::Slider lowCrossoverSlider;
-
-  // lowCrossoverSlider.addListener(this);
-  addAndMakeVisible(lowCrossoverSlider);
-  //    lowCrossoverSlider.set
-  // using Attachment = juce::AudioProcessorValueTreeState::SliderAttachment;
-  // auto lowCrossoverAttachment = std::unique_ptr<Attachment>(p.apvts, "lowCrossover", lowCrossoverSlider);
-
-  lowCrossoverSlider.setSliderStyle(juce::Slider::LinearHorizontal);
-  lowCrossoverSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
-  lowCrossoverSlider.setRange(20.0, 999.0, 1.0);
-  // lowCrossoverSlider.setValue(static_cast<double>(p.lowCrossover));
-//   lowCrossoverSlider.setValue(audioProcessor.lowCrossover);
-  lowCrossoverSlider.addListener(this);
 
   setSize(400, 300);
 }
@@ -56,13 +42,7 @@ void RGBMeterAudioProcessorEditor::resized()
   // subcomponents in your editor..
 
   audioProcessor.rgbMeter.setBounds(getLocalBounds().withSizeKeepingCentre(getWidth() * 0.5, getHeight() * 0.5));
-  lowCrossoverSlider.setBounds(10, 10, getWidth() - 20, 20);
+
 }
 
-void RGBMeterAudioProcessorEditor::sliderValueChanged(juce::Slider *slider)
-{
-  if (slider == &lowCrossoverSlider)
-  {
-    audioProcessor.lowCrossover->setValueNotifyingHost(lowCrossoverSlider.getValue());
-  }
-}
+

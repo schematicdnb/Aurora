@@ -25,19 +25,26 @@ RGBMeterAudioProcessor::RGBMeterAudioProcessor()
 {
     colour = juce::Colour(255, 255, 255);
 
+    // initialize crossovers params
     lowCrossover = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lowCrossover"));
     jassert(lowCrossover != nullptr);
 
     highCrossover = dynamic_cast<juce::AudioParameterFloat *>(apvts.getParameter("highCrossover"));
     jassert(highCrossover != nullptr);
     
+    // intialize enable/bypass params
     enableLow = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("enableLow"));
     jassert(enableLow != nullptr);
     enableMid = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("enableMid"));
     jassert(enableMid != nullptr);
     enableHigh = dynamic_cast<juce::AudioParameterBool*>(apvts.getParameter("enableHigh"));
     jassert(enableHigh != nullptr);
+    
+    // initialize parameter listeners
+    apvts.addParameterListener("lowCrossover", this);
+    apvts.addParameterListener("highCrossover", this);
 
+    // intialize filters
     LP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
     midLP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
     midAP.setType(juce::dsp::LinkwitzRileyFilterType::allpass);
@@ -47,6 +54,8 @@ RGBMeterAudioProcessor::RGBMeterAudioProcessor()
 
 RGBMeterAudioProcessor::~RGBMeterAudioProcessor()
 {
+    apvts.removeParameterListener("lowCrossover", this);
+    apvts.removeParameterListener("highCrossover", this);
 }
 
 //==============================================================================
@@ -189,13 +198,6 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
     lowBuffer = buffer;
     midBuffer = buffer;
 
-    // set filter crossovers
-    LP.setCutoffFrequency(lowCrossover->get());
-    midHP.setCutoffFrequency(lowCrossover->get());
-    midAP.setCutoffFrequency(highCrossover->get());
-    midLP.setCutoffFrequency(highCrossover->get());
-    HP.setCutoffFrequency(highCrossover->get());
-
     // instantiate blocks
     auto lowBlock = juce::dsp::AudioBlock<float>(lowBuffer);
     auto midBlock = juce::dsp::AudioBlock<float>(midBuffer);
@@ -225,13 +227,13 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
     if (bufferPower > 0.0f)
     {
         
-        std::cout << "Power:" << std::endl << lowPower << std::endl << midPower << std::endl << highPower << std::endl;
+//        std::cout << "Power:" << std::endl << lowPower << std::endl << midPower << std::endl << highPower << std::endl;
         
         lowPower /= bufferPower;
         midPower /= bufferPower;
         highPower /= bufferPower;
         
-        std::cout << "Normalized:" << std::endl << lowPower << std::endl << midPower << std::endl << highPower << std::endl;
+//        std::cout << "Normalized:" << std::endl << lowPower << std::endl << midPower << std::endl << highPower << std::endl;
     }
 
     buffer.clear();
@@ -339,6 +341,19 @@ juce::AudioProcessorValueTreeState::ParameterLayout RGBMeterAudioProcessor::crea
     params.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID("enableHigh", 1), "Enable High", true));
 
     return params;
+}
+
+void RGBMeterAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue) {
+    
+    if (parameterID == "lowCrossover") {
+        LP.setCutoffFrequency(lowCrossover->get());
+        midHP.setCutoffFrequency(lowCrossover->get());
+    } else if (parameterID == "highCrossover") {
+        midAP.setCutoffFrequency(highCrossover->get());
+        midLP.setCutoffFrequency(highCrossover->get());
+        HP.setCutoffFrequency(highCrossover->get());
+    }
+    
 }
 
 //==============================================================================

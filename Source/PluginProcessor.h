@@ -96,7 +96,7 @@ namespace juce
     };
 }
 
-class RGBMeterAudioProcessor : public juce::AudioProcessor
+class RGBMeterAudioProcessor : public juce::AudioProcessor, juce::AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
@@ -144,6 +144,8 @@ public:
     static APVTS::ParameterLayout createParameterLayout();
 
     APVTS apvts{*this, nullptr, "Parameters", createParameterLayout()};
+    
+    void parameterChanged(const juce::String &parameterID, float newValue) override;
 
     
 

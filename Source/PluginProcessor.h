@@ -48,51 +48,51 @@ namespace juce
             colHistory.set(nextSample, c);
         }
 
-//         paint channel as freq-based colour for whole waveform
-         void paintChannel(Graphics &g, Rectangle<float> area,
-                           const Range<float> *levels, int numLevels, int nextSample)
-         {
-             Path p;
-             getChannelAsPath(p, levels, numLevels, nextSample);
+        //         paint channel as freq-based colour for whole waveform
+        void paintChannel(Graphics &g, Rectangle<float> area,
+                          const Range<float> *levels, int numLevels, int nextSample)
+        {
+            Path p;
+            getChannelAsPath(p, levels, numLevels, nextSample);
 
-             g.setColour(bufferColour);
+            g.setColour(bufferColour);
 
-             g.fillPath(p, AffineTransform::fromTargetPoints(0.0f, -1.0f, area.getX(), area.getY(),
-                                                             0.0f, 1.0f, area.getX(), area.getBottom(),
-                                                             (float)numLevels, -1.0f, area.getRight(), area.getY()));
-         }
+            g.fillPath(p, AffineTransform::fromTargetPoints(0.0f, -1.0f, area.getX(), area.getY(),
+                                                            0.0f, 1.0f, area.getX(), area.getBottom(),
+                                                            (float)numLevels, -1.0f, area.getRight(), area.getY()));
+        }
 
-//        // custom paintchannel backup
-//        void paintChannel(Graphics &graphic, Rectangle<float> area,
-//                          const Range<float> *levels, int numLevels, int nextSample) override
-//        {
-//
-//            setNextSampleColour(nextSample, bufferColour);
-//
-//            // setNextSampleColour(nextSample, Colour(
-//            //                                     Random::getSystemRandom().nextInt(256),
-//            //                                     Random::getSystemRandom().nextInt(256),
-//            //                                     Random::getSystemRandom().nextInt(256)));
-//
-//            for (int i = 0; i < numLevels; ++i)
-//            {
-//                // get start and end points of segment
-//                auto start = -(levels[(nextSample + i) % numLevels].getStart());
-//                auto end = -(levels[(nextSample + i) % numLevels].getEnd());
-//
-//                // draw segment line
-//                Path path;
-//                path.startNewSubPath((float)i, start);
-//                path.lineTo((float)i + 1, end);
-//                path.closeSubPath();
-//
-//                // colour the segment
-//                graphic.setColour(colHistory[(nextSample + i) % numLevels]);
-//                // graphic.setColour(colour);
-//
-//                graphic.strokePath(path, PathStrokeType(1.0f), AffineTransform::fromTargetPoints(0.0f, -1.0f, area.getX(), area.getY(), 0.0f, 1.0f, area.getX(), area.getBottom(), (float)numLevels, -1.0f, area.getRight(), area.getY()));
-//            }
-//        }
+        //        // custom paintchannel backup
+        //        void paintChannel(Graphics &graphic, Rectangle<float> area,
+        //                          const Range<float> *levels, int numLevels, int nextSample) override
+        //        {
+        //
+        //            setNextSampleColour(nextSample, bufferColour);
+        //
+        //            // setNextSampleColour(nextSample, Colour(
+        //            //                                     Random::getSystemRandom().nextInt(256),
+        //            //                                     Random::getSystemRandom().nextInt(256),
+        //            //                                     Random::getSystemRandom().nextInt(256)));
+        //
+        //            for (int i = 0; i < numLevels; ++i)
+        //            {
+        //                // get start and end points of segment
+        //                auto start = -(levels[(nextSample + i) % numLevels].getStart());
+        //                auto end = -(levels[(nextSample + i) % numLevels].getEnd());
+        //
+        //                // draw segment line
+        //                Path path;
+        //                path.startNewSubPath((float)i, start);
+        //                path.lineTo((float)i + 1, end);
+        //                path.closeSubPath();
+        //
+        //                // colour the segment
+        //                graphic.setColour(colHistory[(nextSample + i) % numLevels]);
+        //                // graphic.setColour(colour);
+        //
+        //                graphic.strokePath(path, PathStrokeType(1.0f), AffineTransform::fromTargetPoints(0.0f, -1.0f, area.getX(), area.getY(), 0.0f, 1.0f, area.getX(), area.getBottom(), (float)numLevels, -1.0f, area.getRight(), area.getY()));
+        //            }
+        //        }
     };
 }
 
@@ -138,19 +138,22 @@ public:
 
     juce::RGBMeter rgbMeter;
     int r, g, b;
-    float getPower(juce::AudioBuffer<float> &buffer, int channel);
+    float getPower(juce::AudioBuffer<float> &buffer);
 
-    //    using APVTS = juce::AudioProcessorValueTreeState;
-    //    static APVTS::ParameterLayout createParameterLayout();
-    //
-    //    APVTS apvts {*this, nullptr, "Parameters", createParameterLayout()};
+    using APVTS = juce::AudioProcessorValueTreeState;
+    static APVTS::ParameterLayout createParameterLayout();
+
+    APVTS apvts{*this, nullptr, "Parameters", createParameterLayout()};
+
+    juce::AudioParameterFloat *lowCrossover{nullptr};
 
 private:
     using Filter = juce::dsp::LinkwitzRileyFilter<float>;
+    // using Filter = juce::dsp::FIR::Filter<float>;
     Filter LP, midLP, midAP, midHP, HP;
 
-    juce::AudioParameterFloat *lowCrossover{nullptr};
-    juce::AudioParameterFloat *highCrossover{nullptr};
+     
+     juce::AudioParameterFloat *highCrossover{nullptr};
     //    juce::AudioParameterBool *bypassLow{nullptr};
     //    juce::AudioParameterBool* bypassMid {nullptr};
     //    juce::AudioParameterBool *bypassHigh{nullptr};

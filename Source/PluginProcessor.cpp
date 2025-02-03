@@ -25,16 +25,18 @@ RGBMeterAudioProcessor::RGBMeterAudioProcessor()
 {
     colour = juce::Colour(255, 255, 255);
 
+    // lowCrossover = dynamic_cast<juce::AudioParameterFloat*>(apvts.getParameter("lowCrossover"));
+    // jassert(lowCrossover != nullptr);
+
+    highCrossover = dynamic_cast<juce::AudioParameterFloat *>(apvts.getParameter("highCrossover"));
+    jassert(highCrossover != nullptr);
+
     auto lowCrossoverRange = new juce::NormalisableRange<float>(20.0f, 999.0f, 1.0f, 1.0f);
-    auto highCrossoverRange = new juce::NormalisableRange<float>(1000.0f, 20000.0f, 1.0f, 1.0f);
+    // auto highCrossoverRange = new juce::NormalisableRange<float>(1000.0f, 20000.0f, 1.0f, 1.0f);
 
-    addParameter(lowCrossover = new juce::AudioParameterFloat(juce::ParameterID("lowCrossover", 1), "Low Crossover", *lowCrossoverRange, 300.0f));
+    addParameter(lowCrossover = new juce::AudioParameterFloat(juce::ParameterID("lowCrossover", 1), "Low Crossover", *lowCrossoverRange, 150.0f));
 
-    addParameter(highCrossover = new juce::AudioParameterFloat(juce::ParameterID("highCrossover", 1), "High Crossover", *highCrossoverRange, 1000.0f));
-
-    // addParameter(bypassLow = new juce::AudioParameterBool(juce::ParameterID{"bypassLow", 1}, "Bypass Low", false));
-    //    addParameter(bypassMid = new juce::AudioParameterBool(juce::ParameterID{"bypassMid", 1}, "Bypass Mid", false));
-    // addParameter(bypassHigh = new juce::AudioParameterBool(juce::ParameterID{"bypassHigh", 1}, "Bypass High", false));
+    // addParameter(highCrossover = new juce::AudioParameterFloat(juce::ParameterID("highCrossover", 1), "High Crossover", *highCrossoverRange, 1000.0f));
 
     LP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
     midLP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
@@ -173,89 +175,104 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+
+    
+    //=====================================================
+
+    // Calculate average amplitude of input signal
+    auto bufferPower = getPower(buffer);
+
+    // instantiate band buffers
+    juce::AudioBuffer<float> lowBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+    juce::AudioBuffer<float> midBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+    juce::AudioBuffer<float> highBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+    lowBuffer = buffer;
+    midBuffer = buffer;
+
+    // set filter crossovers
+    LP.setCutoffFrequency(lowCrossover->get());
+    midHP.setCutoffFrequency(lowCrossover->get());
+    midAP.setCutoffFrequency(highCrossover->get());
+    midLP.setCutoffFrequency(highCrossover->get());
+    HP.setCutoffFrequency(highCrossover->get());
+
+    // instantiate blocks
+    auto lowBlock = juce::dsp::AudioBlock<float>(lowBuffer);
+    auto midBlock = juce::dsp::AudioBlock<float>(midBuffer);
+    auto highBlock = juce::dsp::AudioBlock<float>(highBuffer);
+
+    // instantiate processing contexts
+    auto lowContext = juce::dsp::ProcessContextReplacing<float>(lowBlock);
+    auto midContext = juce::dsp::ProcessContextReplacing<float>(midBlock);
+    auto highContext = juce::dsp::ProcessContextReplacing<float>(highBlock);
+
+    // process filters
+    LP.process(lowContext);
+    midAP.process(lowContext);
+
+    midHP.process(midContext);
+    highBuffer = midBuffer;
+    midLP.process(midContext);
+
+    HP.process(highContext);
+
+    // get band powers
+    auto lowPower = getPower(lowBuffer);
+    auto midPower = getPower(midBuffer);
+    auto highPower = getPower(highBuffer);
+
+    // normalize
+    if (bufferPower > 0.0f)
     {
-        //    auto* channelData = buffer.getWritePointer(channel);
-
-        // ..do something to the data...
-
-        auto bufferPower = getPower(buffer, channel);
-
-        juce::AudioBuffer<float> lowBuffer(buffer.getNumChannels(), buffer.getNumSamples());
-        juce::AudioBuffer<float> midBuffer(buffer.getNumChannels(), buffer.getNumSamples());
-        juce::AudioBuffer<float> highBuffer(buffer.getNumChannels(), buffer.getNumSamples());
-        lowBuffer = buffer;
-        midBuffer = buffer;
-
-        LP.setCutoffFrequency(lowCrossover->get());
-        midHP.setCutoffFrequency(lowCrossover->get());
-        midAP.setCutoffFrequency(highCrossover->get());
-        midLP.setCutoffFrequency(highCrossover->get());
-        HP.setCutoffFrequency(highCrossover->get());
-
-        auto lowBlock = juce::dsp::AudioBlock<float>(lowBuffer);
-        auto midBlock = juce::dsp::AudioBlock<float>(midBuffer);
-        auto highBlock = juce::dsp::AudioBlock<float>(highBuffer);
-
-        auto lowContext = juce::dsp::ProcessContextReplacing<float>(lowBlock);
-        auto midContext = juce::dsp::ProcessContextReplacing<float>(midBlock);
-        auto highContext = juce::dsp::ProcessContextReplacing<float>(highBlock);
-
-        LP.process(lowContext);
-        midAP.process(lowContext);
-
-        midHP.process(midContext);
-        highBuffer = midBuffer;
-        midLP.process(midContext);
-
-        HP.process(highContext);
-
-        // get band powers
-        auto lowPower = getPower(lowBuffer, channel);
-        auto midPower = getPower(midBuffer, channel);
-        auto highPower = getPower(highBuffer, channel);
-
-        // normalize
-        if (bufferPower > 0.0f)
-        {
-            lowPower /= bufferPower;
-            midPower /= bufferPower;
-            highPower /= bufferPower;
-        }
-
-        //        buffer.clear();
-        //
-        //
-        ////         Combine the processed buffers back into the original buffer
-        //         for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-        //         {
-        //             buffer.setSample(channel, sample,
-        //                              lowBuffer.getSample(channel, sample) +
-        //                                  midBuffer.getSample(channel, sample) +
-        //                                  highBuffer.getSample(channel, sample));
-        //         }
-
-        colour = juce::Colour(std::floor(lowPower * 255), std::floor(midPower * 255), std::floor(highPower * 255));
-        //        std::cout << colour.toString() << std::endl;
-
-        rgbMeter.setBufferColour(colour);
-
-        rgbMeter.pushBuffer(buffer);
+        
+        std::cout << "Power:" << std::endl << lowPower << std::endl << midPower << std::endl << highPower << std::endl;
+        
+        lowPower /= bufferPower;
+        midPower /= bufferPower;
+        highPower /= bufferPower;
+        
+        std::cout << "Normalized:" << std::endl << lowPower << std::endl << midPower << std::endl << highPower << std::endl;
     }
+
+//    buffer.clear();
+//    
+//    // Combine the processed buffers back into the original buffer
+//    for (int i = 0; i < 3; i++) {
+//        auto band = std::vector<juce::AudioBuffer<float>>{lowBuffer, midBuffer, highBuffer}[i];
+//        for (int channel = 0; channel < buffer.getNumChannels(); channel++) {
+//            buffer.addFrom(channel, 0, band, channel, 0, band.getNumSamples());
+//        }
+//    }
+
+//    // Combine the processed buffers back into the original buffer
+//    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+//    {
+//        for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
+//        {
+//            buffer.setSample(channel, sample,
+//                             lowBuffer.getSample(channel, sample));
+////                             midBuffer.getSample(channel, sample));
+////                            highBuffer.getSample(channel, sample));
+//        }
+//    }
+
+    colour = juce::Colour(std::floor(lowPower * 255), std::floor(midPower * 255), std::floor(highPower * 255));
+    //        std::cout << colour.toString() << std::endl;
+
+    rgbMeter.setBufferColour(colour);
+
+    rgbMeter.pushBuffer(buffer);
+
 }
 
-float RGBMeterAudioProcessor::getPower(juce::AudioBuffer<float> &buffer, int channel)
+// float RGBMeterAudioProcessor::getPower(juce::AudioBuffer<float> &buffer, int channel)
+float RGBMeterAudioProcessor::getPower(juce::AudioBuffer<float> &buffer)
 {
     float power = 0.0f;
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
     {
-        power += buffer.getSample(channel, sample) * buffer.getSample(channel, sample);
+        power += buffer.getSample(0, sample);
+        //        power += buffer.getSample(channel, sample) * buffer.getSample(channel, sample);
     }
     power /= buffer.getNumSamples();
     return power;
@@ -269,8 +286,8 @@ bool RGBMeterAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor *RGBMeterAudioProcessor::createEditor()
 {
-     return new juce::GenericAudioProcessorEditor(*this);
-//    return new RGBMeterAudioProcessorEditor(*this);
+    //    return new juce::GenericAudioProcessorEditor(*this);
+    return new RGBMeterAudioProcessorEditor(*this);
 }
 
 //==============================================================================
@@ -280,18 +297,42 @@ void RGBMeterAudioProcessor::getStateInformation(juce::MemoryBlock &destData)
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 
-    //    juce::MemoryOutputStream mos(destData, true);
-    //    apvts.state.writeToStream(mos);
+    juce::MemoryOutputStream mos(destData, true);
+    apvts.state.writeToStream(mos);
 }
 
 void RGBMeterAudioProcessor::setStateInformation(const void *data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
-    // auto tree = juce::ValueTree::readFromData(data, sizeInBytes);
-    //    if (tree.isValid()) {
-    //        apvts.replaceState(tree);
-    //    }
+
+    auto tree = juce::ValueTree::readFromData(data, sizeInBytes);
+    if (tree.isValid())
+    {
+        apvts.replaceState(tree);
+    }
+}
+
+juce::AudioProcessorValueTreeState::ParameterLayout RGBMeterAudioProcessor::createParameterLayout()
+{
+    APVTS::ParameterLayout layout;
+
+    // auto lowCrossoverRange = std::make_unique<juce::NormalisableRange<float>>(20.0f, 999.0f, 1.0f, 1.0f);
+    auto highCrossoverRange = std::make_unique<juce::NormalisableRange<float>>(1000.0f, 20000.0f, 1.0f, 1.0f);
+
+    // layout.add(std::make_unique<juce::AudioParameterFloat>(
+    //     juce::ParameterID("lowCrossover", 1),
+    //     "Low Crossover",
+    //     *lowCrossoverRange,
+    //     300.0f));
+
+    layout.add(std::make_unique<juce::AudioParameterFloat>(
+        juce::ParameterID("highCrossover", 1),
+        "High Crossover",
+        *highCrossoverRange,
+        1000.0f));
+
+    return layout;
 }
 
 //==============================================================================

@@ -145,7 +145,7 @@ public:
 
     APVTS apvts{*this, nullptr, "Parameters", createParameterLayout()};
     
-    void parameterChanged(const juce::String &parameterID, float newValue) override;
+     void parameterChanged(const juce::String &parameterID, float newValue) override;
 
     
 

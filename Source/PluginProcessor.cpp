@@ -290,8 +290,8 @@ bool RGBMeterAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor *RGBMeterAudioProcessor::createEditor()
 {
-        return new juce::GenericAudioProcessorEditor(*this);
-//    return new RGBMeterAudioProcessorEditor(*this);
+//        return new juce::GenericAudioProcessorEditor(*this);
+    return new RGBMeterAudioProcessorEditor(*this);
 }
 
 //==============================================================================
@@ -301,8 +301,8 @@ void RGBMeterAudioProcessor::getStateInformation(juce::MemoryBlock &destData)
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 
-    juce::MemoryOutputStream mos(destData, true);
-    apvts.state.writeToStream(mos);
+    juce::MemoryOutputStream stream(destData, true);
+    apvts.state.writeToStream(stream);
 }
 
 void RGBMeterAudioProcessor::setStateInformation(const void *data, int sizeInBytes)
@@ -343,18 +343,17 @@ juce::AudioProcessorValueTreeState::ParameterLayout RGBMeterAudioProcessor::crea
     return params;
 }
 
-void RGBMeterAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue) {
+ void RGBMeterAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue) {
     
-    if (parameterID == "lowCrossover") {
-        LP.setCutoffFrequency(lowCrossover->get());
-        midHP.setCutoffFrequency(lowCrossover->get());
-    } else if (parameterID == "highCrossover") {
-        midAP.setCutoffFrequency(highCrossover->get());
-        midLP.setCutoffFrequency(highCrossover->get());
-        HP.setCutoffFrequency(highCrossover->get());
-    }
-    
-}
+     if (parameterID == "lowCrossover") {
+         LP.setCutoffFrequency(lowCrossover->get());
+         midHP.setCutoffFrequency(lowCrossover->get());
+     } else if (parameterID == "highCrossover") {
+         midAP.setCutoffFrequency(highCrossover->get());
+         midLP.setCutoffFrequency(highCrossover->get());
+         HP.setCutoffFrequency(highCrossover->get());
+     }
+ }
 
 //==============================================================================
 // This creates new instances of the plugin..

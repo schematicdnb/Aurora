@@ -28,5 +28,20 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     RGBMeterAudioProcessor& audioProcessor;
+    
+    juce::Slider lowCrossoverSlider;
+    juce::Slider highCrossoverSlider;
+    juce::TextButton lowEnableButton;
+    juce::TextButton midEnableButton;
+    juce::TextButton highEnableButton;
+    
+    juce::AudioProcessorValueTreeState& apvts = audioProcessor.apvts;
+    
+    typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
+    typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
+    
+    std::unique_ptr<SliderAttachment> lowCrossoverAttachment, highCrossoverAttachment;
+    std::unique_ptr<ButtonAttachment> lowButtonAttachment, midButtonAttachment, highButtonAttachment;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RGBMeterAudioProcessorEditor)
 };

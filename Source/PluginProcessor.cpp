@@ -226,44 +226,45 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
     // normalize
     if (bufferPower > 0.0f)
     {
-        
-//        std::cout << "Power:" << std::endl << lowPower << std::endl << midPower << std::endl << highPower << std::endl;
-        
         lowPower /= bufferPower;
         midPower /= bufferPower;
         highPower /= bufferPower;
-        
-//        std::cout << "Normalized:" << std::endl << lowPower << std::endl << midPower << std::endl << highPower << std::endl;
     }
 
-    buffer.clear();
+//    buffer.clear();
+//    
+//    // Combine the processed buffers back into the original buffer
+//    for (int i = 0; i < 3; i++) {
+//        auto band = std::vector<juce::AudioBuffer<float>>{lowBuffer, midBuffer, highBuffer}[i];
+//        auto enabled = std::vector<juce::AudioParameterBool*>{enableLow, enableMid, enableHigh}[i];
+//        if (enabled->get()) {
+//            for (int channel = 0; channel < buffer.getNumChannels(); channel++) {
+//                buffer.addFrom(channel, 0, band, channel, 0, band.getNumSamples());
+//            }
+//        }
+//        
+//    }
     
-    // Combine the processed buffers back into the original buffer
+    // Only allow colour band if button enabled
     for (int i = 0; i < 3; i++) {
-        auto band = std::vector<juce::AudioBuffer<float>>{lowBuffer, midBuffer, highBuffer}[i];
         auto enabled = std::vector<juce::AudioParameterBool*>{enableLow, enableMid, enableHigh}[i];
-        if (enabled->get()) {
-            for (int channel = 0; channel < buffer.getNumChannels(); channel++) {
-                buffer.addFrom(channel, 0, band, channel, 0, band.getNumSamples());
+        auto power = std::vector<float>{lowPower, midPower, highPower}[i];
+        if (!enabled->get()) {
+            switch (i) {
+                case 0:
+                    lowPower = 0;
+                    break;
+                case 1:
+                    midPower = 0;
+                    break;
+                case 2:
+                    highPower = 0;
+                    break;
             }
         }
-        
     }
-
-//    // Combine the processed buffers back into the original buffer
-//    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-//    {
-//        for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
-//        {
-//            buffer.setSample(channel, sample,
-//                             lowBuffer.getSample(channel, sample));
-////                             midBuffer.getSample(channel, sample));
-////                            highBuffer.getSample(channel, sample));
-//        }
-//    }
-
+    
     colour = juce::Colour(std::floor(lowPower * 255), std::floor(midPower * 255), std::floor(highPower * 255));
-    //        std::cout << colour.toString() << std::endl;
 
     rgbMeter.setBufferColour(colour);
 
@@ -334,7 +335,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout RGBMeterAudioProcessor::crea
         juce::ParameterID("highCrossover", 1),
         "High Crossover",
         *highCrossoverRange,
-        1000.0f));
+        2000.0f));
     
     params.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID("enableLow", 1), "Enable Low", true));
     params.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID("enableMid", 1), "Enable Mid", true));

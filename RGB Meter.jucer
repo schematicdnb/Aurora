@@ -4,14 +4,16 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" version="0.0.1"
               companyName="Schematic Sound" pluginFormats="buildAU,buildVST3"
               pluginManufacturerCode="SSND" pluginCode="Rgbm" pluginDesc="Oscilloscope with frequency colours"
-              pluginVST3Category="Analyzer,Tools" pluginVSTCategory="kPlugCategAnalysis"
-              defines="JUCE_DISPLAY_SPLASH_SCREEN=0">
+              pluginVST3Category="Analyzer,Tools" pluginVSTCategory="kPlugCategAnalysis">
   <MAINGROUP id="prN6Wm" name="RGB Meter">
     <GROUP id="{DD6A068D-F127-8FC1-7C6B-391B81BC2A60}" name="Source">
+      <FILE id="tjRzxw" name="RGBMeter.cpp" compile="1" resource="0" file="Source/RGBMeter.cpp"/>
+      <FILE id="Htv3gv" name="RGBMeter.h" compile="0" resource="0" file="Source/RGBMeter.h"
+            xcodeResource="0"/>
       <FILE id="gWeaC9" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="J2Idn1" name="PluginProcessor.h" compile="0" resource="0"
-            file="Source/PluginProcessor.h"/>
+            file="Source/PluginProcessor.h" xcodeResource="0"/>
       <FILE id="FjGFmL" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="jUsly3" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>

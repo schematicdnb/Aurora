@@ -56,6 +56,7 @@ public:
     void setStateInformation(const void *data, int sizeInBytes) override;
 
     juce::RGBMeter rgbMeter;
+    juce::AudioVisualiserComponent avc{1};
     float getRMS(juce::AudioBuffer<float> &buffer);
     juce::Colour freqToColour(juce::AudioBuffer<float> &lowBuffer, juce::AudioBuffer<float> &midBuffer, juce::AudioBuffer<float> &highBuffer);
 

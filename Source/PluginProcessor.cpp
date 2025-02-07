@@ -23,6 +23,9 @@ RGBMeterAudioProcessor::RGBMeterAudioProcessor()
       rgbMeter()
 #endif
 {
+    // DEBUG
+    avc.setBufferSize(512);
+
     // initialize crossovers params
     lowCrossover = dynamic_cast<juce::AudioParameterFloat *>(apvts.getParameter("lowCrossover"));
     jassert(lowCrossover != nullptr);
@@ -235,6 +238,7 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
     rgbMeter.setBufferColour(freqToColour(lowBuffer, midBuffer, highBuffer));
 
     rgbMeter.pushBuffer(buffer);
+    avc.pushBuffer(buffer);
 }
 
 juce::Colour RGBMeterAudioProcessor::freqToColour(juce::AudioBuffer<float> &lowBuffer, juce::AudioBuffer<float> &midBuffer, juce::AudioBuffer<float> &highBuffer)
@@ -247,12 +251,12 @@ juce::Colour RGBMeterAudioProcessor::freqToColour(juce::AudioBuffer<float> &lowB
     auto fullRMS = lowRMS + midRMS + highRMS;
 
     // normalize
-     if (fullRMS > 0.0f)
-     {
-         lowRMS /= fullRMS;
-         midRMS /= fullRMS;
-         highRMS /= fullRMS;
-     }
+    if (fullRMS > 0.0f)
+    {
+        lowRMS /= fullRMS;
+        midRMS /= fullRMS;
+        highRMS /= fullRMS;
+    }
 
     // Only allow colour band if button enabled
     for (int i = 0; i < 3; i++)

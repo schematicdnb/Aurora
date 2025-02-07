@@ -12,19 +12,21 @@ namespace juce
 {
     class RGBMeter : public AudioVisualiserComponent
     {
-        
-    private:
-        Array<Colour> colHistory;
-        Colour bufferColour;
-        
+
     public:
         RGBMeter();
 
         void setBufferColour(Colour c);
         void setNextSampleColour(int nextSample, Colour c);
 
+        void getChannelAsPath(Path &path, const Range<float> *levels, int numLevels, int nextSample);
         // paint channel as freq-based colour for whole waveform
         void paintChannel(Graphics &g, Rectangle<float> area,
-                          const Range<float> *levels, int numLevels, int nextSample);
+                          const Range<float> *levels, int numLevels, int nextSample) override;
+
+    private:
+        Array<Colour> colHistory;
+        Colour bufferColour;
     };
+
 }

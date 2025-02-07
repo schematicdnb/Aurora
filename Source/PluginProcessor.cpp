@@ -44,12 +44,19 @@ RGBMeterAudioProcessor::RGBMeterAudioProcessor()
     apvts.addParameterListener("lowCrossover", this);
     apvts.addParameterListener("highCrossover", this);
 
-    // intialize filters
+    // intialize filter types
     LP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
     midLP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
     midAP.setType(juce::dsp::LinkwitzRileyFilterType::allpass);
     midHP.setType(juce::dsp::LinkwitzRileyFilterType::highpass);
     HP.setType(juce::dsp::LinkwitzRileyFilterType::highpass);
+    
+    // Initialize crossover points
+    LP.setCutoffFrequency(lowCrossover->get());
+    midHP.setCutoffFrequency(lowCrossover->get());
+    midAP.setCutoffFrequency(highCrossover->get());
+    midLP.setCutoffFrequency(highCrossover->get());
+    HP.setCutoffFrequency(highCrossover->get());
 }
 
 RGBMeterAudioProcessor::~RGBMeterAudioProcessor()

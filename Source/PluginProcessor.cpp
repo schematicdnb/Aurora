@@ -24,7 +24,7 @@ RGBMeterAudioProcessor::RGBMeterAudioProcessor()
 #endif
 {
     // DEBUG
-    avc.setBufferSize(512);
+    avc.setBufferSize(128);
 
     // initialize crossovers params
     lowCrossover = dynamic_cast<juce::AudioParameterFloat *>(apvts.getParameter("lowCrossover"));
@@ -144,6 +144,8 @@ void RGBMeterAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBloc
     midAP.prepare(spec);
     midHP.prepare(spec);
     HP.prepare(spec);
+    
+//    rgbMeter.prepare(spec);
 }
 
 void RGBMeterAudioProcessor::releaseResources()
@@ -235,10 +237,13 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
     //
     //    }
 
-    rgbMeter.setBufferColour(freqToColour(lowBuffer, midBuffer, highBuffer));
-
-    rgbMeter.pushBuffer(buffer);
-    avc.pushBuffer(buffer);
+//    rgbMeter.setBufferColour(freqToColour(lowBuffer, midBuffer, highBuffer));
+//
+//    rgbMeter.pushBuffer(buffer);
+//    avc.pushBuffer(buffer);
+    
+    
+    rgbMeter.pushSamples(buffer);
 }
 
 juce::Colour RGBMeterAudioProcessor::freqToColour(juce::AudioBuffer<float> &lowBuffer, juce::AudioBuffer<float> &midBuffer, juce::AudioBuffer<float> &highBuffer)

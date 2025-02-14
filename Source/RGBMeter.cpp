@@ -11,82 +11,76 @@
 namespace juce
 {
 
-    RGBMeter::RGBMeter() : AudioVisualiserComponent(1)
+    RGBMeter::RGBMeter()
     {
-        // while (colHistory.size() < 512)
-        // {
-        //     colHistory.add(Colour(0, 0, 0));
-        // }
-        int buffsize = 512;
+        //        DBG("initialized");
+        startTimer(16);
 
-        colHistory.resize(buffsize);
-        //        for (int i = 0; i < 512; i++)
-        //        {
-        //            colHistory.set(i, Colour::fromRGB(Random::getSystemRandom().nextInt(256),
-        //                                              Random::getSystemRandom().nextInt(256),
-        //                                              Random::getSystemRandom().nextInt(256)));
-        //        }
-        setBufferSize(buffsize);
-        bufferColour = Colour(255, 255, 255);
+        slidingWindow.setSize(1, slidingWindowSize);
+        //        waveformSamples.insertMultiple(0, std::make_tuple(0.0f, Colour(Colours::black)), displayLength * sampleRate);
 
-        // setSamplesPerBlock(256);
-        // setColours(Colours::black, Colour(255, 0, 0));
-        // setRepaintRate(30);
-    }
-
-    void RGBMeter::setBufferColour(Colour c)
-    {
-        bufferColour = c;
-    }
-
-    void RGBMeter::setNextSampleColour(int nextSample, Colour c)
-    {
-        colHistory.set(nextSample, c);
-    }
-
-    // custom paintchannel backup
-    void RGBMeter::paintChannel(Graphics &g, Rectangle<float> area,
-                                const Range<float> *levels, int numLevels, int nextSample)
-    {
-
-        
-
-        setNextSampleColour(nextSample, bufferColour);
-
-        //                 setNextSampleColour(nextSample, Colour(
-        //                                                     Random::getSystemRandom().nextInt(256),
-        //                                                     Random::getSystemRandom().nextInt(256),
-        //                                                     Random::getSystemRandom().nextInt(256)));
-
-        for (int i = 0; i < numLevels; ++i)
+        // initialize with full array of default values
+        for (int i = 0; i < displayLength * sampleRate; i++)
         {
+            waveformSamples.add(std::make_tuple(0.0f, Colour(Colours::black)));
+        }
+    }
+
+    //    void RGBMeter::prepare(dsp::ProcessSpec spec)
+    //    {
+    //        waveformSamples.clear();
+    //        waveformSamples.insertMultiple(0, std::make_tuple(0.0f, Colour(Colours::black)), displayLength * spec.sampleRate);
+    //    }
+
+    void RGBMeter::pushSamples(const AudioBuffer<float> &buffer)
+    {
+        // skip sliding window and fft for now
+        Colour colour = Colour::fromRGB(Random::getSystemRandom().nextInt(256),
+                                        Random::getSystemRandom().nextInt(256),
+                                        Random::getSystemRandom().nextInt(256));
+        DBG(waveformSamples.size());
+
+        for (int i = 0; i < buffer.getNumSamples(); i++)
+        {
+            auto sample = buffer.getSample(1, 0);
+            waveformSamples.add(std::make_tuple(sample, colour));
+        }
+    }
+
+    void RGBMeter::paint(Graphics &g)
+    {
+        //        DBG("drawing samples");
+        auto skip = std::floor(waveformSamples.size() / this->getWidth());
+
+        int index = 0;
+        for (int sample = 0; sample < waveformSamples.size() - skip - 1; sample += skip)
+        {
+            auto level1 = std::get<0>(waveformSamples.get(sample));
+            auto colour1 = std::get<1>(waveformSamples.get(sample));
+
+            auto level2 = std::get<0>(waveformSamples.get(sample + skip));
+            auto colour2 = std::get<1>(waveformSamples.get(sample + skip));
 
             Path p;
-            // get start and end points of segment
-            auto p1High = -(levels[(nextSample + i) % numLevels].getEnd());
-            auto p1Low = -(levels[(nextSample + i) % numLevels].getStart());
-
-            auto p2High = -(levels[(nextSample + i + 1) % numLevels].getEnd());
-            auto p2Low = -(levels[(nextSample + i + 1) % numLevels].getStart());
-
-            // draw segment line
-            p.startNewSubPath((float)i, p1High);
-            p.lineTo((float)i + 1, p2High);
-            p.lineTo((float)i + 1, p2Low);
-            p.lineTo((float)i, p1Low);
+            p.startNewSubPath(index, jmap(level1, -1.0f, 1.0f, (float)this->getHeight(), (float)0));
+            p.lineTo(index + 1, jmap(level2, -1.0f, 1.0f, (float)this->getHeight(), (float)0));
             p.closeSubPath();
 
-            // colour the segment
+            // TODO: colour gradient
+            // Create a gradient from colour1 to colour2
+            // ColourGradient gradient(colour1, (float)i, jmap(level1, -1.0f, 1.0f, (float)this->getHeight(), (float)0),
+            //             colour2, (float)(i+1), jmap(level2, -1.0f, 1.0f, (float)this->getHeight(), (float)0), false);
+            // g.setGradientFill(gradient);
 
-            //            g.strokePath(path, PathStrokeType(1.0), AffineTransform::fromTargetPoints(0.0f, -1.0f, area.getX(), area.getY(), 0.0f, 1.0f, area.getX(), area.getBottom(), (float)numLevels, -1.0f, area.getRight(), area.getY()));
+            g.setColour(colour1);
 
-            g.setColour(colHistory[(nextSample + i) % numLevels]);
-
-            //            g.setColour(colHistory[nextSample]);
-
-            g.fillPath(p, AffineTransform::fromTargetPoints(0.0f, -1.0f, area.getX(), area.getY(),
-                                                            0.0f, 1.0f, area.getX(), area.getBottom(),
-                                                            (float)numLevels, -1.0f, area.getRight(), area.getY()));
+            g.strokePath(p, PathStrokeType(1.0f));
+            index++;
         }
+    }
+
+    void RGBMeter::timerCallback()
+    {
+        repaint();
     }
 }

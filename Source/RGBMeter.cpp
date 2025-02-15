@@ -13,17 +13,18 @@ namespace juce
 
     RGBMeter::RGBMeter()
     {
-        //        DBG("initialized");
-        startTimer(16);
 
         slidingWindow.setSize(1, slidingWindowSize);
-        //        waveformSamples.insertMultiple(0, std::make_tuple(0.0f, Colour(Colours::black)), displayLength * sampleRate);
 
         // initialize with full array of default values
         for (int i = 0; i < displayLength * sampleRate; i++)
         {
             waveformSamples.add(std::make_tuple(0.0f, Colour(Colours::black)));
         }
+
+        // auto writePointer = waveformSamples.getWritePointer();
+
+        startTimerHz(60);
     }
 
     //    void RGBMeter::prepare(dsp::ProcessSpec spec)
@@ -35,47 +36,80 @@ namespace juce
     void RGBMeter::pushSamples(const AudioBuffer<float> &buffer)
     {
         // skip sliding window and fft for now
+
+        //        Colour colour = Colour(Colours::white);
         Colour colour = Colour::fromRGB(Random::getSystemRandom().nextInt(256),
                                         Random::getSystemRandom().nextInt(256),
                                         Random::getSystemRandom().nextInt(256));
-        DBG(waveformSamples.size());
+
+        skip = std::floor(waveformSamples.size() / this->getWidth()); // temporary
 
         for (int i = 0; i < buffer.getNumSamples(); i++)
         {
             auto sample = buffer.getSample(1, 0);
             waveformSamples.add(std::make_tuple(sample, colour));
+            if (offset == 0)
+            {
+                offset = skip - 1;
+            }
+            else
+            {
+                offset--;
+            }
         }
     }
 
     void RGBMeter::paint(Graphics &g)
     {
         //        DBG("drawing samples");
-        auto skip = std::floor(waveformSamples.size() / this->getWidth());
+        //        auto skip = std::floor(waveformSamples.size() / this->getWidth());
 
-        int index = 0;
-        for (int sample = 0; sample < waveformSamples.size() - skip - 1; sample += skip)
+        int x = 0;
+        for (int sample = offset; sample < waveformSamples.size() - skip; sample += skip)
         {
-            auto level1 = std::get<0>(waveformSamples.get(sample));
+
+            auto min = std::numeric_limits<float>::max();
+            auto max = std::numeric_limits<float>::lowest();
+            for (int i = sample; i <= sample + skip; ++i)
+            {
+                auto level = std::get<0>(waveformSamples.get(i));
+                if (level < min)
+                {
+                    min = level;
+                }
+                if (level > max)
+                {
+                    max = level;
+                }
+            }
+
             auto colour1 = std::get<1>(waveformSamples.get(sample));
 
-            auto level2 = std::get<0>(waveformSamples.get(sample + skip));
+            // auto level2 = std::get<0>(waveformSamples.get(sample + skip));
             auto colour2 = std::get<1>(waveformSamples.get(sample + skip));
 
+            auto y1 = jmap(min, -1.0f, 1.0f, (float)this->getHeight(), (float)0);
+            auto y2 = jmap(max, -1.0f, 1.0f, (float)this->getHeight(), (float)0);
+
             Path p;
-            p.startNewSubPath(index, jmap(level1, -1.0f, 1.0f, (float)this->getHeight(), (float)0));
-            p.lineTo(index + 1, jmap(level2, -1.0f, 1.0f, (float)this->getHeight(), (float)0));
+            p.startNewSubPath(x, y1);
+            p.lineTo(x, y2);
             p.closeSubPath();
 
             // TODO: colour gradient
-            // Create a gradient from colour1 to colour2
-            // ColourGradient gradient(colour1, (float)i, jmap(level1, -1.0f, 1.0f, (float)this->getHeight(), (float)0),
-            //             colour2, (float)(i+1), jmap(level2, -1.0f, 1.0f, (float)this->getHeight(), (float)0), false);
-            // g.setGradientFill(gradient);
+//            //             Create a gradient from colour1 to colour2
+//            ColourGradient gradient(colour1, x, y1,
+//                                    colour2, x+1, y2, false);
+////            g.setGradientFill(gradient);
+////            g.fillPath(p);
+//            GradientPathStrokeType gradientStroke(1.0f, gradient);
+//            g.strokePath(p, gradientStroke);
 
             g.setColour(colour1);
-
             g.strokePath(p, PathStrokeType(1.0f));
-            index++;
+
+            
+            x++;
         }
     }
 

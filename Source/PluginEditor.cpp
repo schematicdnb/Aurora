@@ -16,7 +16,7 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
 
-  addAndMakeVisible(avc);
+//  addAndMakeVisible(avc);
 
   // make components visible
   addAndMakeVisible(rgbMeter);

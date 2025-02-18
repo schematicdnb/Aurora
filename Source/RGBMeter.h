@@ -14,7 +14,8 @@ namespace juce
     class CircularBuffer
     {
     public:
-        CircularBuffer(int size) : buffer(size), head(0), tail(0), full(false) {
+        CircularBuffer(int size) : buffer(size), head(0), tail(0), full(false)
+        {
         }
 
         void add(T item)
@@ -88,31 +89,34 @@ namespace juce
         Colour freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> &midBuffer, AudioBuffer<float> &highBuffer);
 
     private:
-//        AudioDeviceManager device;
-//        int slidingWindowSize = 2048;
+        //        AudioDeviceManager device;
+        //        int slidingWindowSize = 2048;
         int displayLength = 5;  // in seconds
         int sampleRate = 44100; // temp hardcode
         int bufferLength = displayLength * sampleRate;
 
         int width = 0;
-        int offset = 0;
-        
+        // int offset = 0;
+
         AudioBuffer<float> chunkBuffer;
         double chunkSize;
         double chunkCounter;
-        
-//        AudioBuffer<float> fftBuffer{1, 2048};
-//        int fftCounter =
-//        AudioBuffer<float> slidingWindow;
-        CircularBuffer<std::tuple<float, Colour>> waveformSamples{bufferLength};
-    
+
+        int freqAnalysisSize = 4096;
+        AudioBuffer<float> freqBuffer{1, freqAnalysisSize};
+        int freqBufferCounter = 0;
+        //        int fftCounter =
+        //        AudioBuffer<float> slidingWindow;
+        // CircularBuffer<std::tuple<float, Colour>> waveformSamples{bufferLength};
+
         CircularBuffer<std::tuple<Range<float>, Colour>> displayBuffer{0};
         int fftSize = 2048;
         CircularBuffer<float> fftBuffer{fftSize};
-        
-        
+
         using Filter = juce::dsp::LinkwitzRileyFilter<float>;
         Filter LP, midLP, midAP, midHP, HP;
+        
+        Colour colour;
     };
     ;
 

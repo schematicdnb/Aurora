@@ -76,35 +76,6 @@ namespace juce
         bool full;
     };
 
-//    class GradientPathStrokeType : public PathStrokeType
-//    {
-//    public:
-//        GradientPathStrokeType(float thickness, ColourGradient gradient)
-//            : PathStrokeType(thickness), gradient(gradient)
-//        {
-//        }
-//
-//        void createStrokedPath(Path& destPath, const Path& sourcePath, const AffineTransform& transform = AffineTransform()) const
-//        {
-//            PathStrokeType::createStrokedPath(destPath, sourcePath, transform);
-//
-//            Path::Iterator it(destPath);
-//            while (it.next())
-//            {
-//                if (it.elementType == Path::Iterator::lineTo || it.elementType == Path::Iterator::cubicTo || it.elementType == Path::Iterator::quadraticTo)
-//                {
-//                    float position = Point<float>(it.x1, it.y1).getDistanceFrom(sourcePath.getPointAlongPath(0.0f)) / sourcePath.getLength();
-//                    Colour colour = gradient.getColourAtPosition(position);
-//                    destPath.addLineSegment(Line<float>(it.x1, it.y1, it.x2, it.y2), getStrokeThickness());
-//                    destPath.applyTransform(AffineTransform::translation(it.x1, it.y1));
-//                }
-//            }
-//        }
-//
-//    private:
-//        ColourGradient gradient;
-//    };
-
     class RGBMeter : public Component, Timer
     {
 
@@ -114,22 +85,34 @@ namespace juce
         void pushSamples(const AudioBuffer<float> &buffer);
         void paint(Graphics &g) override;
         void timerCallback() override;
+        Colour freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> &midBuffer, AudioBuffer<float> &highBuffer);
 
     private:
 //        AudioDeviceManager device;
 //        int slidingWindowSize = 2048;
-        int displayLength = 3;  // in seconds
+        int displayLength = 5;  // in seconds
         int sampleRate = 44100; // temp hardcode
         int bufferLength = displayLength * sampleRate;
-        double chunkSize;
-        double counter;
+
         int width = 0;
         int offset = 0;
+        
         AudioBuffer<float> chunkBuffer;
+        double chunkSize;
+        double chunkCounter;
+        
+//        AudioBuffer<float> fftBuffer{1, 2048};
+//        int fftCounter =
 //        AudioBuffer<float> slidingWindow;
         CircularBuffer<std::tuple<float, Colour>> waveformSamples{bufferLength};
-        
+    
         CircularBuffer<std::tuple<Range<float>, Colour>> displayBuffer{0};
+        int fftSize = 2048;
+        CircularBuffer<float> fftBuffer{fftSize};
+        
+        
+        using Filter = juce::dsp::LinkwitzRileyFilter<float>;
+        Filter LP, midLP, midAP, midHP, HP;
     };
     ;
 

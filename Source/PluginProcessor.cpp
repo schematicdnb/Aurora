@@ -242,7 +242,6 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
 //    rgbMeter.pushBuffer(buffer);
 //    avc.pushBuffer(buffer);
     
-    
     rgbMeter.pushSamples(buffer);
 }
 

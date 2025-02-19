@@ -87,7 +87,8 @@ namespace juce
 
                 // get colour
                 auto analysisAudioBuffer = freqAnalysisBuffer.getBuffer();
-                colour = colourFreqByFiltering(analysisAudioBuffer);
+                 colour = colourFreqByFiltering(analysisAudioBuffer);
+//                colour = colourFreqByFFT(analysisAudioBuffer);
 
                 // add chunk to display buffer
                 displayBuffer.add(std::make_tuple(level, colour));
@@ -118,8 +119,6 @@ namespace juce
             p.startNewSubPath(i, y1);
             p.lineTo(i, y2);
             p.closeSubPath();
-            
-            
 
             g.setColour(colour);
             g.strokePath(p, PathStrokeType(0.5f, PathStrokeType::curved, PathStrokeType::rounded));
@@ -163,9 +162,9 @@ namespace juce
     {
 
         // get highest magnitude for each frequency band
-        //                auto low = lowBuffer.getMagnitude(0, lowBuffer.getNumSamples());
-        //                auto mid = midBuffer.getMagnitude(0, midBuffer.getNumSamples());
-        //                auto high = highBuffer.getMagnitude(0, highBuffer.getNumSamples());
+//                        auto low = lowBuffer.getMagnitude(0, lowBuffer.getNumSamples());
+//                        auto mid = midBuffer.getMagnitude(0, midBuffer.getNumSamples());
+//                        auto high = highBuffer.getMagnitude(0, highBuffer.getNumSamples());
 
         // get RMS
         auto low = lowBuffer.getRMSLevel(0, 0, lowBuffer.getNumSamples());
@@ -183,10 +182,10 @@ namespace juce
         }
 
         // Scale low, mid, high by an equal factor such that none go higher than 1
-            float maxComponent = std::max({low, mid, high});
-            low /= maxComponent;
-            mid /= maxComponent;
-            high /= maxComponent;
+        float maxComponent = std::max({low, mid, high});
+        low /= maxComponent;
+        mid /= maxComponent;
+        high /= maxComponent;
 
         Colour colour = Colour(std::floor(low * 255), std::floor(mid * 255), std::floor(high * 255));
 
@@ -195,51 +194,59 @@ namespace juce
 
     Colour RGBMeter::colourFreqByFFT(AudioBuffer<float> &buffer)
     {
-        //                colour = colourFreqByFFT(analysisAudioBuffer);
+//        const int fftSize = 2048;
+        dsp::FFT fft(log2(freqAnalysisSize));
+        std::vector<float> fftData(freqAnalysisSize * 2, 0.0f);
 
-        // Process frequency to colour
-        // buggy fft implementation
-        //                dsp::FFT fft(11); // 2^11 = 2048
-        //                std::vector<float> fftData(fftSize * 2);
-        //                for (int j = 0; j < fftSize; j++)
-        //                {
-        //                    fftData[j] = fftBuffer.get(j);
-        //                }
-        //
-        //                fft.performFrequencyOnlyForwardTransform(fftData.data());
-        //
-        //                auto low = 0.0f;
-        //                auto mid = 0.0f;
-        //                auto high = 0.0f;
-        //
-        //                const float binWidth = (float)(sampleRate / fftSize);
-        //                for (int j = 0; j < fftSize; ++j)
-        //                {
-        //
-        //
-        //                    auto freq = j * binWidth;
-        //                    auto mag = fftData[j];
-        //                    if (freq < 151)
-        //                    {
-        //                        low += mag;
-        //                    }
-        //                    else if (freq < 2000)
-        //                    {
-        //                        mid += mag;
-        //                    }
-        //                    else if (freq < 20000)
-        //                    {
-        //                        high += mag;
-        //                    }
-        //                }
-        //
-        //                auto total = low + mid + high;
-        //
-        //                low /= total;
-        //                mid /= total;
-        //                high /= total;
-        //
-        //                colour = Colour(std::floor(low * 255), std::floor(mid * 255), std::floor(high * 255));
+        // Copy buffer data to fftData
+        for (int i = 0; i < buffer.getNumSamples(); ++i)
+        {
+            fftData[i] = buffer.getSample(0, i);
+        }
+
+        // Perform FFT
+        fft.performFrequencyOnlyForwardTransform(fftData.data());
+
+        // Calculate magnitude for each band
+        float low = 0.0f, mid = 0.0f, high = 0.0f;
+        for (int i = 0; i < freqAnalysisSize / 2; ++i)
+        {
+            float freq = i * (sampleRate / freqAnalysisSize);
+            float magnitude = fftData[i];
+
+            if (freq <= 151.0f)
+            {
+                low += magnitude;
+            }
+            else if (freq <= 2000.0f)
+            {
+                mid += magnitude;
+            }
+            else if (freq <= 20000.0f)
+            {
+                high += magnitude;
+            }
+        }
+
+        // Normalize magnitudes
+        float total = low + mid + high;
+        if (total > 0.0f)
+        {
+            low /= total;
+            mid /= total;
+            high /= total;
+        }
+
+        // Scale low, mid, high by an equal factor such that none go higher than 1
+        float maxComponent = std::max({low, mid, high});
+        low /= maxComponent;
+        mid /= maxComponent;
+        high /= maxComponent;
+
+        // Create colour from magnitudes
+        Colour colour = Colour(std::floor(low * 255), std::floor(mid * 255), std::floor(high * 255));
+
+        return colour;
     }
 
     void RGBMeter::timerCallback()

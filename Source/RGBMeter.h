@@ -29,6 +29,24 @@ namespace juce
             full = head == tail;
         }
 
+        AudioBuffer<T> getBuffer() const
+        {
+            AudioBuffer<T> audioBuffer(1, size());
+            if (empty())
+            {
+                return audioBuffer;
+            }
+
+            size_t current = tail;
+            for (int i = 0; i < size(); i++)
+            {
+                audioBuffer.setSample(0, i, buffer[current]);
+                current = (current + 1) % buffer.size();
+            }
+
+            return audioBuffer;
+        }
+
         T get(size_t index) const
         {
             if (index >= size())
@@ -83,39 +101,35 @@ namespace juce
     public:
         RGBMeter();
 
-        void pushSamples(const AudioBuffer<float> &buffer);
+        void pushSamples(AudioBuffer<float> &buffer);
         void paint(Graphics &g) override;
         void timerCallback() override;
         Colour freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> &midBuffer, AudioBuffer<float> &highBuffer);
+        Colour colourFreqByFiltering(AudioBuffer<float> &buffer);
+        
+        
+        Colour colourFreqByFFT(AudioBuffer<float> &buffer);
 
     private:
-        //        AudioDeviceManager device;
-        //        int slidingWindowSize = 2048;
-        int displayLength = 5;  // in seconds
+
+        int displayLength = 15;  // in seconds
         int sampleRate = 44100; // temp hardcode
         int bufferLength = displayLength * sampleRate;
 
         int width = 0;
-        // int offset = 0;
 
         AudioBuffer<float> chunkBuffer;
         double chunkSize;
         double chunkCounter;
 
-        int freqAnalysisSize = 4096;
-        AudioBuffer<float> freqBuffer{1, freqAnalysisSize};
-        int freqBufferCounter = 0;
-        //        int fftCounter =
-        //        AudioBuffer<float> slidingWindow;
-        // CircularBuffer<std::tuple<float, Colour>> waveformSamples{bufferLength};
+        int freqAnalysisSize = 2048;
+        CircularBuffer<float> freqAnalysisBuffer{freqAnalysisSize};
 
         CircularBuffer<std::tuple<Range<float>, Colour>> displayBuffer{0};
-        int fftSize = 2048;
-        CircularBuffer<float> fftBuffer{fftSize};
 
         using Filter = juce::dsp::LinkwitzRileyFilter<float>;
         Filter LP, midLP, midAP, midHP, HP;
-        
+
         Colour colour;
     };
     ;

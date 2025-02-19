@@ -133,6 +133,9 @@ void RGBMeterAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBloc
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    
+    
+    DBG("Preparing to play");
 
     juce::dsp::ProcessSpec spec;
     spec.sampleRate = sampleRate;

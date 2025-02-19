@@ -79,7 +79,7 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
   //   *audioProcessor.enableHigh = highEnableButton.getToggleState();
   // };
 
-  setSize(800, 500);
+  setSize(1280, 300);
 }
 
 RGBMeterAudioProcessorEditor::~RGBMeterAudioProcessorEditor()
@@ -90,7 +90,7 @@ RGBMeterAudioProcessorEditor::~RGBMeterAudioProcessorEditor()
 void RGBMeterAudioProcessorEditor::paint(juce::Graphics &g)
 {
   // (Our component is opaque, so we must completely fill the background with a solid colour)
-  g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    g.fillAll(juce::Colours::black);
 
   g.setColour(juce::Colours::white);
   //    g.setFont (juce::FontOptions (15.0f));
@@ -102,7 +102,7 @@ void RGBMeterAudioProcessorEditor::resized()
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
 
-  rgbMeter.setBounds(getLocalBounds().withSizeKeepingCentre(getWidth() * 0.75, getHeight() * 0.33));
+  rgbMeter.setBounds(getLocalBounds().withSizeKeepingCentre(getWidth(), getHeight() * 0.33));
   avc.setBounds(rgbMeter.getX(), rgbMeter.getY() - rgbMeter.getHeight(), rgbMeter.getWidth(), rgbMeter.getHeight());
 
   lowCrossoverSlider.setBounds(10, 10, getWidth() / 2, 20);

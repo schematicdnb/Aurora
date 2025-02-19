@@ -50,15 +50,8 @@ namespace juce
         //        startTimerHz(60);
     }
 
-    void RGBMeter::pushSamples(const AudioBuffer<float> &buffer)
+    void RGBMeter::pushSamples(AudioBuffer<float> &buffer)
     {
-        // skip sliding window and fft for now
-
-        //        Colour colour = Colour(Colours::white);
-        // Colour colour = Colour::fromRGB(Random::getSystemRandom().nextInt(256),
-        //                                 Random::getSystemRandom().nextInt(256),
-        //                                 Random::getSystemRandom().nextInt(256));
-
         width = this->getWidth();
         if (!width)
         {
@@ -73,10 +66,6 @@ namespace juce
             {
                 displayBuffer.add(std::make_tuple(Range<float>(0.0f, 0.0f), Colour(Colours::white)));
             }
-            for (int i = 0; i < fftSize; i++)
-            {
-                fftBuffer.add(0.0f);
-            }
             chunkSize = std::floor(bufferLength / width); // temp hardcode
             chunkCounter = 0;
             chunkBuffer = AudioBuffer<float>(1, chunkSize);
@@ -87,91 +76,18 @@ namespace juce
         {
             auto sample = buffer.getSample(0, 0);
             //            waveformSamples.add(std::make_tuple(sample, colour));
-            chunkBuffer.setSample(0, chunkCounter, sample);       // maintain the chunk buffer for display
-            freqBuffer.setSample(0, freqBufferCounter, sample); // maintain the fft buffer for display
-            if (++freqBufferCounter == freqAnalysisSize)
-            {
-                freqBufferCounter = 0;
-            }
+            chunkBuffer.setSample(0, chunkCounter, sample);
+            freqAnalysisBuffer.add(sample);
 
             // process display chunk
             if (++chunkCounter == chunkSize)
             {
-
-                // instantiate band buffers
-                juce::AudioBuffer<float> lowBuffer(chunkBuffer.getNumChannels(), chunkBuffer.getNumSamples());
-                juce::AudioBuffer<float> midBuffer(chunkBuffer.getNumChannels(), chunkBuffer.getNumSamples());
-                juce::AudioBuffer<float> highBuffer(chunkBuffer.getNumChannels(), chunkBuffer.getNumSamples());
-                lowBuffer = chunkBuffer;
-                midBuffer = chunkBuffer;
-
-                // instantiate blocks
-                auto lowBlock = juce::dsp::AudioBlock<float>(lowBuffer);
-                auto midBlock = juce::dsp::AudioBlock<float>(midBuffer);
-                auto highBlock = juce::dsp::AudioBlock<float>(highBuffer);
-
-                // instantiate processing contexts
-                auto lowContext = juce::dsp::ProcessContextReplacing<float>(lowBlock);
-                auto midContext = juce::dsp::ProcessContextReplacing<float>(midBlock);
-                auto highContext = juce::dsp::ProcessContextReplacing<float>(highBlock);
-
-                // process filters
-                LP.process(lowContext);
-                midAP.process(lowContext);
-
-                midHP.process(midContext);
-                highBuffer = midBuffer;
-                midLP.process(midContext);
-
-                HP.process(highContext);
-
-                // Process frequency to colour
-                // buggy fft implementation
-                //                dsp::FFT fft(11); // 2^11 = 2048
-                //                std::vector<float> fftData(fftSize * 2);
-                //                for (int j = 0; j < fftSize; j++)
-                //                {
-                //                    fftData[j] = fftBuffer.get(j);
-                //                }
-                //
-                //                fft.performFrequencyOnlyForwardTransform(fftData.data());
-                //
-                //                auto low = 0.0f;
-                //                auto mid = 0.0f;
-                //                auto high = 0.0f;
-                //
-                //                const float binWidth = (float)(sampleRate / fftSize);
-                //                for (int j = 0; j < fftSize; ++j)
-                //                {
-                //
-                //
-                //                    auto freq = j * binWidth;
-                //                    auto mag = fftData[j];
-                //                    if (freq < 151)
-                //                    {
-                //                        low += mag;
-                //                    }
-                //                    else if (freq < 2000)
-                //                    {
-                //                        mid += mag;
-                //                    }
-                //                    else if (freq < 20000)
-                //                    {
-                //                        high += mag;
-                //                    }
-                //                }
-                //
-                //                auto total = low + mid + high;
-                //
-                //                low /= total;
-                //                mid /= total;
-                //                high /= total;
-                //
-                //                colour = Colour(std::floor(low * 255), std::floor(mid * 255), std::floor(high * 255));
-                colour = freqToColour(lowBuffer, midBuffer, highBuffer);
-
-                // get chunk range
+                // get chunk level range
                 auto level = chunkBuffer.findMinMax(0, 0, chunkSize);
+
+                // get colour
+                auto analysisAudioBuffer = freqAnalysisBuffer.getBuffer();
+                colour = colourFreqByFiltering(analysisAudioBuffer);
 
                 // add chunk to display buffer
                 displayBuffer.add(std::make_tuple(level, colour));
@@ -202,34 +118,128 @@ namespace juce
             p.startNewSubPath(i, y1);
             p.lineTo(i, y2);
             p.closeSubPath();
+            
+            
 
             g.setColour(colour);
-            g.strokePath(p, PathStrokeType(1.0f));
+            g.strokePath(p, PathStrokeType(0.5f, PathStrokeType::curved, PathStrokeType::rounded));
         }
+    }
+
+    Colour RGBMeter::colourFreqByFiltering(AudioBuffer<float> &buffer)
+    {
+        // instantiate band buffers
+        AudioBuffer<float> lowBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+        AudioBuffer<float> midBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+        AudioBuffer<float> highBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+        lowBuffer = buffer;
+        midBuffer = buffer;
+
+        // instantiate blocks
+        auto lowBlock = dsp::AudioBlock<float>(lowBuffer);
+        auto midBlock = dsp::AudioBlock<float>(midBuffer);
+        auto highBlock = dsp::AudioBlock<float>(highBuffer);
+
+        // instantiate processing contexts
+        auto lowContext = dsp::ProcessContextReplacing<float>(lowBlock);
+        auto midContext = dsp::ProcessContextReplacing<float>(midBlock);
+        auto highContext = dsp::ProcessContextReplacing<float>(highBlock);
+
+        // process filters
+        LP.process(lowContext);
+        midAP.process(lowContext);
+
+        midHP.process(midContext);
+        highBuffer = midBuffer;
+        midLP.process(midContext);
+
+        HP.process(highContext);
+
+        Colour colour = freqToColour(lowBuffer, midBuffer, highBuffer);
+        return colour;
     }
 
     Colour RGBMeter::freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> &midBuffer, AudioBuffer<float> &highBuffer)
     {
-        // get RMS for each frequency band
-        auto lowRMS = lowBuffer.getMagnitude(0, lowBuffer.getNumSamples());
-        auto midRMS = midBuffer.getMagnitude(0, midBuffer.getNumSamples());
-        auto highRMS = highBuffer.getMagnitude(0, highBuffer.getNumSamples());
 
-        //        DBG(lowRMS << midRMS << highRMS);
+        // get highest magnitude for each frequency band
+        //                auto low = lowBuffer.getMagnitude(0, lowBuffer.getNumSamples());
+        //                auto mid = midBuffer.getMagnitude(0, midBuffer.getNumSamples());
+        //                auto high = highBuffer.getMagnitude(0, highBuffer.getNumSamples());
 
-        auto fullRMS = lowRMS + midRMS + highRMS;
+        // get RMS
+        auto low = lowBuffer.getRMSLevel(0, 0, lowBuffer.getNumSamples());
+        auto mid = midBuffer.getRMSLevel(0, 0, midBuffer.getNumSamples());
+        auto high = highBuffer.getRMSLevel(0, 0, highBuffer.getNumSamples());
+
+        auto total = low + mid + high;
 
         // normalize
-        if (fullRMS > 0.0f)
+        if (total > 0.0f)
         {
-            lowRMS /= fullRMS;
-            midRMS /= fullRMS;
-            highRMS /= fullRMS;
+            low /= total;
+            mid /= total;
+            high /= total;
         }
 
-        Colour colour = Colour(std::floor(lowRMS * 255), std::floor(midRMS * 255), std::floor(highRMS * 255));
+        // Scale low, mid, high by an equal factor such that none go higher than 1
+            float maxComponent = std::max({low, mid, high});
+            low /= maxComponent;
+            mid /= maxComponent;
+            high /= maxComponent;
+
+        Colour colour = Colour(std::floor(low * 255), std::floor(mid * 255), std::floor(high * 255));
 
         return colour;
+    }
+
+    Colour RGBMeter::colourFreqByFFT(AudioBuffer<float> &buffer)
+    {
+        //                colour = colourFreqByFFT(analysisAudioBuffer);
+
+        // Process frequency to colour
+        // buggy fft implementation
+        //                dsp::FFT fft(11); // 2^11 = 2048
+        //                std::vector<float> fftData(fftSize * 2);
+        //                for (int j = 0; j < fftSize; j++)
+        //                {
+        //                    fftData[j] = fftBuffer.get(j);
+        //                }
+        //
+        //                fft.performFrequencyOnlyForwardTransform(fftData.data());
+        //
+        //                auto low = 0.0f;
+        //                auto mid = 0.0f;
+        //                auto high = 0.0f;
+        //
+        //                const float binWidth = (float)(sampleRate / fftSize);
+        //                for (int j = 0; j < fftSize; ++j)
+        //                {
+        //
+        //
+        //                    auto freq = j * binWidth;
+        //                    auto mag = fftData[j];
+        //                    if (freq < 151)
+        //                    {
+        //                        low += mag;
+        //                    }
+        //                    else if (freq < 2000)
+        //                    {
+        //                        mid += mag;
+        //                    }
+        //                    else if (freq < 20000)
+        //                    {
+        //                        high += mag;
+        //                    }
+        //                }
+        //
+        //                auto total = low + mid + high;
+        //
+        //                low /= total;
+        //                mid /= total;
+        //                high /= total;
+        //
+        //                colour = Colour(std::floor(low * 255), std::floor(mid * 255), std::floor(high * 255));
     }
 
     void RGBMeter::timerCallback()

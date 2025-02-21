@@ -112,7 +112,7 @@ namespace juce
 
     private:
 
-        int displayLength = 15;  // in seconds
+        int displayLength = 16;  // in seconds
         int sampleRate = 44100; // temp hardcode
         int bufferLength = displayLength * sampleRate;
 

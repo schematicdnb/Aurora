@@ -24,26 +24,26 @@ namespace juce
 
         juce::dsp::ProcessSpec spec;
         spec.sampleRate = sampleRate;
-        spec.numChannels = 2;
+        spec.numChannels = 1;
 
         // intialize filter types
         LP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
         midLP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
-        midAP.setType(juce::dsp::LinkwitzRileyFilterType::allpass);
+//        midAP.setType(juce::dsp::LinkwitzRileyFilterType::allpass);
         midHP.setType(juce::dsp::LinkwitzRileyFilterType::highpass);
         HP.setType(juce::dsp::LinkwitzRileyFilterType::highpass);
 
         // Initialize crossover points
         LP.setCutoffFrequency(150.0f);
         midHP.setCutoffFrequency(150.0f);
-        midAP.setCutoffFrequency(2000.0f);
+//        midAP.setCutoffFrequency(2000.0f);
         midLP.setCutoffFrequency(2000.0f);
         HP.setCutoffFrequency(2000.0f);
 
         // prepare filters
         LP.prepare(spec);
         midLP.prepare(spec);
-        midAP.prepare(spec);
+//        midAP.prepare(spec);
         midHP.prepare(spec);
         HP.prepare(spec);
 
@@ -87,7 +87,8 @@ namespace juce
 
                 // get colour
                 auto analysisAudioBuffer = freqAnalysisBuffer.getBuffer();
-                 colour = colourFreqByFiltering(analysisAudioBuffer);
+                colour = colourFreqByFiltering(analysisAudioBuffer);
+//                colour = colourFreqByFiltering(chunkBuffer);
 //                colour = colourFreqByFFT(analysisAudioBuffer);
 
                 // add chunk to display buffer
@@ -95,6 +96,84 @@ namespace juce
                 chunkCounter = 0;
             }
         }
+    }
+
+
+    Colour RGBMeter::colourFreqByFiltering(AudioBuffer<float> &buffer)
+    {
+        // instantiate band buffers
+        AudioBuffer<float> lowBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+        AudioBuffer<float> midBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+        AudioBuffer<float> highBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+        lowBuffer.makeCopyOf(buffer);
+        midBuffer.makeCopyOf(buffer);
+        highBuffer.makeCopyOf(buffer);
+
+        // instantiate blocks
+        auto lowBlock = dsp::AudioBlock<float>(lowBuffer);
+        auto midBlock = dsp::AudioBlock<float>(midBuffer);
+        auto highBlock = dsp::AudioBlock<float>(highBuffer);
+
+        // instantiate processing contexts
+        auto lowContext = dsp::ProcessContextReplacing<float>(lowBlock);
+        auto midContext = dsp::ProcessContextReplacing<float>(midBlock);
+        auto highContext = dsp::ProcessContextReplacing<float>(highBlock);
+
+        // process filters
+        LP.process(lowContext);
+//        midAP.process(lowContext);
+
+        midHP.process(midContext);
+//        highBuffer = midBuffer;
+        midLP.process(midContext);
+
+        HP.process(highContext);
+
+        Colour colour = freqToColour(lowBuffer, midBuffer, highBuffer);
+        return colour;
+    }
+
+    Colour RGBMeter::freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> &midBuffer, AudioBuffer<float> &highBuffer)
+    {
+
+        // get highest magnitude for each frequency band
+//                        auto low = lowBuffer.getMagnitude(0, lowBuffer.getNumSamples());
+//                        auto mid = midBuffer.getMagnitude(0, midBuffer.getNumSamples());
+//                        auto high = highBuffer.getMagnitude(0, highBuffer.getNumSamples());
+
+        // get RMS
+        auto low = lowBuffer.getRMSLevel(0, 0, lowBuffer.getNumSamples());
+        auto mid = midBuffer.getRMSLevel(0, 0, midBuffer.getNumSamples());
+        auto high = highBuffer.getRMSLevel(0, 0, highBuffer.getNumSamples());
+        
+        DBG("lowRMS: " << low << " midRMS: " << mid << " highRMS: " << high);
+
+        auto total = low + mid + high;
+
+        // normalize
+        if (total > 0.0f)
+        {
+            low /= total;
+            mid /= total;
+            high /= total;
+        }
+        DBG("lowNormalized: " << low << " midNormalized: " << mid << " highNormalized: " << high);
+
+        // Scale low, mid, high by an equal factor such that none go higher than 1
+        float maxComponent = std::max({low, mid, high});
+        low /= maxComponent;
+        mid /= maxComponent;
+        high /= maxComponent;
+        
+        double r = std::floor(low * 255);
+        double g = std::floor(mid * 255);
+        double b = std::floor(high * 255);
+        
+        DBG("Red: " << r << " Green: " << g << " Blue: " << b);
+
+        Colour colour = Colour(r,g,b);
+
+        return colour;
     }
 
     void RGBMeter::paint(Graphics &g)
@@ -123,73 +202,6 @@ namespace juce
             g.setColour(colour);
             g.strokePath(p, PathStrokeType(0.5f, PathStrokeType::curved, PathStrokeType::rounded));
         }
-    }
-
-    Colour RGBMeter::colourFreqByFiltering(AudioBuffer<float> &buffer)
-    {
-        // instantiate band buffers
-        AudioBuffer<float> lowBuffer(buffer.getNumChannels(), buffer.getNumSamples());
-        AudioBuffer<float> midBuffer(buffer.getNumChannels(), buffer.getNumSamples());
-        AudioBuffer<float> highBuffer(buffer.getNumChannels(), buffer.getNumSamples());
-        lowBuffer = buffer;
-        midBuffer = buffer;
-
-        // instantiate blocks
-        auto lowBlock = dsp::AudioBlock<float>(lowBuffer);
-        auto midBlock = dsp::AudioBlock<float>(midBuffer);
-        auto highBlock = dsp::AudioBlock<float>(highBuffer);
-
-        // instantiate processing contexts
-        auto lowContext = dsp::ProcessContextReplacing<float>(lowBlock);
-        auto midContext = dsp::ProcessContextReplacing<float>(midBlock);
-        auto highContext = dsp::ProcessContextReplacing<float>(highBlock);
-
-        // process filters
-        LP.process(lowContext);
-        midAP.process(lowContext);
-
-        midHP.process(midContext);
-        highBuffer = midBuffer;
-        midLP.process(midContext);
-
-        HP.process(highContext);
-
-        Colour colour = freqToColour(lowBuffer, midBuffer, highBuffer);
-        return colour;
-    }
-
-    Colour RGBMeter::freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> &midBuffer, AudioBuffer<float> &highBuffer)
-    {
-
-        // get highest magnitude for each frequency band
-//                        auto low = lowBuffer.getMagnitude(0, lowBuffer.getNumSamples());
-//                        auto mid = midBuffer.getMagnitude(0, midBuffer.getNumSamples());
-//                        auto high = highBuffer.getMagnitude(0, highBuffer.getNumSamples());
-
-        // get RMS
-        auto low = lowBuffer.getRMSLevel(0, 0, lowBuffer.getNumSamples());
-        auto mid = midBuffer.getRMSLevel(0, 0, midBuffer.getNumSamples());
-        auto high = highBuffer.getRMSLevel(0, 0, highBuffer.getNumSamples());
-
-        auto total = low + mid + high;
-
-        // normalize
-        if (total > 0.0f)
-        {
-            low /= total;
-            mid /= total;
-            high /= total;
-        }
-
-        // Scale low, mid, high by an equal factor such that none go higher than 1
-        float maxComponent = std::max({low, mid, high});
-        low /= maxComponent;
-        mid /= maxComponent;
-        high /= maxComponent;
-
-        Colour colour = Colour(std::floor(low * 255), std::floor(mid * 255), std::floor(high * 255));
-
-        return colour;
     }
 
     Colour RGBMeter::colourFreqByFFT(AudioBuffer<float> &buffer)

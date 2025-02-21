@@ -21,8 +21,8 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
   // make components visible
   addAndMakeVisible(rgbMeter);
 
-  addAndMakeVisible(lowCrossoverSlider);
-  addAndMakeVisible(highCrossoverSlider);
+//  addAndMakeVisible(lowCrossoverSlider);
+//  addAndMakeVisible(highCrossoverSlider);
   addAndMakeVisible(lowEnableButton);
   addAndMakeVisible(midEnableButton);
   addAndMakeVisible(highEnableButton);
@@ -79,7 +79,7 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
   //   *audioProcessor.enableHigh = highEnableButton.getToggleState();
   // };
 
-  setSize(1280, 300);
+  setSize(1280, 150);
 }
 
 RGBMeterAudioProcessorEditor::~RGBMeterAudioProcessorEditor()
@@ -102,12 +102,12 @@ void RGBMeterAudioProcessorEditor::resized()
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
 
-  rgbMeter.setBounds(getLocalBounds().withSizeKeepingCentre(getWidth(), getHeight() * 0.33));
+  rgbMeter.setBounds(getLocalBounds().withSizeKeepingCentre(getWidth(), getHeight() * 0.8));
   avc.setBounds(rgbMeter.getX(), rgbMeter.getY() - rgbMeter.getHeight(), rgbMeter.getWidth(), rgbMeter.getHeight());
 
   lowCrossoverSlider.setBounds(10, 10, getWidth() / 2, 20);
   highCrossoverSlider.setBounds(10, 30, getWidth() / 2, 20);
-  lowEnableButton.setBounds(rgbMeter.getX(), rgbMeter.getY() + rgbMeter.getHeight() + 10, rgbMeter.getWidth() / 3, 20);
-  midEnableButton.setBounds(lowEnableButton.getX() + lowEnableButton.getWidth(), lowEnableButton.getY(), lowEnableButton.getWidth(), lowEnableButton.getHeight());
-  highEnableButton.setBounds(midEnableButton.getX() + lowEnableButton.getWidth(), lowEnableButton.getY(), lowEnableButton.getWidth(), lowEnableButton.getHeight());
+    lowEnableButton.setBounds(0, getHeight() - 20, getWidth() / 3, 20);
+midEnableButton.setBounds(lowEnableButton.getX() + lowEnableButton.getWidth(), lowEnableButton.getY(), lowEnableButton.getWidth(), lowEnableButton.getHeight());
+highEnableButton.setBounds(midEnableButton.getX() + lowEnableButton.getWidth(), lowEnableButton.getY(), lowEnableButton.getWidth(), lowEnableButton.getHeight());
 }

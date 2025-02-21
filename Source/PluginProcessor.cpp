@@ -226,19 +226,20 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
 
     HP.process(highContext);
 
-    //    buffer.clear();
-    //
-    //    // Combine the processed buffers back into the original buffer
-    //    for (int i = 0; i < 3; i++) {
-    //        auto band = std::vector<juce::AudioBuffer<float>>{lowBuffer, midBuffer, highBuffer}[i];
-    //        auto enabled = std::vector<juce::AudioParameterBool*>{enableLow, enableMid, enableHigh}[i];
-    //        if (enabled->get()) {
-    //            for (int channel = 0; channel < buffer.getNumChannels(); channel++) {
-    //                buffer.addFrom(channel, 0, band, channel, 0, band.getNumSamples());
-    //            }
-    //        }
-    //
-    //    }
+//    // Replace buffer with filtered audio
+//        buffer.clear();
+//    
+//        // Combine the processed buffers back into the original buffer
+//        for (int i = 0; i < 3; i++) {
+//            auto band = std::vector<juce::AudioBuffer<float>>{lowBuffer, midBuffer, highBuffer}[i];
+//            auto enabled = std::vector<juce::AudioParameterBool*>{enableLow, enableMid, enableHigh}[i];
+//            if (enabled->get()) {
+//                for (int channel = 0; channel < buffer.getNumChannels(); channel++) {
+//                    buffer.addFrom(channel, 0, band, channel, 0, band.getNumSamples());
+//                }
+//            }
+//    
+//        }
 
 //    rgbMeter.setBufferColour(freqToColour(lowBuffer, midBuffer, highBuffer));
 //

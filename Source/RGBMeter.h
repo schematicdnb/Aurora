@@ -109,6 +109,8 @@ namespace juce
         
         
         Colour colourFreqByFFT(AudioBuffer<float> &buffer);
+        
+        void applyWindowing(AudioBuffer<float> &buffer);
 
     private:
 
@@ -124,11 +126,15 @@ namespace juce
 
         int freqAnalysisSize = 2048;
         CircularBuffer<float> freqAnalysisBuffer{freqAnalysisSize};
+        AudioBuffer<float> windowedBuffer;
+//        int windowSize;
 
         CircularBuffer<std::tuple<Range<float>, Colour>> displayBuffer{0};
 
-        using Filter = juce::dsp::LinkwitzRileyFilter<float>;
+        using Filter = dsp::LinkwitzRileyFilter<float>;
         Filter LP, midLP, midAP, midHP, HP;
+        
+        dsp::IIR::Filter<float> lowPass;
 
         Colour colour;
     };

@@ -22,36 +22,44 @@ namespace juce
 
         startTimerHz(60);
 
-        juce::dsp::ProcessSpec spec;
+        dsp::ProcessSpec spec;
         spec.sampleRate = sampleRate;
-        spec.numChannels = 1;
+        spec.numChannels = 2;
+        
+//        lowPass.coefficients =
+        
+//        lowPass.coefficients = dsp::IIR::Coefficients<float>::makeLowPass(sampleRate, 150.0f);
 
         // intialize filter types
-        LP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
-        midLP.setType(juce::dsp::LinkwitzRileyFilterType::lowpass);
-//        midAP.setType(juce::dsp::LinkwitzRileyFilterType::allpass);
-        midHP.setType(juce::dsp::LinkwitzRileyFilterType::highpass);
-        HP.setType(juce::dsp::LinkwitzRileyFilterType::highpass);
+        LP.setType(dsp::LinkwitzRileyFilterType::lowpass);
+        midHP.setType(dsp::LinkwitzRileyFilterType::highpass);
+        midLP.setType(dsp::LinkwitzRileyFilterType::lowpass);
+        HP.setType(dsp::LinkwitzRileyFilterType::highpass);
 
         // Initialize crossover points
         LP.setCutoffFrequency(150.0f);
         midHP.setCutoffFrequency(150.0f);
-//        midAP.setCutoffFrequency(2000.0f);
         midLP.setCutoffFrequency(2000.0f);
         HP.setCutoffFrequency(2000.0f);
 
         // prepare filters
         LP.prepare(spec);
         midLP.prepare(spec);
-//        midAP.prepare(spec);
         midHP.prepare(spec);
         HP.prepare(spec);
-
-        //        startTimerHz(60);
+        
     }
 
     void RGBMeter::pushSamples(AudioBuffer<float> &buffer)
     {
+        
+//        DBG("Full signal RMS: " << buffer.getRMSLevel(0, 0, buffer.getNumSamples()));
+//        auto tempBlock = dsp::AudioBlock<float>(buffer);
+//        auto tempCtx = dsp::ProcessContextReplacing<float>(tempBlock);
+//        HP.process(tempCtx);
+//        DBG("Filtered RMS: " << buffer.getRMSLevel(0, 0, buffer.getNumSamples()));
+        
+        
         width = this->getWidth();
         if (!width)
         {
@@ -85,11 +93,12 @@ namespace juce
                 // get chunk level range
                 auto level = chunkBuffer.findMinMax(0, 0, chunkSize);
 
-                // get colour
+//                // get colour
                 auto analysisAudioBuffer = freqAnalysisBuffer.getBuffer();
                 colour = colourFreqByFiltering(analysisAudioBuffer);
+//                colour = colourFreqByFiltering(buffer);
 //                colour = colourFreqByFiltering(chunkBuffer);
-//                colour = colourFreqByFFT(analysisAudioBuffer);
+//                colour = colourFreqByFFT(chunkBuffer);
 
                 // add chunk to display buffer
                 displayBuffer.add(std::make_tuple(level, colour));
@@ -98,18 +107,36 @@ namespace juce
         }
     }
 
+    void RGBMeter::applyWindowing(AudioBuffer<float> &buffer) {
+        // create windowing function
+        dsp::WindowingFunction<float> windowFunction(buffer.getNumSamples(), dsp::WindowingFunction<float>::hann);
+        
+        // copy analysis samples to windowed buffer
+        windowedBuffer.makeCopyOf(buffer);
+        
+        // applying windowing
+        windowFunction.multiplyWithWindowingTable(windowedBuffer.getWritePointer(0), windowedBuffer.getNumSamples());
+    }
+
 
     Colour RGBMeter::colourFreqByFiltering(AudioBuffer<float> &buffer)
     {
+        
+        applyWindowing(buffer);
         // instantiate band buffers
         AudioBuffer<float> lowBuffer(buffer.getNumChannels(), buffer.getNumSamples());
         AudioBuffer<float> midBuffer(buffer.getNumChannels(), buffer.getNumSamples());
         AudioBuffer<float> highBuffer(buffer.getNumChannels(), buffer.getNumSamples());
-        lowBuffer.makeCopyOf(buffer);
-        midBuffer.makeCopyOf(buffer);
-        highBuffer.makeCopyOf(buffer);
+//        lowBuffer.makeCopyOf(buffer);
+//        midBuffer.makeCopyOf(buffer);
+//        highBuffer.makeCopyOf(buffer);
+        
+        // DEBUG PROCESSING
+        lowBuffer.makeCopyOf(windowedBuffer);
+        midBuffer.makeCopyOf(windowedBuffer);
+        highBuffer.makeCopyOf(windowedBuffer);
 
-        // instantiate blocks
+//         instantiate blocks
         auto lowBlock = dsp::AudioBlock<float>(lowBuffer);
         auto midBlock = dsp::AudioBlock<float>(midBuffer);
         auto highBlock = dsp::AudioBlock<float>(highBuffer);
@@ -118,15 +145,16 @@ namespace juce
         auto lowContext = dsp::ProcessContextReplacing<float>(lowBlock);
         auto midContext = dsp::ProcessContextReplacing<float>(midBlock);
         auto highContext = dsp::ProcessContextReplacing<float>(highBlock);
+        
+        // reset filter states
+//        LP.reset();
+    
+        
 
         // process filters
         LP.process(lowContext);
-//        midAP.process(lowContext);
-
         midHP.process(midContext);
-//        highBuffer = midBuffer;
         midLP.process(midContext);
-
         HP.process(highContext);
 
         Colour colour = freqToColour(lowBuffer, midBuffer, highBuffer);
@@ -134,19 +162,37 @@ namespace juce
     }
 
     Colour RGBMeter::freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> &midBuffer, AudioBuffer<float> &highBuffer)
-    {
+     {
 
-        // get highest magnitude for each frequency band
-//                        auto low = lowBuffer.getMagnitude(0, lowBuffer.getNumSamples());
-//                        auto mid = midBuffer.getMagnitude(0, midBuffer.getNumSamples());
-//                        auto high = highBuffer.getMagnitude(0, highBuffer.getNumSamples());
+//         get highest magnitude for each frequency band
+        auto lowMag = lowBuffer.getMagnitude(0, lowBuffer.getNumSamples());
+        auto midMag = midBuffer.getMagnitude(0, midBuffer.getNumSamples());
+        auto highMag = highBuffer.getMagnitude(0, highBuffer.getNumSamples());
+        
+        DBG("lowMag: " << lowMag << " midMag: " << midMag << " highMag: " << highMag);
 
         // get RMS
         auto low = lowBuffer.getRMSLevel(0, 0, lowBuffer.getNumSamples());
         auto mid = midBuffer.getRMSLevel(0, 0, midBuffer.getNumSamples());
         auto high = highBuffer.getRMSLevel(0, 0, highBuffer.getNumSamples());
-        
+
         DBG("lowRMS: " << low << " midRMS: " << mid << " highRMS: " << high);
+
+        // emphasize highs
+        //        high *= 3;
+        
+
+        // Convert RMS values to decibels
+        double lowDb = Decibels::gainToDecibels(low);
+        double midDb = Decibels::gainToDecibels(mid);
+        double highDb = Decibels::gainToDecibels(high);
+        
+        // DEBUGGING: use magnitude instead of RMS
+//        low = lowMag;
+//        mid = midMag;
+//        high = highMag;
+
+        DBG("lowDb: " << lowDb << " midDb: " << midDb << " highDb: " << highDb);
 
         auto total = low + mid + high;
 
@@ -157,21 +203,20 @@ namespace juce
             mid /= total;
             high /= total;
         }
-        DBG("lowNormalized: " << low << " midNormalized: " << mid << " highNormalized: " << high);
 
         // Scale low, mid, high by an equal factor such that none go higher than 1
         float maxComponent = std::max({low, mid, high});
         low /= maxComponent;
         mid /= maxComponent;
         high /= maxComponent;
-        
+
         double r = std::floor(low * 255);
         double g = std::floor(mid * 255);
         double b = std::floor(high * 255);
-        
+
         DBG("Red: " << r << " Green: " << g << " Blue: " << b);
 
-        Colour colour = Colour(r,g,b);
+        Colour colour = Colour(r, g, b);
 
         return colour;
     }
@@ -206,14 +251,16 @@ namespace juce
 
     Colour RGBMeter::colourFreqByFFT(AudioBuffer<float> &buffer)
     {
-//        const int fftSize = 2048;
+        applyWindowing(buffer);
+        
+        //        const int fftSize = 2048;
         dsp::FFT fft(log2(freqAnalysisSize));
         std::vector<float> fftData(freqAnalysisSize * 2, 0.0f);
 
         // Copy buffer data to fftData
-        for (int i = 0; i < buffer.getNumSamples(); ++i)
+        for (int i = 0; i < windowedBuffer.getNumSamples(); ++i)
         {
-            fftData[i] = buffer.getSample(0, i);
+            fftData[i] = windowedBuffer.getSample(0, i);
         }
 
         // Perform FFT

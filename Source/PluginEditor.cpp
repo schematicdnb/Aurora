@@ -21,8 +21,8 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
   // make components visible
   addAndMakeVisible(rgbMeter);
 
-//  addAndMakeVisible(lowCrossoverSlider);
-//  addAndMakeVisible(highCrossoverSlider);
+  addAndMakeVisible(lowCrossoverSlider);
+  addAndMakeVisible(highCrossoverSlider);
   addAndMakeVisible(lowEnableButton);
   addAndMakeVisible(midEnableButton);
   addAndMakeVisible(highEnableButton);

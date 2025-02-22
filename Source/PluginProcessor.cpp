@@ -199,32 +199,32 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
 
     //=====================================================
 
-    // instantiate band buffers
-    juce::AudioBuffer<float> lowBuffer(buffer.getNumChannels(), buffer.getNumSamples());
-    juce::AudioBuffer<float> midBuffer(buffer.getNumChannels(), buffer.getNumSamples());
-    juce::AudioBuffer<float> highBuffer(buffer.getNumChannels(), buffer.getNumSamples());
-    lowBuffer = buffer;
-    midBuffer = buffer;
-
-    // instantiate blocks
-    auto lowBlock = juce::dsp::AudioBlock<float>(lowBuffer);
-    auto midBlock = juce::dsp::AudioBlock<float>(midBuffer);
-    auto highBlock = juce::dsp::AudioBlock<float>(highBuffer);
-
-    // instantiate processing contexts
-    auto lowContext = juce::dsp::ProcessContextReplacing<float>(lowBlock);
-    auto midContext = juce::dsp::ProcessContextReplacing<float>(midBlock);
-    auto highContext = juce::dsp::ProcessContextReplacing<float>(highBlock);
-
-    // process filters
-    LP.process(lowContext);
-    midAP.process(lowContext);
-
-    midHP.process(midContext);
-    highBuffer = midBuffer;
-    midLP.process(midContext);
-
-    HP.process(highContext);
+//    // instantiate band buffers
+//    juce::AudioBuffer<float> lowBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+//    juce::AudioBuffer<float> midBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+//    juce::AudioBuffer<float> highBuffer(buffer.getNumChannels(), buffer.getNumSamples());
+//    lowBuffer = buffer;
+//    midBuffer = buffer;
+//
+//    // instantiate blocks
+//    auto lowBlock = juce::dsp::AudioBlock<float>(lowBuffer);
+//    auto midBlock = juce::dsp::AudioBlock<float>(midBuffer);
+//    auto highBlock = juce::dsp::AudioBlock<float>(highBuffer);
+//
+//    // instantiate processing contexts
+//    auto lowContext = juce::dsp::ProcessContextReplacing<float>(lowBlock);
+//    auto midContext = juce::dsp::ProcessContextReplacing<float>(midBlock);
+//    auto highContext = juce::dsp::ProcessContextReplacing<float>(highBlock);
+//
+//    // process filters
+//    LP.process(lowContext);
+//    midAP.process(lowContext);
+//
+//    midHP.process(midContext);
+//    highBuffer = midBuffer;
+//    midLP.process(midContext);
+//
+//    HP.process(highContext);
 
 //    // Replace buffer with filtered audio
 //        buffer.clear();
@@ -246,7 +246,12 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
 //    rgbMeter.pushBuffer(buffer);
 //    avc.pushBuffer(buffer);
     
+//    auto tempBlock = juce::dsp::AudioBlock<float>(buffer);
+//    auto tempCtx = juce::dsp::ProcessContextReplacing<float>(tempBlock);
+//    LP.process(tempCtx);
+    
     rgbMeter.pushSamples(buffer);
+
 }
 
 juce::Colour RGBMeterAudioProcessor::freqToColour(juce::AudioBuffer<float> &lowBuffer, juce::AudioBuffer<float> &midBuffer, juce::AudioBuffer<float> &highBuffer)

@@ -144,26 +144,12 @@ namespace juce
     Colour RGBMeter::freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> &midBuffer, AudioBuffer<float> &highBuffer)
     {
 
-        //         get highest magnitude for each frequency band
-                auto lowMag = lowBuffer.getMagnitude(0, lowBuffer.getNumSamples());
-                auto midMag = midBuffer.getMagnitude(0, midBuffer.getNumSamples());
-                auto highMag = highBuffer.getMagnitude(0, highBuffer.getNumSamples());
-                DBG("lowMag: " << lowMag << " midMag: " << midMag << " highMag: " << highMag);
-
         // get RMS
         auto low = lowBuffer.getRMSLevel(0, 0, lowBuffer.getNumSamples());
         auto mid = midBuffer.getRMSLevel(0, 0, midBuffer.getNumSamples());
         auto high = highBuffer.getRMSLevel(0, 0, highBuffer.getNumSamples());
-
-        // DEBUGGING: use magnitude instead of RMS
-        //        low = lowMag;
-        //        mid = midMag;
-        //        high = highMag;
-
-        //        DBG("lowDb: " << lowDb << " midDb: " << midDb << " highDb: " << highDb);
-
-        //        high *= 2;
-        //        mid *= 0.8;
+        
+        mid *= 0.8;
 
         auto total = low + mid + high;
 

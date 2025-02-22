@@ -14,21 +14,15 @@ namespace juce
     RGBMeter::RGBMeter()
     {
 
-        // initialize with full array of default values
-        // for (int i = 0; i < displayLength * sampleRate; i++)
-        // {
-        //     waveformSamples.add(std::make_tuple(0.0f, Colour(Colours::black)));
-        // }
-
         startTimerHz(60);
 
         dsp::ProcessSpec spec;
         spec.sampleRate = sampleRate;
         spec.numChannels = 2;
-        
-//        lowPass.coefficients =
-        
-//        lowPass.coefficients = dsp::IIR::Coefficients<float>::makeLowPass(sampleRate, 150.0f);
+
+        LP2.setType(dsp::LinkwitzRileyFilterType::lowpass);
+        LP2.setCutoffFrequency(150.0f);
+        LP2.prepare(spec);
 
         // intialize filter types
         LP.setType(dsp::LinkwitzRileyFilterType::lowpass);
@@ -47,19 +41,13 @@ namespace juce
         midLP.prepare(spec);
         midHP.prepare(spec);
         HP.prepare(spec);
-        
     }
 
     void RGBMeter::pushSamples(AudioBuffer<float> &buffer)
     {
-        
-//        DBG("Full signal RMS: " << buffer.getRMSLevel(0, 0, buffer.getNumSamples()));
-//        auto tempBlock = dsp::AudioBlock<float>(buffer);
-//        auto tempCtx = dsp::ProcessContextReplacing<float>(tempBlock);
-//        HP.process(tempCtx);
-//        DBG("Filtered RMS: " << buffer.getRMSLevel(0, 0, buffer.getNumSamples()));
-        
-        
+
+        mainOutputBuffer = &buffer;
+
         width = this->getWidth();
         if (!width)
         {
@@ -74,7 +62,7 @@ namespace juce
             {
                 displayBuffer.add(std::make_tuple(Range<float>(0.0f, 0.0f), Colour(Colours::white)));
             }
-            chunkSize = std::floor(bufferLength / width); // temp hardcode
+            chunkSize = std::floor(bufferLength / width);
             chunkCounter = 0;
             chunkBuffer = AudioBuffer<float>(1, chunkSize);
         }
@@ -82,7 +70,7 @@ namespace juce
         // Process the incoming buffer
         for (int i = 0; i < buffer.getNumSamples(); i++)
         {
-            auto sample = buffer.getSample(0, 0);
+            auto sample = buffer.getSample(0, i);
             //            waveformSamples.add(std::make_tuple(sample, colour));
             chunkBuffer.setSample(0, chunkCounter, sample);
             freqAnalysisBuffer.add(sample);
@@ -93,12 +81,9 @@ namespace juce
                 // get chunk level range
                 auto level = chunkBuffer.findMinMax(0, 0, chunkSize);
 
-//                // get colour
+                //                // get colour
                 auto analysisAudioBuffer = freqAnalysisBuffer.getBuffer();
-                colour = colourFreqByFiltering(analysisAudioBuffer);
-//                colour = colourFreqByFiltering(buffer);
-//                colour = colourFreqByFiltering(chunkBuffer);
-//                colour = colourFreqByFFT(chunkBuffer);
+                                colour = colourFreqByFiltering(analysisAudioBuffer);
 
                 // add chunk to display buffer
                 displayBuffer.add(std::make_tuple(level, colour));
@@ -107,36 +92,36 @@ namespace juce
         }
     }
 
-    void RGBMeter::applyWindowing(AudioBuffer<float> &buffer) {
+    void RGBMeter::applyWindowing(AudioBuffer<float> &buffer)
+    {
         // create windowing function
-        dsp::WindowingFunction<float> windowFunction(buffer.getNumSamples(), dsp::WindowingFunction<float>::hann);
-        
+        dsp::WindowingFunction<float> windowFunction(buffer.getNumSamples(), dsp::WindowingFunction<float>::blackmanHarris);
+
         // copy analysis samples to windowed buffer
         windowedBuffer.makeCopyOf(buffer);
-        
+
         // applying windowing
         windowFunction.multiplyWithWindowingTable(windowedBuffer.getWritePointer(0), windowedBuffer.getNumSamples());
     }
 
-
     Colour RGBMeter::colourFreqByFiltering(AudioBuffer<float> &buffer)
     {
-        
+
         applyWindowing(buffer);
         // instantiate band buffers
         AudioBuffer<float> lowBuffer(buffer.getNumChannels(), buffer.getNumSamples());
         AudioBuffer<float> midBuffer(buffer.getNumChannels(), buffer.getNumSamples());
         AudioBuffer<float> highBuffer(buffer.getNumChannels(), buffer.getNumSamples());
-//        lowBuffer.makeCopyOf(buffer);
-//        midBuffer.makeCopyOf(buffer);
-//        highBuffer.makeCopyOf(buffer);
-        
+        //        lowBuffer.makeCopyOf(buffer);
+        //        midBuffer.makeCopyOf(buffer);
+        //        highBuffer.makeCopyOf(buffer);
+
         // DEBUG PROCESSING
         lowBuffer.makeCopyOf(windowedBuffer);
         midBuffer.makeCopyOf(windowedBuffer);
         highBuffer.makeCopyOf(windowedBuffer);
 
-//         instantiate blocks
+        //         instantiate blocks
         auto lowBlock = dsp::AudioBlock<float>(lowBuffer);
         auto midBlock = dsp::AudioBlock<float>(midBuffer);
         auto highBlock = dsp::AudioBlock<float>(highBuffer);
@@ -145,11 +130,6 @@ namespace juce
         auto lowContext = dsp::ProcessContextReplacing<float>(lowBlock);
         auto midContext = dsp::ProcessContextReplacing<float>(midBlock);
         auto highContext = dsp::ProcessContextReplacing<float>(highBlock);
-        
-        // reset filter states
-//        LP.reset();
-    
-        
 
         // process filters
         LP.process(lowContext);
@@ -162,37 +142,28 @@ namespace juce
     }
 
     Colour RGBMeter::freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> &midBuffer, AudioBuffer<float> &highBuffer)
-     {
+    {
 
-//         get highest magnitude for each frequency band
-        auto lowMag = lowBuffer.getMagnitude(0, lowBuffer.getNumSamples());
-        auto midMag = midBuffer.getMagnitude(0, midBuffer.getNumSamples());
-        auto highMag = highBuffer.getMagnitude(0, highBuffer.getNumSamples());
-        
-        DBG("lowMag: " << lowMag << " midMag: " << midMag << " highMag: " << highMag);
+        //         get highest magnitude for each frequency band
+                auto lowMag = lowBuffer.getMagnitude(0, lowBuffer.getNumSamples());
+                auto midMag = midBuffer.getMagnitude(0, midBuffer.getNumSamples());
+                auto highMag = highBuffer.getMagnitude(0, highBuffer.getNumSamples());
+                DBG("lowMag: " << lowMag << " midMag: " << midMag << " highMag: " << highMag);
 
         // get RMS
         auto low = lowBuffer.getRMSLevel(0, 0, lowBuffer.getNumSamples());
         auto mid = midBuffer.getRMSLevel(0, 0, midBuffer.getNumSamples());
         auto high = highBuffer.getRMSLevel(0, 0, highBuffer.getNumSamples());
 
-        DBG("lowRMS: " << low << " midRMS: " << mid << " highRMS: " << high);
-
-        // emphasize highs
-        //        high *= 3;
-        
-
-        // Convert RMS values to decibels
-        double lowDb = Decibels::gainToDecibels(low);
-        double midDb = Decibels::gainToDecibels(mid);
-        double highDb = Decibels::gainToDecibels(high);
-        
         // DEBUGGING: use magnitude instead of RMS
-//        low = lowMag;
-//        mid = midMag;
-//        high = highMag;
+        //        low = lowMag;
+        //        mid = midMag;
+        //        high = highMag;
 
-        DBG("lowDb: " << lowDb << " midDb: " << midDb << " highDb: " << highDb);
+        //        DBG("lowDb: " << lowDb << " midDb: " << midDb << " highDb: " << highDb);
+
+        //        high *= 2;
+        //        mid *= 0.8;
 
         auto total = low + mid + high;
 
@@ -214,7 +185,7 @@ namespace juce
         double g = std::floor(mid * 255);
         double b = std::floor(high * 255);
 
-        DBG("Red: " << r << " Green: " << g << " Blue: " << b);
+        //        DBG("Red: " << r << " Green: " << g << " Blue: " << b);
 
         Colour colour = Colour(r, g, b);
 
@@ -252,7 +223,7 @@ namespace juce
     Colour RGBMeter::colourFreqByFFT(AudioBuffer<float> &buffer)
     {
         applyWindowing(buffer);
-        
+
         //        const int fftSize = 2048;
         dsp::FFT fft(log2(freqAnalysisSize));
         std::vector<float> fftData(freqAnalysisSize * 2, 0.0f);

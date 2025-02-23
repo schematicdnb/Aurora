@@ -20,6 +20,8 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
 
   // make components visible
   addAndMakeVisible(rgbMeter);
+    
+
 
 //  addAndMakeVisible(lowCrossoverSlider);
 //  addAndMakeVisible(highCrossoverSlider);
@@ -27,38 +29,38 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
 //  addAndMakeVisible(midEnableButton);
 //  addAndMakeVisible(highEnableButton);
 
-  // set slider ranges
-  auto lowRange = new juce::NormalisableRange<double>(20, 999, 1, 1);
-  auto highRange = new juce::NormalisableRange<double>(1000, 20000, 1, 1);
-  lowCrossoverSlider.setNormalisableRange(*lowRange);
-  highCrossoverSlider.setNormalisableRange(*highRange);
-
-  // set slider attachments
-  lowCrossoverAttachment.reset(new SliderAttachment(apvts, "lowCrossover", lowCrossoverSlider));
-  highCrossoverAttachment.reset(new SliderAttachment(apvts, "highCrossover", highCrossoverSlider));
-
-  // set button attachments
-  lowButtonAttachment.reset(new ButtonAttachment(apvts, "enableLow", lowEnableButton));
-  midButtonAttachment.reset(new ButtonAttachment(apvts, "enableMid", midEnableButton));
-  highButtonAttachment.reset(new ButtonAttachment(apvts, "enableHigh", highEnableButton));
-
-  // set button text
-  lowEnableButton.setButtonText("Low");
-  midEnableButton.setButtonText("Mid");
-  highEnableButton.setButtonText("High");
-
-  // set button toggle and colours
-  lowEnableButton.setClickingTogglesState(true);
-  lowEnableButton.setColour(juce::TextButton::ColourIds::buttonOnColourId, juce::Colours::green);
-  lowEnableButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::grey);
-
-  midEnableButton.setClickingTogglesState(true);
-  midEnableButton.setColour(juce::TextButton::ColourIds::buttonOnColourId, juce::Colours::green);
-  midEnableButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::grey);
-
-  highEnableButton.setClickingTogglesState(true);
-  highEnableButton.setColour(juce::TextButton::ColourIds::buttonOnColourId, juce::Colours::green);
-  highEnableButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::grey);
+//  // set slider ranges
+//  auto lowRange = new juce::NormalisableRange<double>(20, 999, 1, 1);
+//  auto highRange = new juce::NormalisableRange<double>(1000, 20000, 1, 1);
+//  lowCrossoverSlider.setNormalisableRange(*lowRange);
+//  highCrossoverSlider.setNormalisableRange(*highRange);
+//
+//  // set slider attachments
+//  lowCrossoverAttachment.reset(new SliderAttachment(apvts, "lowCrossover", lowCrossoverSlider));
+//  highCrossoverAttachment.reset(new SliderAttachment(apvts, "highCrossover", highCrossoverSlider));
+//
+//  // set button attachments
+//  lowButtonAttachment.reset(new ButtonAttachment(apvts, "enableLow", lowEnableButton));
+//  midButtonAttachment.reset(new ButtonAttachment(apvts, "enableMid", midEnableButton));
+//  highButtonAttachment.reset(new ButtonAttachment(apvts, "enableHigh", highEnableButton));
+//
+//  // set button text
+//  lowEnableButton.setButtonText("Low");
+//  midEnableButton.setButtonText("Mid");
+//  highEnableButton.setButtonText("High");
+//
+//  // set button toggle and colours
+//  lowEnableButton.setClickingTogglesState(true);
+//  lowEnableButton.setColour(juce::TextButton::ColourIds::buttonOnColourId, juce::Colours::green);
+//  lowEnableButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::grey);
+//
+//  midEnableButton.setClickingTogglesState(true);
+//  midEnableButton.setColour(juce::TextButton::ColourIds::buttonOnColourId, juce::Colours::green);
+//  midEnableButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::grey);
+//
+//  highEnableButton.setClickingTogglesState(true);
+//  highEnableButton.setColour(juce::TextButton::ColourIds::buttonOnColourId, juce::Colours::green);
+//  highEnableButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::grey);
 
   // initialize values from parameters
   //    lowCrossoverSlider.setValue(audioProcessor.lowCrossover->get());
@@ -93,8 +95,6 @@ void RGBMeterAudioProcessorEditor::paint(juce::Graphics &g)
     g.fillAll(juce::Colours::black);
 
   g.setColour(juce::Colours::white);
-  //    g.setFont (juce::FontOptions (15.0f));
-  //    g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void RGBMeterAudioProcessorEditor::resized()
@@ -103,7 +103,6 @@ void RGBMeterAudioProcessorEditor::resized()
   // subcomponents in your editor..
 
   rgbMeter.setBounds(getLocalBounds().withSizeKeepingCentre(getWidth(), getHeight() * 0.8));
-  avc.setBounds(rgbMeter.getX(), rgbMeter.getY() - rgbMeter.getHeight(), rgbMeter.getWidth(), rgbMeter.getHeight());
 
   lowCrossoverSlider.setBounds(10, 10, getWidth() / 2, 20);
   highCrossoverSlider.setBounds(10, 30, getWidth() / 2, 20);

@@ -101,6 +101,7 @@ namespace juce
     public:
         RGBMeter();
 
+        void prepare(dsp::ProcessSpec spec);
         void pushSamples(AudioBuffer<float> &buffer);
         void paint(Graphics &g) override;
         void timerCallback() override;
@@ -115,8 +116,8 @@ namespace juce
     private:
 
         int displayLength = 16;  // in seconds
-        int sampleRate = 44100; // temp hardcode
-        int bufferLength = displayLength * sampleRate;
+        int sampleRate;
+        int bufferLength;
 
         int width = 0;
 

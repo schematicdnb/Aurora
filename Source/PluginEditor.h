@@ -37,7 +37,6 @@ private:
     
     juce::AudioProcessorValueTreeState& apvts = audioProcessor.apvts;
     juce::RGBMeter& rgbMeter = audioProcessor.rgbMeter;
-    juce::AudioVisualiserComponent& avc = audioProcessor.avc;
     
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
     typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;

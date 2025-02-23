@@ -16,11 +16,6 @@ namespace juce
 
         startTimerHz(60);
 
-        dsp::ProcessSpec spec;
-        spec.sampleRate = sampleRate;
-        spec.numChannels = 2;
-
-
         // intialize filter types
         LP.setType(dsp::LinkwitzRileyFilterType::lowpass);
         midHP.setType(dsp::LinkwitzRileyFilterType::highpass);
@@ -34,6 +29,16 @@ namespace juce
         HP.setCutoffFrequency(highCrossover);
 
         // prepare filters
+//        LP.prepare(spec);
+//        midLP.prepare(spec);
+//        midHP.prepare(spec);
+//        HP.prepare(spec);
+    }
+
+    void RGBMeter::prepare(dsp::ProcessSpec spec) {
+        sampleRate = spec.sampleRate;
+        bufferLength = displayLength * sampleRate;
+        
         LP.prepare(spec);
         midLP.prepare(spec);
         midHP.prepare(spec);

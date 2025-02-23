@@ -20,9 +20,6 @@ namespace juce
         spec.sampleRate = sampleRate;
         spec.numChannels = 2;
 
-        LP2.setType(dsp::LinkwitzRileyFilterType::lowpass);
-        LP2.setCutoffFrequency(150.0f);
-        LP2.prepare(spec);
 
         // intialize filter types
         LP.setType(dsp::LinkwitzRileyFilterType::lowpass);
@@ -31,10 +28,10 @@ namespace juce
         HP.setType(dsp::LinkwitzRileyFilterType::highpass);
 
         // Initialize crossover points
-        LP.setCutoffFrequency(150.0f);
-        midHP.setCutoffFrequency(150.0f);
-        midLP.setCutoffFrequency(2000.0f);
-        HP.setCutoffFrequency(2000.0f);
+        LP.setCutoffFrequency(lowCrossover);
+        midHP.setCutoffFrequency(lowCrossover);
+        midLP.setCutoffFrequency(highCrossover);
+        HP.setCutoffFrequency(highCrossover);
 
         // prepare filters
         LP.prepare(spec);
@@ -71,7 +68,7 @@ namespace juce
         for (int i = 0; i < buffer.getNumSamples(); i++)
         {
             auto sample = buffer.getSample(0, i);
-            //            waveformSamples.add(std::make_tuple(sample, colour));
+            // add sample to chunk and analysis buffers
             chunkBuffer.setSample(0, chunkCounter, sample);
             freqAnalysisBuffer.add(sample);
 
@@ -81,7 +78,7 @@ namespace juce
                 // get chunk level range
                 auto level = chunkBuffer.findMinMax(0, 0, chunkSize);
 
-                //                // get colour
+                // get colour
                 auto analysisAudioBuffer = freqAnalysisBuffer.getBuffer();
                                 colour = colourFreqByFiltering(analysisAudioBuffer);
 
@@ -107,19 +104,19 @@ namespace juce
     Colour RGBMeter::colourFreqByFiltering(AudioBuffer<float> &buffer)
     {
 
-        applyWindowing(buffer);
+//        applyWindowing(buffer);
         // instantiate band buffers
         AudioBuffer<float> lowBuffer(buffer.getNumChannels(), buffer.getNumSamples());
         AudioBuffer<float> midBuffer(buffer.getNumChannels(), buffer.getNumSamples());
         AudioBuffer<float> highBuffer(buffer.getNumChannels(), buffer.getNumSamples());
-        //        lowBuffer.makeCopyOf(buffer);
-        //        midBuffer.makeCopyOf(buffer);
-        //        highBuffer.makeCopyOf(buffer);
+        lowBuffer.makeCopyOf(buffer);
+        midBuffer.makeCopyOf(buffer);
+        highBuffer.makeCopyOf(buffer);
 
         // DEBUG PROCESSING
-        lowBuffer.makeCopyOf(windowedBuffer);
-        midBuffer.makeCopyOf(windowedBuffer);
-        highBuffer.makeCopyOf(windowedBuffer);
+//        lowBuffer.makeCopyOf(windowedBuffer);
+//        midBuffer.makeCopyOf(windowedBuffer);
+//        highBuffer.makeCopyOf(windowedBuffer);
 
         //         instantiate blocks
         auto lowBlock = dsp::AudioBlock<float>(lowBuffer);
@@ -149,7 +146,7 @@ namespace juce
         auto mid = midBuffer.getRMSLevel(0, 0, midBuffer.getNumSamples());
         auto high = highBuffer.getRMSLevel(0, 0, highBuffer.getNumSamples());
         
-        mid *= 0.8;
+        mid *= 0.6;
 
         auto total = low + mid + high;
 

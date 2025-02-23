@@ -132,8 +132,8 @@ namespace juce
 
         using Filter = dsp::LinkwitzRileyFilter<float>;
         Filter LP, midLP, midAP, midHP, HP;
-        
-        Filter LP2;
+        float lowCrossover = 150.0f;
+        float highCrossover = 2000.0f;
 
         Colour colour = Colours::white;
         

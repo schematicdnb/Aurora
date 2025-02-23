@@ -21,11 +21,11 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
   // make components visible
   addAndMakeVisible(rgbMeter);
 
-  addAndMakeVisible(lowCrossoverSlider);
-  addAndMakeVisible(highCrossoverSlider);
-  addAndMakeVisible(lowEnableButton);
-  addAndMakeVisible(midEnableButton);
-  addAndMakeVisible(highEnableButton);
+//  addAndMakeVisible(lowCrossoverSlider);
+//  addAndMakeVisible(highCrossoverSlider);
+//  addAndMakeVisible(lowEnableButton);
+//  addAndMakeVisible(midEnableButton);
+//  addAndMakeVisible(highEnableButton);
 
   // set slider ranges
   auto lowRange = new juce::NormalisableRange<double>(20, 999, 1, 1);
@@ -79,7 +79,7 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
   //   *audioProcessor.enableHigh = highEnableButton.getToggleState();
   // };
 
-  setSize(1280, 150);
+  setSize(1280, 120);
 }
 
 RGBMeterAudioProcessorEditor::~RGBMeterAudioProcessorEditor()

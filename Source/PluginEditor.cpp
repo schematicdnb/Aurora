@@ -22,7 +22,7 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
     addAndMakeVisible(rgbMeter);
     
     // make window resizable
-//    setResizable(true, true);
+    setResizable(true, true);
     
     
 

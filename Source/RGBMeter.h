@@ -31,7 +31,7 @@ namespace juce
 
         AudioBuffer<T> getBuffer() const
         {
-            AudioBuffer<T> audioBuffer(1, size());
+            AudioBuffer<T> audioBuffer(1, (int)size());
             if (empty())
             {
                 return audioBuffer;
@@ -45,6 +45,14 @@ namespace juce
             }
 
             return audioBuffer;
+        }
+
+        void resize(size_t size)
+        {
+            buffer.resize(size);
+            head = 0;
+            tail = head;
+            full = true;
         }
 
         T get(size_t index) const
@@ -64,6 +72,7 @@ namespace juce
             }
             buffer[(tail + index) % buffer.size()] = item;
         }
+        
 
         size_t size() const
         {
@@ -108,17 +117,15 @@ namespace juce
         void timerCallback() override;
         Colour freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> &midBuffer, AudioBuffer<float> &highBuffer);
         Colour colourFreqByFiltering(AudioBuffer<float> &buffer);
-        
-        
+
         Colour colourFreqByFFT(AudioBuffer<float> &buffer);
-        
+
         void applyWindowing(AudioBuffer<float> &buffer);
-        
+
         void resized() override;
 
     private:
-
-        int displayLength = 16;  // in seconds
+        int displayLength = 16; // in seconds
         int sampleRate;
         int bufferLength;
 
@@ -140,7 +147,7 @@ namespace juce
         float highCrossover = 2000.0f;
 
         Colour colour = Colours::white;
-        
+
         AudioBuffer<float> *mainOutputBuffer;
     };
     ;

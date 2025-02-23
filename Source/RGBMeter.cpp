@@ -45,41 +45,22 @@ namespace juce
         width = this->getWidth();
         if (displayBuffer.size() != width)
         {
-            displayBuffer = CircularBuffer<std::tuple<Range<float>, Colour>>(width);
-            for (int i = 0; i < width; i++)
-            {
-                displayBuffer.add(std::make_tuple(Range<float>(0.0f, 0.0f), Colour(Colours::white)));
-            }
+            displayBuffer.resize(width);
         }
         chunkSize = std::floor(bufferLength / width);
         chunkCounter = 0;
         chunkBuffer = AudioBuffer<float>(1, chunkSize);
-        DBG(chunkSize);
     }
 
     void RGBMeter::pushSamples(AudioBuffer<float> &buffer)
     {
 
         mainOutputBuffer = &buffer;
-
-        width = this->getWidth();
         if (!width)
         {
             return;
         } // do nothing, no point in processing buffer if can't be displayed
-
-        // initialize/reset the display buffer if it does not match the display width
-        if (displayBuffer.size() != width)
-        {
-            displayBuffer = CircularBuffer<std::tuple<Range<float>, Colour>>(width);
-            for (int i = 0; i < width; i++)
-            {
-                displayBuffer.add(std::make_tuple(Range<float>(0.0f, 0.0f), Colour(Colours::white)));
-            }
-            chunkSize = std::floor(bufferLength / width);
-            chunkCounter = 0;
-            chunkBuffer = AudioBuffer<float>(1, chunkSize);
-        }
+ 
 
         // Process the incoming buffer
         for (int i = 0; i < buffer.getNumSamples(); i++)
@@ -185,8 +166,6 @@ namespace juce
         double g = std::floor(mid * 255);
         double b = std::floor(high * 255);
 
-        //        DBG("Red: " << r << " Green: " << g << " Blue: " << b);
-
         Colour colour = Colour(r, g, b);
 
         return colour;
@@ -281,18 +260,6 @@ namespace juce
 
     void RGBMeter::resized()
     {
-        // static const int resizeDelay = 100;
-        // static int resizeCounter = 0;
-
-        // if (resizeCounter > 0)
-        // {
-        //     return;
-        // }
-
-        // resizeCounter = resizeDelay;
-
-        // startTimerHz(60);
-
         updateState();
     }
 

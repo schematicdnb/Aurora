@@ -13,7 +13,6 @@ namespace juce
 
     RGBMeter::RGBMeter()
     {
-
         startTimerHz(60);
 
         // intialize filter types
@@ -28,21 +27,34 @@ namespace juce
         midLP.setCutoffFrequency(highCrossover);
         HP.setCutoffFrequency(highCrossover);
 
-        // prepare filters
-//        LP.prepare(spec);
-//        midLP.prepare(spec);
-//        midHP.prepare(spec);
-//        HP.prepare(spec);
     }
 
-    void RGBMeter::prepare(dsp::ProcessSpec spec) {
+    void RGBMeter::prepare(dsp::ProcessSpec spec)
+    {
         sampleRate = spec.sampleRate;
-        bufferLength = displayLength * sampleRate;
-        
+        updateState();
+
         LP.prepare(spec);
         midLP.prepare(spec);
         midHP.prepare(spec);
         HP.prepare(spec);
+    }
+
+    void RGBMeter::updateState() {
+        bufferLength = displayLength * sampleRate;
+        width = this->getWidth();
+        if (displayBuffer.size() != width)
+        {
+            displayBuffer = CircularBuffer<std::tuple<Range<float>, Colour>>(width);
+            for (int i = 0; i < width; i++)
+            {
+                displayBuffer.add(std::make_tuple(Range<float>(0.0f, 0.0f), Colour(Colours::white)));
+            }
+        }
+        chunkSize = std::floor(bufferLength / width);
+        chunkCounter = 0;
+        chunkBuffer = AudioBuffer<float>(1, chunkSize);
+        DBG(chunkSize);
     }
 
     void RGBMeter::pushSamples(AudioBuffer<float> &buffer)
@@ -85,7 +97,7 @@ namespace juce
 
                 // get colour
                 auto analysisAudioBuffer = freqAnalysisBuffer.getBuffer();
-                                colour = colourFreqByFiltering(analysisAudioBuffer);
+                colour = colourFreqByFiltering(analysisAudioBuffer);
 
                 // add chunk to display buffer
                 displayBuffer.add(std::make_tuple(level, colour));
@@ -109,7 +121,7 @@ namespace juce
     Colour RGBMeter::colourFreqByFiltering(AudioBuffer<float> &buffer)
     {
 
-//        applyWindowing(buffer);
+        //        applyWindowing(buffer);
         // instantiate band buffers
         AudioBuffer<float> lowBuffer(buffer.getNumChannels(), buffer.getNumSamples());
         AudioBuffer<float> midBuffer(buffer.getNumChannels(), buffer.getNumSamples());
@@ -119,9 +131,9 @@ namespace juce
         highBuffer.makeCopyOf(buffer);
 
         // DEBUG PROCESSING
-//        lowBuffer.makeCopyOf(windowedBuffer);
-//        midBuffer.makeCopyOf(windowedBuffer);
-//        highBuffer.makeCopyOf(windowedBuffer);
+        //        lowBuffer.makeCopyOf(windowedBuffer);
+        //        midBuffer.makeCopyOf(windowedBuffer);
+        //        highBuffer.makeCopyOf(windowedBuffer);
 
         //         instantiate blocks
         auto lowBlock = dsp::AudioBlock<float>(lowBuffer);
@@ -150,7 +162,7 @@ namespace juce
         auto low = lowBuffer.getRMSLevel(0, 0, lowBuffer.getNumSamples());
         auto mid = midBuffer.getRMSLevel(0, 0, midBuffer.getNumSamples());
         auto high = highBuffer.getRMSLevel(0, 0, highBuffer.getNumSamples());
-        
+
         mid *= 0.6;
 
         auto total = low + mid + high;
@@ -265,6 +277,23 @@ namespace juce
         Colour colour = Colour(std::floor(low * 255), std::floor(mid * 255), std::floor(high * 255));
 
         return colour;
+    }
+
+    void RGBMeter::resized()
+    {
+        // static const int resizeDelay = 100;
+        // static int resizeCounter = 0;
+
+        // if (resizeCounter > 0)
+        // {
+        //     return;
+        // }
+
+        // resizeCounter = resizeDelay;
+
+        // startTimerHz(60);
+
+        updateState();
     }
 
     void RGBMeter::timerCallback()

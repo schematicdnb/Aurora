@@ -18,8 +18,12 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
 
 //  addAndMakeVisible(avc);
 
-  // make components visible
-  addAndMakeVisible(rgbMeter);
+    // make components visible
+    addAndMakeVisible(rgbMeter);
+    
+    // make window resizable
+//    setResizable(true, true);
+    
     
 
 

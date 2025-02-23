@@ -102,6 +102,7 @@ namespace juce
         RGBMeter();
 
         void prepare(dsp::ProcessSpec spec);
+        void updateState();
         void pushSamples(AudioBuffer<float> &buffer);
         void paint(Graphics &g) override;
         void timerCallback() override;
@@ -112,6 +113,8 @@ namespace juce
         Colour colourFreqByFFT(AudioBuffer<float> &buffer);
         
         void applyWindowing(AudioBuffer<float> &buffer);
+        
+        void resized() override;
 
     private:
 

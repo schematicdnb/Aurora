@@ -15,7 +15,7 @@
 /**
  */
 
-class RGBMeterAudioProcessor : public juce::AudioProcessor, juce::AudioProcessorValueTreeState::Listener
+class RGBMeterAudioProcessor : public juce::AudioProcessor
 {
 public:
     //==============================================================================
@@ -61,24 +61,11 @@ public:
     static APVTS::ParameterLayout createParameterLayout();
 
     APVTS apvts{*this, nullptr, "Parameters", createParameterLayout()};
-    
-    void parameterChanged(const juce::String &parameterID, float newValue) override;
 
     
-
 private:
     
-//    AudioParameterInt *historyLength{nullptr};
 
-//    juce::AudioParameterFloat *lowCrossover{nullptr};
-//    juce::AudioParameterFloat *highCrossover{nullptr};
-//    
-//    juce::AudioParameterBool *enableLow{nullptr};
-//    juce::AudioParameterBool *enableMid{nullptr};
-//    juce::AudioParameterBool *enableHigh{nullptr};
-    
-    // juce::Colour colour;
-    // std::array<juce::AudioBuffer<float>, 2> filterBuffers;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RGBMeterAudioProcessor)
 };

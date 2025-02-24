@@ -23,42 +23,10 @@ RGBMeterAudioProcessor::RGBMeterAudioProcessor()
       rgbMeter()
 #endif
 {
-
-    // initialize parameters
-//    historyLength = dynamic_cast<AudioParameterInt*>(apvts.getParameter("historyLength"));
-//    jassert(historyLength != nullptr);
-    
-    // initialize crossovers params
-//    lowCrossover = dynamic_cast<juce::AudioParameterFloat *>(apvts.getParameter("lowCrossover"));
-//    jassert(lowCrossover != nullptr);
-//
-//    highCrossover = dynamic_cast<juce::AudioParameterFloat *>(apvts.getParameter("highCrossover"));
-//    jassert(highCrossover != nullptr);
-//
-//    // intialize enable/bypass params
-//    enableLow = dynamic_cast<juce::AudioParameterBool *>(apvts.getParameter("enableLow"));
-//    jassert(enableLow != nullptr);
-//    enableMid = dynamic_cast<juce::AudioParameterBool *>(apvts.getParameter("enableMid"));
-//    jassert(enableMid != nullptr);
-//    enableHigh = dynamic_cast<juce::AudioParameterBool *>(apvts.getParameter("enableHigh"));
-//    jassert(enableHigh != nullptr);
-//
-//    // initialize parameter listeners
-//    apvts.addParameterListener("lowCrossover", this);
-//    apvts.addParameterListener("highCrossover", this);
-
-    // Initialize crossover points
-//    LP.setCutoffFrequency(lowCrossover->get());
-//    midHP.setCutoffFrequency(lowCrossover->get());
-//    midAP.setCutoffFrequency(highCrossover->get());
-//    midLP.setCutoffFrequency(highCrossover->get());
-//    HP.setCutoffFrequency(highCrossover->get());
 }
 
 RGBMeterAudioProcessor::~RGBMeterAudioProcessor()
 {
-//    apvts.removeParameterListener("lowCrossover", this);
-//    apvts.removeParameterListener("highCrossover", this);
 }
 
 //==============================================================================
@@ -190,8 +158,6 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
 
 }
 
-
-
 //==============================================================================
 bool RGBMeterAudioProcessor::hasEditor() const
 {
@@ -233,50 +199,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout RGBMeterAudioProcessor::crea
     
     params.add(std::make_unique<AudioParameterInt>(ParameterID("historyLength", 1), "History Length", 1, 20, 16));
 
-    auto gainRange = std::make_unique<NormalisableRange<float>>(-24.0f, 24.0f, 1.0f, 0.1f);
+    auto gainRange = std::make_unique<NormalisableRange<float>>(-24.0f, 24.0f, 0.1f);
     params.add(std::make_unique<AudioParameterFloat>(ParameterID("gain", 1), "Gain", *gainRange, 0.0f));
-    
-
-    
-    
-    
-    
-//    auto lowCrossoverRange = std::make_unique<juce::NormalisableRange<float>>(20.0f, 999.0f, 1.0f, 1.0f);
-//    auto highCrossoverRange = std::make_unique<juce::NormalisableRange<float>>(1000.0f, 20000.0f, 1.0f, 1.0f);
-
-//    params.add(std::make_unique<juce::AudioParameterFloat>(
-//        juce::ParameterID("lowCrossover", 1),
-//        "Low Crossover",
-//        *lowCrossoverRange,
-//        150.0f));
-//
-//    params.add(std::make_unique<juce::AudioParameterFloat>(
-//        juce::ParameterID("highCrossover", 1),
-//        "High Crossover",
-//        *highCrossoverRange,
-//        2000.0f));
-//
-//    params.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID("enableLow", 1), "Enable Low", true));
-//    params.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID("enableMid", 1), "Enable Mid", true));
-//    params.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID("enableHigh", 1), "Enable High", true));
 
     return params;
-}
-
-void RGBMeterAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue)
-{
-
-//    if (parameterID == "lowCrossover")
-//    {
-//        LP.setCutoffFrequency(lowCrossover->get());
-//        midHP.setCutoffFrequency(lowCrossover->get());
-//    }
-//    else if (parameterID == "highCrossover")
-//    {
-//        midAP.setCutoffFrequency(highCrossover->get());
-//        midLP.setCutoffFrequency(highCrossover->get());
-//        HP.setCutoffFrequency(highCrossover->get());
-//    }
 }
 
 //==============================================================================

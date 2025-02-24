@@ -67,13 +67,15 @@ public:
     
 
 private:
-
-    juce::AudioParameterFloat *lowCrossover{nullptr};
-    juce::AudioParameterFloat *highCrossover{nullptr};
     
-    juce::AudioParameterBool *enableLow{nullptr};
-    juce::AudioParameterBool *enableMid{nullptr};
-    juce::AudioParameterBool *enableHigh{nullptr};
+//    AudioParameterInt *historyLength{nullptr};
+
+//    juce::AudioParameterFloat *lowCrossover{nullptr};
+//    juce::AudioParameterFloat *highCrossover{nullptr};
+//    
+//    juce::AudioParameterBool *enableLow{nullptr};
+//    juce::AudioParameterBool *enableMid{nullptr};
+//    juce::AudioParameterBool *enableHigh{nullptr};
     
     // juce::Colour colour;
     // std::array<juce::AudioBuffer<float>, 2> filterBuffers;

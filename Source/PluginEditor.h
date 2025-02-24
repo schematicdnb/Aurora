@@ -29,20 +29,26 @@ private:
     // access the processor object that created it.
     RGBMeterAudioProcessor& audioProcessor;
     
-    juce::Slider lowCrossoverSlider;
-    juce::Slider highCrossoverSlider;
-    juce::TextButton lowEnableButton;
-    juce::TextButton midEnableButton;
-    juce::TextButton highEnableButton;
+    Slider historySlider;
+    Slider gainSlider;
     
-    juce::AudioProcessorValueTreeState& apvts = audioProcessor.apvts;
-    juce::RGBMeter& rgbMeter = audioProcessor.rgbMeter;
     
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
     typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
     
-    std::unique_ptr<SliderAttachment> lowCrossoverAttachment, highCrossoverAttachment;
-    std::unique_ptr<ButtonAttachment> lowButtonAttachment, midButtonAttachment, highButtonAttachment;
+    std::unique_ptr<SliderAttachment> historySliderAttachment, gainSliderAttachment;
+    
+//    juce::Slider lowCrossoverSlider;
+//    juce::Slider highCrossoverSlider;
+//    juce::TextButton lowEnableButton;
+//    juce::TextButton midEnableButton;
+//    juce::TextButton highEnableButton;
+    
+    juce::AudioProcessorValueTreeState& apvts = audioProcessor.apvts;
+    juce::RGBMeter& rgbMeter = audioProcessor.rgbMeter;
+    
+//    std::unique_ptr<SliderAttachment> lowCrossoverAttachment, highCrossoverAttachment;
+//    std::unique_ptr<ButtonAttachment> lowButtonAttachment, midButtonAttachment, highButtonAttachment;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RGBMeterAudioProcessorEditor)
 };

@@ -17,16 +17,34 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
   // editor's size to whatever you need it to be.
 
 //  addAndMakeVisible(avc);
-
-    // make components visible
-    addAndMakeVisible(rgbMeter);
     
     // make window resizable
     setResizable(true, true);
-    
-    
 
-
+    // make components visible
+    addAndMakeVisible(rgbMeter);
+    addAndMakeVisible(historySlider);
+    addAndMakeVisible(gainSlider);
+    
+    // attach parameters to sliders
+    historySliderAttachment.reset(new SliderAttachment(apvts, "historyLength", historySlider));
+    gainSliderAttachment.reset(new SliderAttachment(apvts, "gain", gainSlider));
+    
+    // initialize GUI values
+    historySlider.setValue(rgbMeter.getHistoryLength());
+    gainSlider.setValue(rgbMeter.getGain());
+    
+    // set update functions
+    historySlider.onValueChange = [this]() {
+        rgbMeter.setHistoryLength(historySlider.getValue());
+        rgbMeter.updateState();
+    };
+    
+    gainSlider.onValueChange = [this]() {
+//        auto gainDB = gainSlider.getValue() / 2;
+        rgbMeter.setGain(Decibels::decibelsToGain(gainSlider.getValue() / 2));
+    };
+    
 //  addAndMakeVisible(lowCrossoverSlider);
 //  addAndMakeVisible(highCrossoverSlider);
 //  addAndMakeVisible(lowEnableButton);
@@ -106,11 +124,14 @@ void RGBMeterAudioProcessorEditor::resized()
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
 
-  rgbMeter.setBounds(getLocalBounds().withSizeKeepingCentre(getWidth(), getHeight() * 0.8));
+    rgbMeter.setBounds(getLocalBounds().withSizeKeepingCentre(getWidth(), getHeight() - 20));
+    historySlider.setBounds(0, 0, 200, 20);
+    gainSlider.setBounds(0, 25, 200, 20);
 
-  lowCrossoverSlider.setBounds(10, 10, getWidth() / 2, 20);
-  highCrossoverSlider.setBounds(10, 30, getWidth() / 2, 20);
-    lowEnableButton.setBounds(0, getHeight() - 20, getWidth() / 3, 20);
-midEnableButton.setBounds(lowEnableButton.getX() + lowEnableButton.getWidth(), lowEnableButton.getY(), lowEnableButton.getWidth(), lowEnableButton.getHeight());
-highEnableButton.setBounds(midEnableButton.getX() + lowEnableButton.getWidth(), lowEnableButton.getY(), lowEnableButton.getWidth(), lowEnableButton.getHeight());
+
+//  lowCrossoverSlider.setBounds(10, 10, getWidth() / 2, 20);
+//  highCrossoverSlider.setBounds(10, 30, getWidth() / 2, 20);
+//    lowEnableButton.setBounds(0, getHeight() - 20, getWidth() / 3, 20);
+//midEnableButton.setBounds(lowEnableButton.getX() + lowEnableButton.getWidth(), lowEnableButton.getY(), lowEnableButton.getWidth(), lowEnableButton.getHeight());
+//highEnableButton.setBounds(midEnableButton.getX() + lowEnableButton.getWidth(), lowEnableButton.getY(), lowEnableButton.getWidth(), lowEnableButton.getHeight());
 }

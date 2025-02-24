@@ -123,9 +123,13 @@ namespace juce
         void applyWindowing(AudioBuffer<float> &buffer);
 
         void resized() override;
+        int getHistoryLength();
+        void setHistoryLength(int length);
+        float getGain();
+        void setGain(float gain);
 
     private:
-        int displayLength = 16; // in seconds
+        int historyLength = 16; // in seconds
         int sampleRate;
         int bufferLength;
 
@@ -145,6 +149,8 @@ namespace juce
         Filter LP, midLP, midAP, midHP, HP;
         float lowCrossover = 150.0f;
         float highCrossover = 2000.0f;
+        
+        float gain;
 
         Colour colour = Colours::white;
 

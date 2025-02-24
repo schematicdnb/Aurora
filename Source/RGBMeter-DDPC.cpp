@@ -41,7 +41,7 @@ namespace juce
     }
 
     void RGBMeter::updateState() {
-        bufferLength = historyLength * sampleRate;
+        bufferLength = displayLength * sampleRate;
         width = this->getWidth();
         if (width) {
             if (displayBuffer.size() != width)
@@ -52,7 +52,6 @@ namespace juce
             chunkCounter = 0;
             chunkBuffer = AudioBuffer<float>(1, chunkSize);
         }
-
     }
 
     void RGBMeter::pushSamples(AudioBuffer<float> &buffer)
@@ -187,10 +186,10 @@ namespace juce
             auto range = std::get<0>(tuple);
             auto colour = std::get<1>(tuple);
             auto min = range.getStart();
-            auto max = range.getEnd() * gain;
+            auto max = range.getEnd();
 
-            auto y1 = jmap(min * gain, -1.0f, 1.0f, (float)this->getHeight(), 0.0f);
-            auto y2 = jmap(max * gain, -1.0f, 1.0f, (float)this->getHeight(), 0.0f);
+            auto y1 = jmap(min, -1.0f, 1.0f, (float)this->getHeight(), 0.0f);
+            auto y2 = jmap(max, -1.0f, 1.0f, (float)this->getHeight(), 0.0f);
 
             Path p;
             p.startNewSubPath(i, y1);
@@ -264,19 +263,6 @@ namespace juce
     void RGBMeter::resized()
     {
         updateState();
-    }
-
-    int RGBMeter::getHistoryLength() {
-        return historyLength;
-    }
-    void RGBMeter::setHistoryLength(int length) {
-        historyLength = length;
-    }
-    float RGBMeter::getGain() {
-        return gain;
-    }
-    void RGBMeter::setGain(float gain) {
-        this->gain = gain;
     }
 
     void RGBMeter::timerCallback()

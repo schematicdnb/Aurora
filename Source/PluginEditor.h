@@ -29,7 +29,7 @@ private:
     // access the processor object that created it.
     RGBMeterAudioProcessor& audioProcessor;
     
-    Slider historySlider();
+    Slider historySlider;
     Slider gainSlider;
     
     

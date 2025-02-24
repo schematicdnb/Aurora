@@ -150,7 +150,7 @@ namespace juce
         float lowCrossover = 150.0f;
         float highCrossover = 2000.0f;
         
-        float gain;
+        float gain = 1;
 
         Colour colour = Colours::white;
 

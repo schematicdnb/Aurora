@@ -43,13 +43,16 @@ namespace juce
     void RGBMeter::updateState() {
         bufferLength = displayLength * sampleRate;
         width = this->getWidth();
-        if (displayBuffer.size() != width)
-        {
-            displayBuffer.resize(width);
+        if (width) {
+            if (displayBuffer.size() != width)
+            {
+                displayBuffer.resize(width);
+            }
+            chunkSize = std::floor(bufferLength / width);
+            chunkCounter = 0;
+            chunkBuffer = AudioBuffer<float>(1, chunkSize);
         }
-        chunkSize = std::floor(bufferLength / width);
-        chunkCounter = 0;
-        chunkBuffer = AudioBuffer<float>(1, chunkSize);
+
     }
 
     void RGBMeter::pushSamples(AudioBuffer<float> &buffer)

@@ -44,8 +44,8 @@ private:
 //    juce::TextButton midEnableButton;
 //    juce::TextButton highEnableButton;
     
-    juce::AudioProcessorValueTreeState& apvts = audioProcessor.apvts;
-    juce::RGBMeter& rgbMeter = audioProcessor.rgbMeter;
+    juce::AudioProcessorValueTreeState &apvts = audioProcessor.apvts;
+    juce::RGBMeter &rgbMeter = audioProcessor.rgbMeter;
     
 //    std::unique_ptr<SliderAttachment> lowCrossoverAttachment, highCrossoverAttachment;
 //    std::unique_ptr<ButtonAttachment> lowButtonAttachment, midButtonAttachment, highButtonAttachment;

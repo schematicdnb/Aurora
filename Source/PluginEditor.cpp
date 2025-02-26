@@ -15,8 +15,8 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
+    
 
-//  addAndMakeVisible(avc);
     
     // make window resizable
     setResizable(true, true);
@@ -39,12 +39,6 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
     addAndMakeVisible(historySlider);
     addAndMakeVisible(gainSlider);
     
-
-    
-    // initialize GUI values
-//    historySlider.setValue(rgbMeter.getHistoryLength());
-//    gainSlider.setValue(rgbMeter.getGain());
-    
     // set update functions
     historySlider.onValueChange = [this]() {
         rgbMeter.setHistoryLength(historySlider.getValue());
@@ -52,9 +46,16 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
     };
     
     gainSlider.onValueChange = [this]() {
-//        auto gainDB = gainSlider.getValue() / 2;
-        rgbMeter.setGain(Decibels::decibelsToGain(gainSlider.getValue() / 2));
+        rgbMeter.setGain(gainSlider.getValue());
     };
+    
+    setSize(audioProcessor.getEditorWidth(), audioProcessor.getEditorHeight());
+    
+    // initialize processor values
+    rgbMeter.setHistoryLength(historySlider.getValue());
+    rgbMeter.setGain(gainSlider.getValue());
+//    historySlider.setValue(rgbMeter.getHistoryLength());
+//    gainSlider.setValue(rgbMeter.getGain());
     
 //  addAndMakeVisible(lowCrossoverSlider);
 //  addAndMakeVisible(highCrossoverSlider);
@@ -114,7 +115,7 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
   //   *audioProcessor.enableHigh = highEnableButton.getToggleState();
   // };
 
-  setSize(1280, 150);
+
 }
 
 RGBMeterAudioProcessorEditor::~RGBMeterAudioProcessorEditor()
@@ -135,8 +136,9 @@ void RGBMeterAudioProcessorEditor::resized()
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
     
+    audioProcessor.setEditorSize(getWidth(), getHeight());
     auto margin = 25;
-
+    
     rgbMeter.setBounds(getLocalBounds().withSizeKeepingCentre(getWidth(), getHeight() - margin));
     
     historySlider.setBounds(margin, getHeight() / 2 - historySlider.getHeight() / 2, historySlider.getWidth(), historySlider.getHeight());

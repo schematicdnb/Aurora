@@ -55,12 +55,16 @@ public:
     void getStateInformation(juce::MemoryBlock &destData) override;
     void setStateInformation(const void *data, int sizeInBytes) override;
 
-    juce::RGBMeter rgbMeter;
+    juce::RGBMeter rgbMeter = RGBMeter();
 
     using APVTS = juce::AudioProcessorValueTreeState;
     static APVTS::ParameterLayout createParameterLayout();
 
     APVTS apvts{*this, nullptr, "Parameters", createParameterLayout()};
+    
+    int getEditorWidth();
+    int getEditorHeight();
+    void setEditorSize(int width, int height);
 
     
 private:

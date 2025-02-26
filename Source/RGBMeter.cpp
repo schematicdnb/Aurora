@@ -198,7 +198,7 @@ namespace juce
             p.closeSubPath();
 
             g.setColour(colour);
-            g.strokePath(p, PathStrokeType(0.5f, PathStrokeType::curved, PathStrokeType::rounded));
+            g.strokePath(p, PathStrokeType(1.0f, PathStrokeType::curved, PathStrokeType::butt));
         }
     }
 
@@ -276,7 +276,7 @@ namespace juce
         return gain;
     }
     void RGBMeter::setGain(float gain) {
-        this->gain = gain;
+        this->gain = Decibels::decibelsToGain(gain / 2);
     }
 
     void RGBMeter::timerCallback()

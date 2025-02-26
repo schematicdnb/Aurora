@@ -19,8 +19,7 @@ RGBMeterAudioProcessor::RGBMeterAudioProcessor()
 #endif
                          .withOutput("Output", juce::AudioChannelSet::stereo(), true)
 #endif
-                         ),
-      rgbMeter()
+                         )
 #endif
 {
 }
@@ -197,7 +196,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout RGBMeterAudioProcessor::crea
 {
     APVTS::ParameterLayout params;
     
-    params.add(std::make_unique<AudioParameterInt>(ParameterID("historyLength", 1), "History Length", 1, 20, 16));
+    params.add(std::make_unique<AudioParameterInt>(ParameterID("historyLength", 1), "History Length", 1, 20, 10));
 
     auto gainRange = std::make_unique<NormalisableRange<float>>(-24.0f, 24.0f, 0.1f);
     params.add(std::make_unique<AudioParameterFloat>(ParameterID("gain", 1), "Gain", *gainRange, 0.0f));
@@ -205,6 +204,21 @@ juce::AudioProcessorValueTreeState::ParameterLayout RGBMeterAudioProcessor::crea
     return params;
 }
 
+int RGBMeterAudioProcessor::getEditorWidth() {
+    auto size = apvts.state.getOrCreateChildWithName("size", nullptr);
+    return size.getProperty("width", 640);
+}
+
+int RGBMeterAudioProcessor::getEditorHeight() {
+    auto size = apvts.state.getOrCreateChildWithName("size", nullptr);
+    return size.getProperty("height", 100);
+}
+
+void RGBMeterAudioProcessor::setEditorSize(int width, int height) {
+    auto size = apvts.state.getOrCreateChildWithName("size", nullptr);
+    size.setProperty("width", width, nullptr);
+    size.setProperty("height", height, nullptr);
+}
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor *JUCE_CALLTYPE createPluginFilter()

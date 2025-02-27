@@ -129,7 +129,7 @@ namespace juce
         void setGain(float gain);
 
     private:
-        int historyLength = 6; // in seconds
+        int historyLength; // in seconds
         int sampleRate;
         int bufferLength;
 

@@ -198,7 +198,8 @@ namespace juce
             p.closeSubPath();
 
             g.setColour(colour);
-            g.strokePath(p, PathStrokeType(1.0f, PathStrokeType::curved, PathStrokeType::butt));
+            g.strokePath(p, PathStrokeType(1.0f));
+//            g.strokePath(p, PathStrokeType(1.0f, PathStrokeType::curved, PathStrokeType::butt));
         }
     }
 

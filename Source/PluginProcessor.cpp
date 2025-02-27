@@ -22,6 +22,7 @@ RGBMeterAudioProcessor::RGBMeterAudioProcessor()
                          )
 #endif
 {
+    rgbMeter.setHistoryLength(static_cast<int>(*apvts.getRawParameterValue("historyLength")));
 }
 
 RGBMeterAudioProcessor::~RGBMeterAudioProcessor()
@@ -96,6 +97,7 @@ void RGBMeterAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBloc
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
 
+
     juce::dsp::ProcessSpec spec;
     spec.sampleRate = sampleRate;
     spec.maximumBlockSize = samplesPerBlock;
@@ -152,8 +154,9 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
 
     //=====================================================
 
-    
     rgbMeter.pushSamples(buffer);
+    
+    
 
 }
 
@@ -190,6 +193,7 @@ void RGBMeterAudioProcessor::setStateInformation(const void *data, int sizeInByt
     {
         apvts.replaceState(tree);
     }
+    rgbMeter.setHistoryLength(static_cast<int>(*apvts.getRawParameterValue("historyLength")));
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout RGBMeterAudioProcessor::createParameterLayout()
@@ -219,6 +223,7 @@ void RGBMeterAudioProcessor::setEditorSize(int width, int height) {
     size.setProperty("width", width, nullptr);
     size.setProperty("height", height, nullptr);
 }
+
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor *JUCE_CALLTYPE createPluginFilter()

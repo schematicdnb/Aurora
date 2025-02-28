@@ -127,6 +127,7 @@ namespace juce
         void setHistoryLength(int length);
         float getGain();
         void setGain(float gain);
+        
 
     private:
         int historyLength; // in seconds
@@ -150,7 +151,7 @@ namespace juce
         float lowCrossover = 150.0f;
         float highCrossover = 2000.0f;
         
-        float gain = 1;
+        float gain;
 
         Colour colour = Colours::white;
 

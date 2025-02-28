@@ -65,6 +65,8 @@ public:
     int getEditorWidth();
     int getEditorHeight();
     void setEditorSize(int width, int height);
+    
+    void initDSP();
 
     
 private:

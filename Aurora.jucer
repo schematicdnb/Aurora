@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="SEhXmX" name="RGB Meter" projectType="audioplug" useAppConfig="0"
-              jucerFormatVersion="1" version="0.0.1" companyName="Schematic Sound"
+<JUCERPROJECT id="SEhXmX" name="Aurora" projectType="audioplug" useAppConfig="0"
+              jucerFormatVersion="1" version="0.1" companyName="Schematic Sound"
               pluginFormats="buildAU,buildVST3" pluginManufacturerCode="SSND"
-              pluginCode="Rgbm" pluginDesc="Oscilloscope with frequency colours"
-              pluginVST3Category="Analyzer,Tools" pluginVSTCategory="kPlugCategAnalysis">
-  <MAINGROUP id="prN6Wm" name="RGB Meter">
+              pluginDesc="Oscilloscope with frequency colours" pluginVST3Category="Analyzer,Tools"
+              pluginVSTCategory="kPlugCategAnalysis" pluginCode="Arra">
+  <MAINGROUP id="prN6Wm" name="Aurora">
     <GROUP id="{DD6A068D-F127-8FC1-7C6B-391B81BC2A60}" name="Source">
       <FILE id="tjRzxw" name="RGBMeter.cpp" compile="1" resource="0" file="Source/RGBMeter.cpp"/>
       <FILE id="Htv3gv" name="RGBMeter.h" compile="0" resource="0" file="Source/RGBMeter.h"
@@ -39,8 +39,8 @@
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="RGB Meter"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="RGB Meter"/>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>

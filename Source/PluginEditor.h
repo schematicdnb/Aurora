@@ -14,11 +14,11 @@
 //==============================================================================
 /**
 */
-class RGBMeterAudioProcessorEditor  : public juce::AudioProcessorEditor
+class AuroraAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:
-    RGBMeterAudioProcessorEditor (RGBMeterAudioProcessor&);
-    ~RGBMeterAudioProcessorEditor() override;
+    AuroraAudioProcessorEditor (AuroraAudioProcessor&);
+    ~AuroraAudioProcessorEditor() override;
 
     //==============================================================================
     void paint (juce::Graphics&) override;
@@ -27,7 +27,7 @@ public:
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    RGBMeterAudioProcessor& audioProcessor;
+    AuroraAudioProcessor& audioProcessor;
     
     Slider historySlider;
     Label historyLabel;
@@ -56,5 +56,5 @@ private:
 //    std::unique_ptr<SliderAttachment> lowCrossoverAttachment, highCrossoverAttachment;
 //    std::unique_ptr<ButtonAttachment> lowButtonAttachment, midButtonAttachment, highButtonAttachment;
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RGBMeterAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuroraAudioProcessorEditor)
 };

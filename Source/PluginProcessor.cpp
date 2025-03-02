@@ -10,7 +10,7 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-RGBMeterAudioProcessor::RGBMeterAudioProcessor()
+AuroraAudioProcessor::AuroraAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
     : AudioProcessor(BusesProperties()
 #if !JucePlugin_IsMidiEffect
@@ -25,11 +25,11 @@ RGBMeterAudioProcessor::RGBMeterAudioProcessor()
     initDSP();
 }
 
-RGBMeterAudioProcessor::~RGBMeterAudioProcessor()
+AuroraAudioProcessor::~AuroraAudioProcessor()
 {
 }
 
-void RGBMeterAudioProcessor::initDSP() {
+void AuroraAudioProcessor::initDSP() {
     // set History Length
     rgbMeter.setHistoryLength(static_cast<int>(*apvts.getRawParameterValue("historyLength")));
     
@@ -38,12 +38,12 @@ void RGBMeterAudioProcessor::initDSP() {
 }
 
 //==============================================================================
-const juce::String RGBMeterAudioProcessor::getName() const
+const juce::String AuroraAudioProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-bool RGBMeterAudioProcessor::acceptsMidi() const
+bool AuroraAudioProcessor::acceptsMidi() const
 {
 #if JucePlugin_WantsMidiInput
     return true;
@@ -52,7 +52,7 @@ bool RGBMeterAudioProcessor::acceptsMidi() const
 #endif
 }
 
-bool RGBMeterAudioProcessor::producesMidi() const
+bool AuroraAudioProcessor::producesMidi() const
 {
 #if JucePlugin_ProducesMidiOutput
     return true;
@@ -61,7 +61,7 @@ bool RGBMeterAudioProcessor::producesMidi() const
 #endif
 }
 
-bool RGBMeterAudioProcessor::isMidiEffect() const
+bool AuroraAudioProcessor::isMidiEffect() const
 {
 #if JucePlugin_IsMidiEffect
     return true;
@@ -70,37 +70,37 @@ bool RGBMeterAudioProcessor::isMidiEffect() const
 #endif
 }
 
-double RGBMeterAudioProcessor::getTailLengthSeconds() const
+double AuroraAudioProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int RGBMeterAudioProcessor::getNumPrograms()
+int AuroraAudioProcessor::getNumPrograms()
 {
     return 1; // NB: some hosts don't cope very well if you tell them there are 0 programs,
               // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int RGBMeterAudioProcessor::getCurrentProgram()
+int AuroraAudioProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void RGBMeterAudioProcessor::setCurrentProgram(int index)
+void AuroraAudioProcessor::setCurrentProgram(int index)
 {
 }
 
-const juce::String RGBMeterAudioProcessor::getProgramName(int index)
+const juce::String AuroraAudioProcessor::getProgramName(int index)
 {
     return {};
 }
 
-void RGBMeterAudioProcessor::changeProgramName(int index, const juce::String &newName)
+void AuroraAudioProcessor::changeProgramName(int index, const juce::String &newName)
 {
 }
 
 //==============================================================================
-void RGBMeterAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
+void AuroraAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
@@ -114,14 +114,14 @@ void RGBMeterAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBloc
     rgbMeter.prepare(spec);
 }
 
-void RGBMeterAudioProcessor::releaseResources()
+void AuroraAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool RGBMeterAudioProcessor::isBusesLayoutSupported(const BusesLayout &layouts) const
+bool AuroraAudioProcessor::isBusesLayoutSupported(const BusesLayout &layouts) const
 {
 #if JucePlugin_IsMidiEffect
     juce::ignoreUnused(layouts);
@@ -145,7 +145,7 @@ bool RGBMeterAudioProcessor::isBusesLayoutSupported(const BusesLayout &layouts) 
 }
 #endif
 
-void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::MidiBuffer &midiMessages)
+void AuroraAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::MidiBuffer &midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels = getTotalNumInputChannels();
@@ -169,19 +169,19 @@ void RGBMeterAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce
 }
 
 //==============================================================================
-bool RGBMeterAudioProcessor::hasEditor() const
+bool AuroraAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-juce::AudioProcessorEditor *RGBMeterAudioProcessor::createEditor()
+juce::AudioProcessorEditor *AuroraAudioProcessor::createEditor()
 {
     //        return new juce::GenericAudioProcessorEditor(*this);
-    return new RGBMeterAudioProcessorEditor(*this);
+    return new AuroraAudioProcessorEditor(*this);
 }
 
 //==============================================================================
-void RGBMeterAudioProcessor::getStateInformation(juce::MemoryBlock &destData)
+void AuroraAudioProcessor::getStateInformation(juce::MemoryBlock &destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
@@ -191,7 +191,7 @@ void RGBMeterAudioProcessor::getStateInformation(juce::MemoryBlock &destData)
     apvts.state.writeToStream(stream);
 }
 
-void RGBMeterAudioProcessor::setStateInformation(const void *data, int sizeInBytes)
+void AuroraAudioProcessor::setStateInformation(const void *data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
@@ -204,7 +204,7 @@ void RGBMeterAudioProcessor::setStateInformation(const void *data, int sizeInByt
     initDSP();
 }
 
-juce::AudioProcessorValueTreeState::ParameterLayout RGBMeterAudioProcessor::createParameterLayout()
+juce::AudioProcessorValueTreeState::ParameterLayout AuroraAudioProcessor::createParameterLayout()
 {
     APVTS::ParameterLayout params;
     
@@ -216,17 +216,17 @@ juce::AudioProcessorValueTreeState::ParameterLayout RGBMeterAudioProcessor::crea
     return params;
 }
 
-int RGBMeterAudioProcessor::getEditorWidth() {
+int AuroraAudioProcessor::getEditorWidth() {
     auto size = apvts.state.getOrCreateChildWithName("size", nullptr);
     return size.getProperty("width", 640);
 }
 
-int RGBMeterAudioProcessor::getEditorHeight() {
+int AuroraAudioProcessor::getEditorHeight() {
     auto size = apvts.state.getOrCreateChildWithName("size", nullptr);
     return size.getProperty("height", 200);
 }
 
-void RGBMeterAudioProcessor::setEditorSize(int width, int height) {
+void AuroraAudioProcessor::setEditorSize(int width, int height) {
     auto size = apvts.state.getOrCreateChildWithName("size", nullptr);
     size.setProperty("width", width, nullptr);
     size.setProperty("height", height, nullptr);
@@ -236,5 +236,5 @@ void RGBMeterAudioProcessor::setEditorSize(int width, int height) {
 // This creates new instances of the plugin..
 juce::AudioProcessor *JUCE_CALLTYPE createPluginFilter()
 {
-    return new RGBMeterAudioProcessor();
+    return new AuroraAudioProcessor();
 }

@@ -15,12 +15,12 @@
 /**
  */
 
-class RGBMeterAudioProcessor : public juce::AudioProcessor
+class AuroraAudioProcessor : public juce::AudioProcessor
 {
 public:
     //==============================================================================
-    RGBMeterAudioProcessor();
-    ~RGBMeterAudioProcessor() override;
+    AuroraAudioProcessor();
+    ~AuroraAudioProcessor() override;
 
     //==============================================================================
     void prepareToPlay(double sampleRate, int samplesPerBlock) override;
@@ -72,5 +72,5 @@ public:
 private:
     
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RGBMeterAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AuroraAudioProcessor)
 };

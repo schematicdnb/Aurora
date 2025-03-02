@@ -10,7 +10,7 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcessor &p)
+AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     : AudioProcessorEditor(&p), audioProcessor(p)
 {
   // Make sure that before the constructor has finished, you've set the
@@ -125,12 +125,12 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
 
 }
 
-RGBMeterAudioProcessorEditor::~RGBMeterAudioProcessorEditor()
+AuroraAudioProcessorEditor::~AuroraAudioProcessorEditor()
 {
 }
 
 //==============================================================================
-void RGBMeterAudioProcessorEditor::paint(juce::Graphics &g)
+void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
 {
   // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll(juce::Colours::darkgrey);
@@ -141,7 +141,7 @@ void RGBMeterAudioProcessorEditor::paint(juce::Graphics &g)
   
 }
 
-void RGBMeterAudioProcessorEditor::resized(){
+void AuroraAudioProcessorEditor::resized(){
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
     

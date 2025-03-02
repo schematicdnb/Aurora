@@ -22,19 +22,11 @@ RGBMeterAudioProcessor::RGBMeterAudioProcessor()
                          )
 #endif
 {
-    initDSP();
+    rgbMeter.setHistoryLength(static_cast<int>(*apvts.getRawParameterValue("historyLength")));
 }
 
 RGBMeterAudioProcessor::~RGBMeterAudioProcessor()
 {
-}
-
-void RGBMeterAudioProcessor::initDSP() {
-    // set History Length
-    rgbMeter.setHistoryLength(static_cast<int>(*apvts.getRawParameterValue("historyLength")));
-    
-    // Set gain
-    rgbMeter.setGain(*apvts.getRawParameterValue("gain"));
 }
 
 //==============================================================================
@@ -201,7 +193,6 @@ void RGBMeterAudioProcessor::setStateInformation(const void *data, int sizeInByt
     {
         apvts.replaceState(tree);
     }
-    initDSP();
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout RGBMeterAudioProcessor::createParameterLayout()
@@ -223,7 +214,7 @@ int RGBMeterAudioProcessor::getEditorWidth() {
 
 int RGBMeterAudioProcessor::getEditorHeight() {
     auto size = apvts.state.getOrCreateChildWithName("size", nullptr);
-    return size.getProperty("height", 200);
+    return size.getProperty("height", 100);
 }
 
 void RGBMeterAudioProcessor::setEditorSize(int width, int height) {

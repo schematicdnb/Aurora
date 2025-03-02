@@ -16,38 +16,52 @@ RGBMeterAudioProcessorEditor::RGBMeterAudioProcessorEditor(RGBMeterAudioProcesso
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
     
-    // make components visible
+    // add meter
     addAndMakeVisible(rgbMeter);
+
+    // History parameter
     addAndMakeVisible(historySlider);
-    addAndMakeVisible(gainSlider);
-
-    // make window resizable
-    setResizable(true, true);
-    
-    // set control sizes
     historySlider.setSliderStyle(Slider::RotaryVerticalDrag);
-    historySlider.setSize(50, 75);
+    historySlider.setSize(paramWidth, paramHeight);
     historySlider.setTextBoxStyle(Slider::TextBoxBelow, false, 50, 24);
+    historySlider.setTextValueSuffix(" sec");
     
-    gainSlider.setSliderStyle(Slider::RotaryVerticalDrag);
-    gainSlider.setSize(50, 75);
-    gainSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 50, 24);
+    addAndMakeVisible(historyLabel);
+    historyLabel.attachToComponent(&historySlider, false);
+    historyLabel.setText("History", dontSendNotification);
+    historyLabel.setJustificationType(Justification::centred);
     
-    // attach parameters to sliders
     historySliderAttachment.reset(new SliderAttachment(apvts, "historyLength", historySlider));
-    gainSliderAttachment.reset(new SliderAttachment(apvts, "gain", gainSlider));
-
-    // set update functions
+    
     historySlider.onValueChange = [this]() {
         rgbMeter.setHistoryLength(historySlider.getValue());
         rgbMeter.updateState();
     };
     
+    // Gain parameter
+    addAndMakeVisible(gainSlider);
+    gainSlider.setSliderStyle(Slider::RotaryVerticalDrag);
+    gainSlider.setSize(paramWidth, paramHeight);
+    gainSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 50, 24);
+    gainSlider.setTextValueSuffix(" dB");
+    
+    addAndMakeVisible(gainLabel);
+    gainLabel.attachToComponent(&gainSlider, false);
+    gainLabel.setText("Gain", dontSendNotification);
+    gainLabel.setJustificationType(Justification::centred);
+    
+    gainSliderAttachment.reset(new SliderAttachment(apvts, "gain", gainSlider));
+
     gainSlider.onValueChange = [this]() {
         rgbMeter.setGain(gainSlider.getValue());
     };
     
+    // Set window size
     setSize(audioProcessor.getEditorWidth(), audioProcessor.getEditorHeight());
+    
+    // make window resizable
+    setResizable(true, true);
+    setResizeLimits(640, 200, 1280, 720);
     
     
 //  addAndMakeVisible(lowCrossoverSlider);
@@ -119,28 +133,31 @@ RGBMeterAudioProcessorEditor::~RGBMeterAudioProcessorEditor()
 void RGBMeterAudioProcessorEditor::paint(juce::Graphics &g)
 {
   // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll(juce::Colours::black);
+    g.fillAll(juce::Colours::darkgrey);
+    g.setColour(juce::Colours::black);
 
-  g.setColour(juce::Colours::white);
+    g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - paramHeight - historyLabel.getHeight() - 2*margin, 0);
+
+  
 }
 
-void RGBMeterAudioProcessorEditor::resized()
-{
+void RGBMeterAudioProcessorEditor::resized(){
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
     
+
     
     audioProcessor.setEditorSize(getWidth(), getHeight());
-    auto margin = 25;
     
-    rgbMeter.setBounds(getLocalBounds().withSizeKeepingCentre(getWidth(), getHeight() - margin));
+    rgbMeter.setBounds(margin, margin, getWidth() - 2*margin, getHeight() - paramHeight - historyLabel.getHeight() - 2*margin);
     
-    historySlider.setBounds(margin, getHeight() / 2 - historySlider.getHeight() / 2, historySlider.getWidth(), historySlider.getHeight());
-    gainSlider.setBounds(historySlider.getX() + historySlider.getWidth() + margin, historySlider.getY(), gainSlider.getWidth(), gainSlider.getHeight());
+    gainSlider.setBounds(getWidth() - paramWidth - margin, getHeight() - paramHeight - margin, paramWidth, paramHeight);
+    
+    historySlider.setBounds(gainSlider.getX() - paramWidth - margin, gainSlider.getY(), paramWidth, paramHeight);
+    
+    
     
 
-//    historySlider.setBounds(0, 0, 200, 50);
-//    gainSlider.setBounds(0, 25, 200, 20);
 
 
 //  lowCrossoverSlider.setBounds(10, 10, getWidth() / 2, 20);

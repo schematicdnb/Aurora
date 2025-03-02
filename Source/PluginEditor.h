@@ -30,8 +30,14 @@ private:
     RGBMeterAudioProcessor& audioProcessor;
     
     Slider historySlider;
-    Slider gainSlider;
+    Label historyLabel;
     
+    Slider gainSlider;
+    Label gainLabel;
+    
+    int margin = 15;
+    int paramWidth = 50;
+    int paramHeight = 75;
     
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
     typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;

@@ -23,6 +23,7 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     addAndMakeVisible(zoomGroup);
     zoomGroup.setText("Zoom");
     zoomGroup.setTextLabelPosition(Justification::centredBottom);
+    zoomGroup.setColour(GroupComponent::ColourIds::textColourId, Colour(32,32,32));
     
     // Gain parameter
     addAndMakeVisible(gainSlider);
@@ -30,11 +31,15 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     gainSlider.setSize(paramWidth, paramHeight);
     gainSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
     gainSlider.setTextValueSuffix(" dB");
+    gainSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
+    gainSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
+
     
     addAndMakeVisible(gainLabel);
     gainLabel.attachToComponent(&gainSlider, false);
     gainLabel.setText("Gain", dontSendNotification);
     gainLabel.setJustificationType(Justification::centred);
+    gainLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
     
     gainSliderAttachment.reset(new SliderAttachment(apvts, "gain", gainSlider));
 
@@ -48,11 +53,14 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     historySlider.setSize(paramWidth, paramHeight);
     historySlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
     historySlider.setTextValueSuffix(" sec");
+    historySlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
+    historySlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
     
     addAndMakeVisible(historyLabel);
     historyLabel.attachToComponent(&historySlider, false);
     historyLabel.setText("History", dontSendNotification);
     historyLabel.setJustificationType(Justification::centred);
+    historyLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
     
     historySliderAttachment.reset(new SliderAttachment(apvts, "historyLength", historySlider));
     
@@ -65,6 +73,7 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     addAndMakeVisible(crossoverGroup);
     crossoverGroup.setText("Crossovers");
     crossoverGroup.setTextLabelPosition(Justification::centredBottom);
+    crossoverGroup.setColour(GroupComponent::ColourIds::textColourId, Colour(32,32,32));
     
     // Low Crossover
     addAndMakeVisible(lowCrossoverSlider);
@@ -72,11 +81,14 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     lowCrossoverSlider.setSize(paramWidth, paramHeight);
     lowCrossoverSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
     lowCrossoverSlider.setTextValueSuffix(" Hz");
+    lowCrossoverSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
+    lowCrossoverSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
     
     addAndMakeVisible(lowCrossoverLabel);
     lowCrossoverLabel.attachToComponent(&lowCrossoverSlider, false);
     lowCrossoverLabel.setText("Low", dontSendNotification);
     lowCrossoverLabel.setJustificationType(Justification::centred);
+    lowCrossoverLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
     
     lowCrossoverAttachment.reset(new SliderAttachment(apvts, "lowCrossover", lowCrossoverSlider));
     
@@ -84,7 +96,7 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
         auto value = lowCrossoverSlider.getValue();
         auto limit = highCrossoverSlider.getValue();
         if (value >= limit) {
-            value = limit - 1;
+            value = limit;
             lowCrossoverSlider.setValue(value);
         }
         rgbMeter.setLowCrossover(value);
@@ -96,11 +108,14 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     highCrossoverSlider.setSize(paramWidth, paramHeight);
     highCrossoverSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
     highCrossoverSlider.setTextValueSuffix(" Hz");
+    highCrossoverSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
+    highCrossoverSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
     
     addAndMakeVisible(highCrossoverLabel);
     highCrossoverLabel.attachToComponent(&highCrossoverSlider, false);
     highCrossoverLabel.setText("High", dontSendNotification);
     highCrossoverLabel.setJustificationType(Justification::centred);
+    highCrossoverLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
     
     highCrossoverAttachment.reset(new SliderAttachment(apvts, "highCrossover", highCrossoverSlider));
     
@@ -108,7 +123,7 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
         auto value = highCrossoverSlider.getValue();
         auto limit = lowCrossoverSlider.getValue();
         if (value <= limit) {
-            value = limit - 1;
+            value = limit;
             highCrossoverSlider.setValue(value);
         }
         rgbMeter.setHighCrossover(value);
@@ -122,21 +137,11 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     setResizeLimits(640, 250, 1280, 720);
     
     
-//  addAndMakeVisible(lowCrossoverSlider);
-//  addAndMakeVisible(highCrossoverSlider);
+
 //  addAndMakeVisible(lowEnableButton);
 //  addAndMakeVisible(midEnableButton);
 //  addAndMakeVisible(highEnableButton);
 
-//  // set slider ranges
-//  auto lowRange = new juce::NormalisableRange<double>(20, 999, 1, 1);
-//  auto highRange = new juce::NormalisableRange<double>(1000, 20000, 1, 1);
-//  lowCrossoverSlider.setNormalisableRange(*lowRange);
-//  highCrossoverSlider.setNormalisableRange(*highRange);
-//
-//  // set slider attachments
-//  lowCrossoverAttachment.reset(new SliderAttachment(apvts, "lowCrossover", lowCrossoverSlider));
-//  highCrossoverAttachment.reset(new SliderAttachment(apvts, "highCrossover", highCrossoverSlider));
 //
 //  // set button attachments
 //  lowButtonAttachment.reset(new ButtonAttachment(apvts, "enableLow", lowEnableButton));
@@ -161,13 +166,6 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
 //  highEnableButton.setColour(juce::TextButton::ColourIds::buttonOnColourId, juce::Colours::green);
 //  highEnableButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::grey);
 
-  // initialize values from parameters
-  //    lowCrossoverSlider.setValue(audioProcessor.lowCrossover->get());
-  //    highCrossoverSlider.setValue(audioProcessor.highCrossover->get());
-  //
-  //    lowEnableButton.setToggleState(audioProcessor.enableLow->get(), juce::sendNotification);
-  //    midEnableButton.setToggleState(audioProcessor.enableMid->get(), juce::sendNotification);
-  //    highEnableButton.setToggleState(audioProcessor.enableHigh->get(), juce::sendNotification);
 
   // // Set change functions
   // lowEnableButton.onClick = [this]() {
@@ -191,12 +189,13 @@ AuroraAudioProcessorEditor::~AuroraAudioProcessorEditor()
 void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
 {
   // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll(juce::Colours::darkgrey);
-    g.setColour(juce::Colours::black);
+//    g.fillAll(Colour(32,32,32));
+    g.fillAll(Colour(232, 232, 232));
     
     auto labelHeight = gainLabel.getHeight();
 
-    g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - groupHeight - labelHeight - 3*margin, 0);
+    g.setColour(Colours::black);
+    g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - groupHeight - labelHeight - 3*margin, rgbMeter.getCornerRadius());
 
   
 }
@@ -211,26 +210,19 @@ void AuroraAudioProcessorEditor::resized(){
     rgbMeter.setBounds(margin, margin, getWidth() - 2*margin, getHeight() - 3*margin - groupHeight - labelHeight);
     
     // Zoom controls
-    zoomGroup.setBounds(getWidth() - margin - groupWidth, getHeight() - margin - groupHeight - labelHeight, groupWidth, groupHeight + labelHeight);
+    zoomGroup.setBounds(getWidth() - margin+2 - groupWidth, getHeight() - margin - groupHeight - labelHeight, groupWidth, groupHeight + labelHeight);
     
     historySlider.setBounds(zoomGroup.getX() + margin, zoomGroup.getY() + labelHeight + margin, paramWidth, paramHeight);
     
     gainSlider.setBounds(historySlider.getX() + paramWidth + margin, historySlider.getY(), paramWidth, paramHeight);
     
     // Crossover controls
-    crossoverGroup.setBounds(margin, zoomGroup.getY(), groupWidth, groupHeight + labelHeight);
+    crossoverGroup.setBounds(margin-2, zoomGroup.getY(), groupWidth, groupHeight + labelHeight);
     
     lowCrossoverSlider.setBounds(crossoverGroup.getX() + margin, gainSlider.getY(), paramWidth, paramHeight);
     
     highCrossoverSlider.setBounds(lowCrossoverSlider.getX() + paramWidth + margin, lowCrossoverSlider.getY(), paramWidth, paramHeight);
     
-    
-    
-
-
-
-//  lowCrossoverSlider.setBounds(10, 10, getWidth() / 2, 20);
-//  highCrossoverSlider.setBounds(10, 30, getWidth() / 2, 20);
 //    lowEnableButton.setBounds(0, getHeight() - 20, getWidth() / 3, 20);
 //midEnableButton.setBounds(lowEnableButton.getX() + lowEnableButton.getWidth(), lowEnableButton.getY(), lowEnableButton.getWidth(), lowEnableButton.getHeight());
 //highEnableButton.setBounds(midEnableButton.getX() + lowEnableButton.getWidth(), lowEnableButton.getY(), lowEnableButton.getWidth(), lowEnableButton.getHeight());

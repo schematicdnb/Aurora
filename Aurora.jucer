@@ -7,6 +7,10 @@
               pluginVSTCategory="kPlugCategAnalysis" pluginCode="Arra">
   <MAINGROUP id="prN6Wm" name="Aurora">
     <GROUP id="{DD6A068D-F127-8FC1-7C6B-391B81BC2A60}" name="Source">
+      <FILE id="ZDj7Gm" name="RoundedCornersEffect.h" compile="0" resource="0"
+            file="Source/RoundedCornersEffect.h"/>
+      <FILE id="cGlA5u" name="RoundedCornersEffect.cpp" compile="1" resource="0"
+            file="Source/RoundedCornersEffect.cpp"/>
       <FILE id="tjRzxw" name="RGBMeter.cpp" compile="1" resource="0" file="Source/RGBMeter.cpp"/>
       <FILE id="Htv3gv" name="RGBMeter.h" compile="0" resource="0" file="Source/RGBMeter.h"
             xcodeResource="0"/>

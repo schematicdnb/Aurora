@@ -7,6 +7,7 @@
 //
 
 #include <JuceHeader.h>
+#include "RoundedCornersEffect.h"
 
 namespace juce
 {
@@ -131,6 +132,8 @@ namespace juce
         void setLowCrossover(float freq);
         void setHighCrossover(float freq);
         
+        float getCornerRadius();
+        
     private:
         int historyLength; // in seconds
         int sampleRate;
@@ -156,6 +159,13 @@ namespace juce
         Colour colour = Colours::white;
 
         AudioBuffer<float> *mainOutputBuffer;
+        
+        RoundedCornersEffect corners;
+        float cornerRadius = 7;
+        
+        //==============================================================================
+        
+        JUCE_LEAK_DETECTOR (RGBMeter)
     };
     ;
 

@@ -20,6 +20,9 @@ namespace juce
         midHP.setType(dsp::LinkwitzRileyFilterType::highpass);
         midLP.setType(dsp::LinkwitzRileyFilterType::lowpass);
         HP.setType(dsp::LinkwitzRileyFilterType::highpass);
+        
+        corners.setCornerRadius(cornerRadius);
+        this->setComponentEffect(&corners);
     }
 
     void RGBMeter::prepare(dsp::ProcessSpec spec)
@@ -279,6 +282,9 @@ namespace juce
     void RGBMeter::setHighCrossover(float freq) {
         midLP.setCutoffFrequency(freq);
         HP.setCutoffFrequency(freq);
+    }
+    float RGBMeter::getCornerRadius() {
+        return cornerRadius;
     }
 
     void RGBMeter::timerCallback()

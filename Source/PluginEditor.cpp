@@ -19,6 +19,11 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     // add meter
     addAndMakeVisible(rgbMeter);
     
+    // Zoom Group
+    addAndMakeVisible(zoomGroup);
+    zoomGroup.setText("Zoom");
+    zoomGroup.setTextLabelPosition(Justification::centredBottom);
+    
     // Gain parameter
     addAndMakeVisible(gainSlider);
     gainSlider.setSliderStyle(Slider::RotaryVerticalDrag);
@@ -55,6 +60,11 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
         rgbMeter.setHistoryLength(historySlider.getValue());
         rgbMeter.updateState();
     };
+    
+    // Crossover Group
+    addAndMakeVisible(crossoverGroup);
+    crossoverGroup.setText("Crossovers");
+    crossoverGroup.setTextLabelPosition(Justification::centredBottom);
     
     // Low Crossover
     addAndMakeVisible(lowCrossoverSlider);
@@ -109,7 +119,7 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     
     // make window resizable
     setResizable(true, true);
-    setResizeLimits(640, 200, 1280, 720);
+    setResizeLimits(640, 250, 1280, 720);
     
     
 //  addAndMakeVisible(lowCrossoverSlider);
@@ -183,8 +193,10 @@ void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
   // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll(juce::Colours::darkgrey);
     g.setColour(juce::Colours::black);
+    
+    auto labelHeight = gainLabel.getHeight();
 
-    g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - paramHeight - historyLabel.getHeight() - 2*margin, 0);
+    g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - groupHeight - labelHeight - 3*margin, 0);
 
   
 }
@@ -193,17 +205,22 @@ void AuroraAudioProcessorEditor::resized(){
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
     
-
-    
+    auto labelHeight = gainLabel.getHeight();
     audioProcessor.setEditorSize(getWidth(), getHeight());
     
-    rgbMeter.setBounds(margin, margin, getWidth() - 2*margin, getHeight() - paramHeight - historyLabel.getHeight() - 2*margin);
+    rgbMeter.setBounds(margin, margin, getWidth() - 2*margin, getHeight() - 3*margin - groupHeight - labelHeight);
     
-    gainSlider.setBounds(getWidth() - paramWidth - margin, getHeight() - paramHeight - margin, paramWidth, paramHeight);
+    // Zoom controls
+    zoomGroup.setBounds(getWidth() - margin - groupWidth, getHeight() - margin - groupHeight - labelHeight, groupWidth, groupHeight + labelHeight);
     
-    historySlider.setBounds(gainSlider.getX() - paramWidth - margin, gainSlider.getY(), paramWidth, paramHeight);
+    historySlider.setBounds(zoomGroup.getX() + margin, zoomGroup.getY() + labelHeight + margin, paramWidth, paramHeight);
     
-    lowCrossoverSlider.setBounds(margin, gainSlider.getY(), paramWidth, paramHeight);
+    gainSlider.setBounds(historySlider.getX() + paramWidth + margin, historySlider.getY(), paramWidth, paramHeight);
+    
+    // Crossover controls
+    crossoverGroup.setBounds(margin, zoomGroup.getY(), groupWidth, groupHeight + labelHeight);
+    
+    lowCrossoverSlider.setBounds(crossoverGroup.getX() + margin, gainSlider.getY(), paramWidth, paramHeight);
     
     highCrossoverSlider.setBounds(lowCrossoverSlider.getX() + paramWidth + margin, lowCrossoverSlider.getY(), paramWidth, paramHeight);
     

@@ -36,6 +36,10 @@ private:
     int paramWidth = 50;
     int paramHeight = 75;
     
+    GroupComponent zoomGroup, crossoverGroup;
+    int groupWidth = 2*paramWidth + 3*margin;
+    int groupHeight = paramHeight + 2*margin;
+    
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
     typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
     

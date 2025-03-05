@@ -128,7 +128,9 @@ namespace juce
         float getGain();
         void setGain(float gain);
         
-
+        void setLowCrossover(float freq);
+        void setHighCrossover(float freq);
+        
     private:
         int historyLength; // in seconds
         int sampleRate;
@@ -148,8 +150,6 @@ namespace juce
 
         using Filter = dsp::LinkwitzRileyFilter<float>;
         Filter LP, midLP, midAP, midHP, HP;
-        float lowCrossover = 150.0f;
-        float highCrossover = 2000.0f;
         
         float gain;
 

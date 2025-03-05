@@ -35,6 +35,10 @@ void AuroraAudioProcessor::initDSP() {
     
     // Set gain
     rgbMeter.setGain(*apvts.getRawParameterValue("gain"));
+    
+    // Set crossovers
+    rgbMeter.setLowCrossover(static_cast<float>(*apvts.getRawParameterValue("lowCrossover")));
+    rgbMeter.setHighCrossover(static_cast<float>(*apvts.getRawParameterValue("highCrossover")));
 }
 
 //==============================================================================
@@ -164,8 +168,6 @@ void AuroraAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::
 
     rgbMeter.pushSamples(buffer);
     
-    
-
 }
 
 //==============================================================================
@@ -208,11 +210,21 @@ juce::AudioProcessorValueTreeState::ParameterLayout AuroraAudioProcessor::create
 {
     APVTS::ParameterLayout params;
     
+    // History
     params.add(std::make_unique<AudioParameterInt>(ParameterID("historyLength", 1), "History Length", 1, 20, 10));
 
+    // Gain
     auto gainRange = std::make_unique<NormalisableRange<float>>(-24.0f, 24.0f, 0.1f);
     params.add(std::make_unique<AudioParameterFloat>(ParameterID("gain", 1), "Gain", *gainRange, 0.0f));
-
+    
+    // Low Crossover
+    auto lowCrossoverRange = std::make_unique<NormalisableRange<float>>(20.0f, 20000.0f, 1.0f, 0.2);
+    params.add(std::make_unique<AudioParameterFloat>(ParameterID("lowCrossover", 1), "Low Crossover", *lowCrossoverRange, 150.0f));
+    
+    // High Crossover
+    auto highCrossoverRange = std::make_unique<NormalisableRange<float>>(20.0f, 20000.0f, 1.0f, 3.0);
+    params.add(std::make_unique<AudioParameterFloat>(ParameterID("highCrossover", 1), "High Crossover", *lowCrossoverRange, 2000.0f));
+    
     return params;
 }
 

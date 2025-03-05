@@ -29,11 +29,8 @@ private:
     // access the processor object that created it.
     AuroraAudioProcessor& audioProcessor;
     
-    Slider historySlider;
-    Label historyLabel;
-    
-    Slider gainSlider;
-    Label gainLabel;
+    Slider historySlider, gainSlider;
+    Label historyLabel, gainLabel;
     
     int margin = 15;
     int paramWidth = 50;
@@ -44,8 +41,9 @@ private:
     
     std::unique_ptr<SliderAttachment> historySliderAttachment, gainSliderAttachment;
     
-//    juce::Slider lowCrossoverSlider;
-//    juce::Slider highCrossoverSlider;
+    Slider lowCrossoverSlider, highCrossoverSlider;
+    Label lowCrossoverLabel, highCrossoverLabel;
+
 //    juce::TextButton lowEnableButton;
 //    juce::TextButton midEnableButton;
 //    juce::TextButton highEnableButton;
@@ -53,7 +51,7 @@ private:
     juce::AudioProcessorValueTreeState &apvts = audioProcessor.apvts;
     juce::RGBMeter &rgbMeter = audioProcessor.rgbMeter;
     
-//    std::unique_ptr<SliderAttachment> lowCrossoverAttachment, highCrossoverAttachment;
+    std::unique_ptr<SliderAttachment> lowCrossoverAttachment, highCrossoverAttachment;
 //    std::unique_ptr<ButtonAttachment> lowButtonAttachment, midButtonAttachment, highButtonAttachment;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuroraAudioProcessorEditor)

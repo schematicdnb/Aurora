@@ -20,13 +20,6 @@ namespace juce
         midHP.setType(dsp::LinkwitzRileyFilterType::highpass);
         midLP.setType(dsp::LinkwitzRileyFilterType::lowpass);
         HP.setType(dsp::LinkwitzRileyFilterType::highpass);
-
-        // Initialize crossover points
-        LP.setCutoffFrequency(lowCrossover);
-        midHP.setCutoffFrequency(lowCrossover);
-        midLP.setCutoffFrequency(highCrossover);
-        HP.setCutoffFrequency(highCrossover);
-
     }
 
     void RGBMeter::prepare(dsp::ProcessSpec spec)
@@ -278,6 +271,14 @@ namespace juce
     }
     void RGBMeter::setGain(float gain) {
         this->gain = Decibels::decibelsToGain(gain / 2);
+    }
+    void RGBMeter::setLowCrossover(float freq) {
+        LP.setCutoffFrequency(freq);
+        midHP.setCutoffFrequency(freq);
+    }
+    void RGBMeter::setHighCrossover(float freq) {
+        midLP.setCutoffFrequency(freq);
+        HP.setCutoffFrequency(freq);
     }
 
     void RGBMeter::timerCallback()

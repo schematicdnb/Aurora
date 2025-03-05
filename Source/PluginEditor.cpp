@@ -18,12 +18,30 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     
     // add meter
     addAndMakeVisible(rgbMeter);
+    
+    // Gain parameter
+    addAndMakeVisible(gainSlider);
+    gainSlider.setSliderStyle(Slider::RotaryVerticalDrag);
+    gainSlider.setSize(paramWidth, paramHeight);
+    gainSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
+    gainSlider.setTextValueSuffix(" dB");
+    
+    addAndMakeVisible(gainLabel);
+    gainLabel.attachToComponent(&gainSlider, false);
+    gainLabel.setText("Gain", dontSendNotification);
+    gainLabel.setJustificationType(Justification::centred);
+    
+    gainSliderAttachment.reset(new SliderAttachment(apvts, "gain", gainSlider));
 
+    gainSlider.onValueChange = [this]() {
+        rgbMeter.setGain(gainSlider.getValue());
+    };
+    
     // History parameter
     addAndMakeVisible(historySlider);
     historySlider.setSliderStyle(Slider::RotaryVerticalDrag);
     historySlider.setSize(paramWidth, paramHeight);
-    historySlider.setTextBoxStyle(Slider::TextBoxBelow, false, 50, 24);
+    historySlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
     historySlider.setTextValueSuffix(" sec");
     
     addAndMakeVisible(historyLabel);
@@ -38,22 +56,52 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
         rgbMeter.updateState();
     };
     
-    // Gain parameter
-    addAndMakeVisible(gainSlider);
-    gainSlider.setSliderStyle(Slider::RotaryVerticalDrag);
-    gainSlider.setSize(paramWidth, paramHeight);
-    gainSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 50, 24);
-    gainSlider.setTextValueSuffix(" dB");
+    // Low Crossover
+    addAndMakeVisible(lowCrossoverSlider);
+    lowCrossoverSlider.setSliderStyle(Slider::RotaryVerticalDrag);
+    lowCrossoverSlider.setSize(paramWidth, paramHeight);
+    lowCrossoverSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
+    lowCrossoverSlider.setTextValueSuffix(" Hz");
     
-    addAndMakeVisible(gainLabel);
-    gainLabel.attachToComponent(&gainSlider, false);
-    gainLabel.setText("Gain", dontSendNotification);
-    gainLabel.setJustificationType(Justification::centred);
+    addAndMakeVisible(lowCrossoverLabel);
+    lowCrossoverLabel.attachToComponent(&lowCrossoverSlider, false);
+    lowCrossoverLabel.setText("Low", dontSendNotification);
+    lowCrossoverLabel.setJustificationType(Justification::centred);
     
-    gainSliderAttachment.reset(new SliderAttachment(apvts, "gain", gainSlider));
-
-    gainSlider.onValueChange = [this]() {
-        rgbMeter.setGain(gainSlider.getValue());
+    lowCrossoverAttachment.reset(new SliderAttachment(apvts, "lowCrossover", lowCrossoverSlider));
+    
+    lowCrossoverSlider.onValueChange = [this]() {
+        auto value = lowCrossoverSlider.getValue();
+        auto limit = highCrossoverSlider.getValue();
+        if (value >= limit) {
+            value = limit - 1;
+            lowCrossoverSlider.setValue(value);
+        }
+        rgbMeter.setLowCrossover(value);
+    };
+    
+    // High Crossover
+    addAndMakeVisible(highCrossoverSlider);
+    highCrossoverSlider.setSliderStyle(Slider::RotaryVerticalDrag);
+    highCrossoverSlider.setSize(paramWidth, paramHeight);
+    highCrossoverSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
+    highCrossoverSlider.setTextValueSuffix(" Hz");
+    
+    addAndMakeVisible(highCrossoverLabel);
+    highCrossoverLabel.attachToComponent(&highCrossoverSlider, false);
+    highCrossoverLabel.setText("High", dontSendNotification);
+    highCrossoverLabel.setJustificationType(Justification::centred);
+    
+    highCrossoverAttachment.reset(new SliderAttachment(apvts, "highCrossover", highCrossoverSlider));
+    
+    highCrossoverSlider.onValueChange = [this]() {
+        auto value = highCrossoverSlider.getValue();
+        auto limit = lowCrossoverSlider.getValue();
+        if (value <= limit) {
+            value = limit - 1;
+            highCrossoverSlider.setValue(value);
+        }
+        rgbMeter.setHighCrossover(value);
     };
     
     // Set window size
@@ -154,6 +202,10 @@ void AuroraAudioProcessorEditor::resized(){
     gainSlider.setBounds(getWidth() - paramWidth - margin, getHeight() - paramHeight - margin, paramWidth, paramHeight);
     
     historySlider.setBounds(gainSlider.getX() - paramWidth - margin, gainSlider.getY(), paramWidth, paramHeight);
+    
+    lowCrossoverSlider.setBounds(margin, gainSlider.getY(), paramWidth, paramHeight);
+    
+    highCrossoverSlider.setBounds(lowCrossoverSlider.getX() + paramWidth + margin, lowCrossoverSlider.getY(), paramWidth, paramHeight);
     
     
     

@@ -183,7 +183,7 @@ namespace juce
             auto range = std::get<0>(tuple);
             auto colour = std::get<1>(tuple);
             auto min = range.getStart();
-            auto max = range.getEnd() * gain;
+            auto max = range.getEnd();
 
             auto y1 = jmap(min * gain, -1.0f, 1.0f, (float)this->getHeight(), 0.0f);
             auto y2 = jmap(max * gain, -1.0f, 1.0f, (float)this->getHeight(), 0.0f);

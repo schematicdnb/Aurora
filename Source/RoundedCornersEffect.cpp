@@ -3,7 +3,7 @@
 
     RoundedCornersEffect.cpp
     Created: 5 Mar 2025 4:33:12pm
-    Author:  Dan Dubois
+    Credit to: 'dpsproservices' on JUCE forums
 
   ==============================================================================
 */

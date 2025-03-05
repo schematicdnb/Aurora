@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="SEhXmX" name="Aurora" projectType="audioplug" useAppConfig="0"
-              jucerFormatVersion="1" version="0.1" companyName="Schematic Sound"
+              jucerFormatVersion="1" version="v0.2" companyName="Schematic Sound"
               pluginFormats="buildAU,buildVST3" pluginManufacturerCode="SSND"
-              pluginDesc="Oscilloscope with frequency colours" pluginVST3Category="Analyzer,Tools"
-              pluginVSTCategory="kPlugCategAnalysis" pluginCode="Arra">
+              pluginDesc="Waveform visualizer with frequency-based colours inspired by DJ tools."
+              pluginVST3Category="Analyzer,Tools" pluginVSTCategory="kPlugCategAnalysis"
+              pluginCode="Arra">
   <MAINGROUP id="prN6Wm" name="Aurora">
     <GROUP id="{DD6A068D-F127-8FC1-7C6B-391B81BC2A60}" name="Source">
       <FILE id="ZDj7Gm" name="RoundedCornersEffect.h" compile="0" resource="0"

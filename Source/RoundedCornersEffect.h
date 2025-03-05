@@ -1,11 +1,11 @@
 /*
-  ==============================================================================
+  =============================================================================
 
     RoundedCornersEffect.h
     Created: 5 Mar 2025 4:32:49pm
-    Author:  Dan Dubois
+    Credit to: 'dpsproservices' on JUCE forums
 
-  ==============================================================================
+  =============================================================================
 */
 
 #include <JuceHeader.h>
@@ -43,7 +43,7 @@ public:
         juce::Graphics& destContext,
         float scaleFactor,
         float alpha
-    ) override;
+     ) override;
 private:
     float cornerRadius;
 

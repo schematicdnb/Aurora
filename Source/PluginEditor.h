@@ -23,6 +23,9 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    void initZoomGroup();
+    void initCrossoverGroup();
+    void initColourGroup();
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -36,27 +39,28 @@ private:
     int paramWidth = 50;
     int paramHeight = 75;
     
-    GroupComponent zoomGroup, crossoverGroup;
+    GroupComponent zoomGroup, crossoverGroup, colourGroup;
     int groupWidth = 2*paramWidth + 3*margin;
     int groupHeight = paramHeight + 2*margin;
+    
+    Slider lowCrossoverSlider, highCrossoverSlider;
+    Label lowCrossoverLabel, highCrossoverLabel;
+    
+    Slider redSlider, greenSlider, blueSlider;
+    Label redLabel, greenLabel, blueLabel;
+    
     
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
     typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
     
     std::unique_ptr<SliderAttachment> historySliderAttachment, gainSliderAttachment;
+    std::unique_ptr<SliderAttachment> lowCrossoverAttachment, highCrossoverAttachment;
+    std::unique_ptr<SliderAttachment> redSliderAttachment, greenSliderAttachment, blueSliderAttachment;
     
-    Slider lowCrossoverSlider, highCrossoverSlider;
-    Label lowCrossoverLabel, highCrossoverLabel;
-
-//    juce::TextButton lowEnableButton;
-//    juce::TextButton midEnableButton;
-//    juce::TextButton highEnableButton;
     
     juce::AudioProcessorValueTreeState &apvts = audioProcessor.apvts;
     juce::RGBMeter &rgbMeter = audioProcessor.rgbMeter;
     
-    std::unique_ptr<SliderAttachment> lowCrossoverAttachment, highCrossoverAttachment;
-//    std::unique_ptr<ButtonAttachment> lowButtonAttachment, midButtonAttachment, highButtonAttachment;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuroraAudioProcessorEditor)
 };

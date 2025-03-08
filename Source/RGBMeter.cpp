@@ -142,8 +142,10 @@ namespace juce
         auto low = lowBuffer.getRMSLevel(0, 0, lowBuffer.getNumSamples());
         auto mid = midBuffer.getRMSLevel(0, 0, midBuffer.getNumSamples());
         auto high = highBuffer.getRMSLevel(0, 0, highBuffer.getNumSamples());
-
-        mid *= 0.6;
+        
+        low *= lowWeight;
+        mid *= midWeight;
+        high *= highWeight;
 
         auto total = low + mid + high;
 
@@ -154,12 +156,14 @@ namespace juce
             mid /= total;
             high /= total;
         }
-
+        
         // Scale low, mid, high by an equal factor such that none go higher than 1
         float maxComponent = std::max({low, mid, high});
         low /= maxComponent;
         mid /= maxComponent;
         high /= maxComponent;
+        
+        
 
         double r = std::floor(low * 255);
         double g = std::floor(mid * 255);
@@ -199,64 +203,6 @@ namespace juce
         }
     }
 
-    Colour RGBMeter::colourFreqByFFT(AudioBuffer<float> &buffer)
-    {
-        applyWindowing(buffer);
-
-        //        const int fftSize = 2048;
-        dsp::FFT fft(log2(freqAnalysisSize));
-        std::vector<float> fftData(freqAnalysisSize * 2, 0.0f);
-
-        // Copy buffer data to fftData
-        for (int i = 0; i < windowedBuffer.getNumSamples(); ++i)
-        {
-            fftData[i] = windowedBuffer.getSample(0, i);
-        }
-
-        // Perform FFT
-        fft.performFrequencyOnlyForwardTransform(fftData.data());
-
-        // Calculate magnitude for each band
-        float low = 0.0f, mid = 0.0f, high = 0.0f;
-        for (int i = 0; i < freqAnalysisSize / 2; ++i)
-        {
-            float freq = i * (sampleRate / freqAnalysisSize);
-            float magnitude = fftData[i];
-
-            if (freq <= 151.0f)
-            {
-                low += magnitude;
-            }
-            else if (freq <= 2000.0f)
-            {
-                mid += magnitude;
-            }
-            else if (freq <= 20000.0f)
-            {
-                high += magnitude;
-            }
-        }
-
-        // Normalize magnitudes
-        float total = low + mid + high;
-        if (total > 0.0f)
-        {
-            low /= total;
-            mid /= total;
-            high /= total;
-        }
-
-        // Scale low, mid, high by an equal factor such that none go higher than 1
-        float maxComponent = std::max({low, mid, high});
-        low /= maxComponent;
-        mid /= maxComponent;
-        high /= maxComponent;
-
-        // Create colour from magnitudes
-        Colour colour = Colour(std::floor(low * 255), std::floor(mid * 255), std::floor(high * 255));
-
-        return colour;
-    }
 
     void RGBMeter::resized()
     {
@@ -286,6 +232,15 @@ namespace juce
     float RGBMeter::getCornerRadius() {
         return cornerRadius;
     }
+void RGBMeter::setColourWeight(String colour, float weight) {
+    if (colour == "red") {
+        lowWeight = weight;
+    } else if (colour == "green") {
+        midWeight = weight;
+    } else if (colour == "blue") {
+        highWeight = weight;
+    }
+}
 
     void RGBMeter::timerCallback()
     {

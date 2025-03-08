@@ -119,8 +119,6 @@ namespace juce
         Colour freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> &midBuffer, AudioBuffer<float> &highBuffer);
         Colour colourFreqByFiltering(AudioBuffer<float> &buffer);
 
-        Colour colourFreqByFFT(AudioBuffer<float> &buffer);
-
         void applyWindowing(AudioBuffer<float> &buffer);
 
         void resized() override;
@@ -133,6 +131,8 @@ namespace juce
         void setHighCrossover(float freq);
         
         float getCornerRadius();
+        
+        void setColourWeight(String colour, float weight);
         
     private:
         int historyLength; // in seconds
@@ -162,6 +162,10 @@ namespace juce
         
         RoundedCornersEffect corners;
         float cornerRadius = 7;
+        
+        float lowWeight;
+        float midWeight;
+        float highWeight;
         
         //==============================================================================
         

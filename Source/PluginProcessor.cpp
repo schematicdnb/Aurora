@@ -39,6 +39,12 @@ void AuroraAudioProcessor::initDSP() {
     // Set crossovers
     rgbMeter.setLowCrossover(static_cast<float>(*apvts.getRawParameterValue("lowCrossover")));
     rgbMeter.setHighCrossover(static_cast<float>(*apvts.getRawParameterValue("highCrossover")));
+    
+    // Set colour mixer
+    rgbMeter.setColourWeight("red", static_cast<float>(*apvts.getRawParameterValue("redWeight")));
+    rgbMeter.setColourWeight("green", static_cast<float>(*apvts.getRawParameterValue("greenWeight")));
+    rgbMeter.setColourWeight("blue", static_cast<float>(*apvts.getRawParameterValue("blueWeight")));
+    
 }
 
 //==============================================================================
@@ -224,6 +230,12 @@ juce::AudioProcessorValueTreeState::ParameterLayout AuroraAudioProcessor::create
     // High Crossover
     auto highCrossoverRange = std::make_unique<NormalisableRange<float>>(20.0f, 20000.0f, 1.0f, 3.0);
     params.add(std::make_unique<AudioParameterFloat>(ParameterID("highCrossover", 1), "High Crossover", *lowCrossoverRange, 2000.0f));
+    
+    // Colour weights
+    auto colourWeightRange = std::make_unique<NormalisableRange<float>>(0.0f, 2.0f, 0.01f);
+    params.add(std::make_unique<AudioParameterFloat>(ParameterID("redWeight", 1), "Red Weight", *colourWeightRange, 1.0f));
+    params.add(std::make_unique<AudioParameterFloat>(ParameterID("greenWeight", 1), "Green Weight", *colourWeightRange, 0.6f));
+    params.add(std::make_unique<AudioParameterFloat>(ParameterID("blueWeight", 1), "Blue Weight", *colourWeightRange, 1.0f));
     
     return params;
 }

@@ -233,9 +233,16 @@ juce::AudioProcessorValueTreeState::ParameterLayout AuroraAudioProcessor::create
     
     // Colour weights
     auto colourWeightRange = std::make_unique<NormalisableRange<float>>(0.0f, 2.0f, 0.01f);
-    params.add(std::make_unique<AudioParameterFloat>(ParameterID("redWeight", 1), "Red Weight", *colourWeightRange, 1.0f));
-    params.add(std::make_unique<AudioParameterFloat>(ParameterID("greenWeight", 1), "Green Weight", *colourWeightRange, 0.6f));
-    params.add(std::make_unique<AudioParameterFloat>(ParameterID("blueWeight", 1), "Blue Weight", *colourWeightRange, 1.0f));
+    auto percent = AudioParameterFloatAttributes()
+        .withStringFromValueFunction([](float value, int) {
+        return String(value * 100);
+        })
+        .withValueFromStringFunction([](const String& text) {
+            return text.getFloatValue() / 100;
+        });
+    params.add(std::make_unique<AudioParameterFloat>(ParameterID("redWeight", 1), "Red Weight", *colourWeightRange, 1.0f, percent));
+    params.add(std::make_unique<AudioParameterFloat>(ParameterID("greenWeight", 1), "Green Weight", *colourWeightRange, 0.6f, percent));
+    params.add(std::make_unique<AudioParameterFloat>(ParameterID("blueWeight", 1), "Blue Weight", *colourWeightRange, 1.0f, percent));
     
     return params;
 }

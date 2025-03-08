@@ -173,7 +173,7 @@ void AuroraAudioProcessorEditor::initColourGroup() {
     redSlider.setSliderStyle(Slider::RotaryVerticalDrag);
     redSlider.setSize(paramWidth, paramHeight);
     redSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
-    redSlider.setTextValueSuffix("%");
+    redSlider.setTextValueSuffix(" %");
     redSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
     redSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
     
@@ -198,7 +198,7 @@ void AuroraAudioProcessorEditor::initColourGroup() {
     greenSlider.setSliderStyle(Slider::RotaryVerticalDrag);
     greenSlider.setSize(paramWidth, paramHeight);
     greenSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
-    greenSlider.setTextValueSuffix("%");
+    greenSlider.setTextValueSuffix(" %");
     greenSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
     greenSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
     
@@ -223,7 +223,7 @@ void AuroraAudioProcessorEditor::initColourGroup() {
     blueSlider.setSliderStyle(Slider::RotaryVerticalDrag);
     blueSlider.setSize(paramWidth, paramHeight);
     blueSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
-    blueSlider.setTextValueSuffix("%");
+    blueSlider.setTextValueSuffix(" %");
     blueSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
     blueSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
     

@@ -57,7 +57,6 @@ private:
     std::unique_ptr<SliderAttachment> lowCrossoverAttachment, highCrossoverAttachment;
     std::unique_ptr<SliderAttachment> redSliderAttachment, greenSliderAttachment, blueSliderAttachment;
     
-    
     juce::AudioProcessorValueTreeState &apvts = audioProcessor.apvts;
     juce::RGBMeter &rgbMeter = audioProcessor.rgbMeter;
     

@@ -20,7 +20,7 @@ namespace juce
         midHP.setType(dsp::LinkwitzRileyFilterType::highpass);
         midLP.setType(dsp::LinkwitzRileyFilterType::lowpass);
         HP.setType(dsp::LinkwitzRileyFilterType::highpass);
-        
+
         corners.setCornerRadius(cornerRadius);
         this->setComponentEffect(&corners);
     }
@@ -36,10 +36,12 @@ namespace juce
         HP.prepare(spec);
     }
 
-    void RGBMeter::updateState() {
+    void RGBMeter::updateState()
+    {
         bufferLength = historyLength * sampleRate;
         width = this->getWidth();
-        if (width) {
+        if (width)
+        {
             if (displayBuffer.size() != width)
             {
                 displayBuffer.resize(width);
@@ -48,7 +50,6 @@ namespace juce
             chunkCounter = 0;
             chunkBuffer = AudioBuffer<float>(1, chunkSize);
         }
-
     }
 
     void RGBMeter::pushSamples(AudioBuffer<float> &buffer)
@@ -59,7 +60,6 @@ namespace juce
         {
             return;
         } // do nothing, no point in processing buffer if can't be displayed
- 
 
         // Process the incoming buffer
         for (int i = 0; i < buffer.getNumSamples(); i++)
@@ -77,7 +77,7 @@ namespace juce
 
                 // get colour
                 auto analysisAudioBuffer = freqAnalysisBuffer.getBuffer();
-                colour = colourFreqByFiltering(analysisAudioBuffer);
+                auto colour = colourFreqByFiltering(analysisAudioBuffer);
 
                 // add chunk to display buffer
                 displayBuffer.add(std::make_tuple(level, colour));
@@ -142,7 +142,7 @@ namespace juce
         auto low = lowBuffer.getRMSLevel(0, 0, lowBuffer.getNumSamples());
         auto mid = midBuffer.getRMSLevel(0, 0, midBuffer.getNumSamples());
         auto high = highBuffer.getRMSLevel(0, 0, highBuffer.getNumSamples());
-        
+
         low *= lowWeight;
         mid *= midWeight;
         high *= highWeight;
@@ -156,14 +156,12 @@ namespace juce
             mid /= total;
             high /= total;
         }
-        
+
         // Scale low, mid, high by an equal factor such that none go higher than 1
         float maxComponent = std::max({low, mid, high});
         low /= maxComponent;
         mid /= maxComponent;
         high /= maxComponent;
-        
-        
 
         double r = std::floor(low * 255);
         double g = std::floor(mid * 255);
@@ -196,64 +194,66 @@ namespace juce
             p.startNewSubPath(i, y1);
             p.lineTo(i, y2);
             p.closeSubPath();
-            
-            // Average between previous and next chunk colours for smoothing effect
-            if (i > 1 && i < displayBuffer.size() - 1) {
-                auto prevColour = std::get<1>(displayBuffer.get(i-1));
-                auto nextColour = std::get<1>(displayBuffer.get(i+1));
-                auto red = (prevColour.getRed() + nextColour.getRed()) / 2;
-                auto green = (prevColour.getGreen() + nextColour.getGreen()) / 2;
-                auto blue = (prevColour.getBlue() + nextColour.getBlue()) / 2;
-                colour = Colour(red, green, blue);
-            }
-            
+
             g.setColour(colour);
             g.strokePath(p, PathStrokeType(1.0f));
-//            g.strokePath(p, PathStrokeType(1.0f, PathStrokeType::curved, PathStrokeType::butt));
+            //            g.strokePath(p, PathStrokeType(1.0f, PathStrokeType::curved, PathStrokeType::butt));
         }
     }
-
 
     void RGBMeter::resized()
     {
         updateState();
     }
 
-    int RGBMeter::getHistoryLength() {
+    int RGBMeter::getHistoryLength()
+    {
         return historyLength;
     }
-    void RGBMeter::setHistoryLength(int length) {
+    void RGBMeter::setHistoryLength(int length)
+    {
         historyLength = length;
     }
-    float RGBMeter::getGain() {
+    float RGBMeter::getGain()
+    {
         return gain;
     }
-    void RGBMeter::setGain(float gain) {
+    void RGBMeter::setGain(float gain)
+    {
         this->gain = Decibels::decibelsToGain(gain / 2);
     }
-    void RGBMeter::setLowCrossover(float freq) {
+    void RGBMeter::setLowCrossover(float freq)
+    {
         LP.setCutoffFrequency(freq);
         midHP.setCutoffFrequency(freq);
     }
-    void RGBMeter::setHighCrossover(float freq) {
+    void RGBMeter::setHighCrossover(float freq)
+    {
         midLP.setCutoffFrequency(freq);
         HP.setCutoffFrequency(freq);
     }
-    float RGBMeter::getCornerRadius() {
+    float RGBMeter::getCornerRadius()
+    {
         return cornerRadius;
     }
-void RGBMeter::setColourWeight(String colour, float weight) {
-    if (colour == "red") {
-        lowWeight = weight;
-    } else if (colour == "green") {
-        midWeight = weight;
-    } else if (colour == "blue") {
-        highWeight = weight;
+    void RGBMeter::setColourWeight(String colour, float weight)
+    {
+        if (colour == "red")
+        {
+            lowWeight = weight;
+        }
+        else if (colour == "green")
+        {
+            midWeight = weight;
+        }
+        else if (colour == "blue")
+        {
+            highWeight = weight;
+        }
     }
-}
-
     void RGBMeter::timerCallback()
     {
         repaint();
     }
+
 }

@@ -156,8 +156,6 @@ namespace juce
         
         float gain;
 
-        Colour colour = Colours::white;
-
         AudioBuffer<float> *mainOutputBuffer;
         
         RoundedCornersEffect corners;

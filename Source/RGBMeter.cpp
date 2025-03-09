@@ -196,7 +196,17 @@ namespace juce
             p.startNewSubPath(i, y1);
             p.lineTo(i, y2);
             p.closeSubPath();
-
+            
+            // Average between previous and next chunk colours for smoothing effect
+            if (i > 1 && i < displayBuffer.size() - 1) {
+                auto prevColour = std::get<1>(displayBuffer.get(i-1));
+                auto nextColour = std::get<1>(displayBuffer.get(i+1));
+                auto red = (prevColour.getRed() + nextColour.getRed()) / 2;
+                auto green = (prevColour.getGreen() + nextColour.getGreen()) / 2;
+                auto blue = (prevColour.getBlue() + nextColour.getBlue()) / 2;
+                colour = Colour(red, green, blue);
+            }
+            
             g.setColour(colour);
             g.strokePath(p, PathStrokeType(1.0f));
 //            g.strokePath(p, PathStrokeType(1.0f, PathStrokeType::curved, PathStrokeType::butt));

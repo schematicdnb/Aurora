@@ -190,6 +190,7 @@ void AuroraAudioProcessorEditor::initColourGroup() {
     // Red function
     redSlider.onValueChange = [this]() {
         rgbMeter.setColourWeight("red", redSlider.getValue());
+        DBG(static_cast<float>(*apvts.getRawParameterValue("redWeight")));
     };
     
     
@@ -215,6 +216,7 @@ void AuroraAudioProcessorEditor::initColourGroup() {
     // Green function
     greenSlider.onValueChange = [this]() {
         rgbMeter.setColourWeight("green", greenSlider.getValue());
+        DBG(static_cast<float>(*apvts.getRawParameterValue("greenWeight")));
     };
     
     
@@ -235,11 +237,12 @@ void AuroraAudioProcessorEditor::initColourGroup() {
     blueLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
     
     // Green Attachment
-    greenSliderAttachment.reset(new SliderAttachment(apvts, "blueWeight", blueSlider));
+    blueSliderAttachment.reset(new SliderAttachment(apvts, "blueWeight", blueSlider));
     
     // Green function
     blueSlider.onValueChange = [this]() {
         rgbMeter.setColourWeight("blue", blueSlider.getValue());
+        DBG(static_cast<float>(*apvts.getRawParameterValue("blueWeight")));
     };
 }
 

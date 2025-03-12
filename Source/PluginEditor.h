@@ -62,7 +62,9 @@ private:
     juce::AudioProcessorValueTreeState &apvts = audioProcessor.apvts;
     juce::RGBMeter &rgbMeter = audioProcessor.rgbMeter;
     
-    ToggleButton darkModeButton;
+//    ToggleButton darkModeButton;
+    TextButton darkModeButton;
+    Label themeLabel;
     std::unique_ptr<ButtonAttachment> darkModeAttachment;
     
     

@@ -22,7 +22,17 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     addAndMakeVisible(rgbMeter);
     
     // Dark mode toggle
-    addAndMakeVisible(darkModeButton);
+//    addAndMakeVisible(themeLabel);
+    themeLabel.setBounds(margin, margin, 25, margin);
+    themeLabel.attachToComponent(&darkModeButton, true);
+    themeLabel.setText("Theme: ", dontSendNotification);
+    
+//    addAndMakeVisible(darkModeButton);
+    darkModeButton.setButtonText("Light");
+    darkModeButton.onClick = [this]() {
+        customLookAndFeel.toggleTheme();
+    };
+    
     darkModeAttachment.reset(new ButtonAttachment(apvts, "darkMode", darkModeButton));
     
     initZoomGroup();
@@ -271,7 +281,7 @@ void AuroraAudioProcessorEditor::resized(){
     auto labelHeight = gainLabel.getHeight();
     audioProcessor.setEditorSize(getWidth(), getHeight());
     
-    darkModeButton.setBounds(0, 0, 25, margin);
+    darkModeButton.setBounds(margin, margin, paramWidth, paramHeight);
     
     rgbMeter.setBounds(margin, margin, getWidth() - 2*margin, getHeight() - 3*margin - groupHeight - labelHeight);
     

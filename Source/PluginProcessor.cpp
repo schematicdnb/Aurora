@@ -244,6 +244,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout AuroraAudioProcessor::create
     params.add(std::make_unique<AudioParameterFloat>(ParameterID("greenWeight", 1), "Green Weight", *colourWeightRange, 1.0f, percent));
     params.add(std::make_unique<AudioParameterFloat>(ParameterID("blueWeight", 1), "Blue Weight", *colourWeightRange, 1.0f, percent));
     
+    params.add(std::make_unique<AudioParameterBool>(ParameterID("darkMode", 1), "Dark Mode", false));
+    
     return params;
 }
 

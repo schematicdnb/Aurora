@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "SchematicLookAndFeel.h"
 
 //==============================================================================
 /**
@@ -31,6 +32,7 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     AuroraAudioProcessor& audioProcessor;
+    SchematicLookAndFeel customLookAndFeel;
     
     Slider historySlider, gainSlider;
     Label historyLabel, gainLabel;
@@ -59,6 +61,10 @@ private:
     
     juce::AudioProcessorValueTreeState &apvts = audioProcessor.apvts;
     juce::RGBMeter &rgbMeter = audioProcessor.rgbMeter;
+    
+    ToggleButton darkModeButton;
+    std::unique_ptr<ButtonAttachment> darkModeAttachment;
+    
     
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuroraAudioProcessorEditor)

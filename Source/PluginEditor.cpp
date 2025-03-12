@@ -16,8 +16,14 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
     
+    LookAndFeel::setDefaultLookAndFeel(&customLookAndFeel);
+    
     // add meter
     addAndMakeVisible(rgbMeter);
+    
+    // Dark mode toggle
+    addAndMakeVisible(darkModeButton);
+    darkModeAttachment.reset(new ButtonAttachment(apvts, "darkMode", darkModeButton));
     
     initZoomGroup();
     initCrossoverGroup();
@@ -190,7 +196,6 @@ void AuroraAudioProcessorEditor::initColourGroup() {
     // Red function
     redSlider.onValueChange = [this]() {
         rgbMeter.setColourWeight("red", redSlider.getValue());
-        DBG(static_cast<float>(*apvts.getRawParameterValue("redWeight")));
     };
     
     
@@ -216,7 +221,6 @@ void AuroraAudioProcessorEditor::initColourGroup() {
     // Green function
     greenSlider.onValueChange = [this]() {
         rgbMeter.setColourWeight("green", greenSlider.getValue());
-        DBG(static_cast<float>(*apvts.getRawParameterValue("greenWeight")));
     };
     
     
@@ -242,7 +246,6 @@ void AuroraAudioProcessorEditor::initColourGroup() {
     // Green function
     blueSlider.onValueChange = [this]() {
         rgbMeter.setColourWeight("blue", blueSlider.getValue());
-        DBG(static_cast<float>(*apvts.getRawParameterValue("blueWeight")));
     };
 }
 
@@ -267,6 +270,8 @@ void AuroraAudioProcessorEditor::resized(){
     
     auto labelHeight = gainLabel.getHeight();
     audioProcessor.setEditorSize(getWidth(), getHeight());
+    
+    darkModeButton.setBounds(0, 0, 25, margin);
     
     rgbMeter.setBounds(margin, margin, getWidth() - 2*margin, getHeight() - 3*margin - groupHeight - labelHeight);
     

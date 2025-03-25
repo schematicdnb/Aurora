@@ -246,6 +246,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout AuroraAudioProcessor::create
     
     params.add(std::make_unique<AudioParameterBool>(ParameterID("darkMode", 1), "Dark Mode", false));
     
+    params.add(std::make_unique<AudioParameterBool>(ParameterID("showControls", 1), "Show Controls", false));
+    
     return params;
 }
 
@@ -256,7 +258,7 @@ int AuroraAudioProcessor::getEditorWidth() {
 
 int AuroraAudioProcessor::getEditorHeight() {
     auto size = apvts.state.getOrCreateChildWithName("size", nullptr);
-    return size.getProperty("height", 250);
+    return size.getProperty("height", 106);
 }
 
 void AuroraAudioProcessor::setEditorSize(int width, int height) {

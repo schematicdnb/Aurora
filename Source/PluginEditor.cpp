@@ -35,17 +35,28 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     
     darkModeAttachment.reset(new ButtonAttachment(apvts, "darkMode", darkModeButton));
     
+    
+    
+    // init controls
     initZoomGroup();
     initCrossoverGroup();
     initColourGroup();
     
+    labelHeight = gainLabel.getHeight();
+    groupHeight += labelHeight;
+    
+
     // Set window size
     setSize(audioProcessor.getEditorWidth(), audioProcessor.getEditorHeight());
     
     // make window resizable
     setResizable(true, true);
-    setResizeLimits(640, 250, 1280, 720);
-
+    
+    initControlToggle();
+    setResizeLimits(640, 106, 1280, 720);
+    
+    
+    
 
 }
 
@@ -258,6 +269,47 @@ void AuroraAudioProcessorEditor::initColourGroup() {
         rgbMeter.setColourWeight("blue", blueSlider.getValue());
     };
 }
+void AuroraAudioProcessorEditor::initControlToggle() {
+    
+    // add toggle button
+    addAndMakeVisible(toggleControlsButton);
+    toggleControlsButton.setButtonText("Show Controls");
+    toggleControlsButton.setClickingTogglesState(true);
+    toggleControlsButton.setSize(50, 25);
+    toggleControlsButton.changeWidthToFitText();
+    toggleControlsButton.setColour(TextButton::ColourIds::buttonOnColourId, Colours::green);
+    
+    // Parameter attachment
+    toggleControlsAttachment.reset(new ButtonAttachment(apvts, "showControls", toggleControlsButton));
+    
+    // Hide controls by default
+    if (!toggleControlsButton.getToggleState()) {
+        for (Component* control: advancedControls) {
+            control->setVisible(false);
+        }
+    }
+    
+    resized(); // force updating bounds
+    
+    // Click to toggle
+    toggleControlsButton.onClick = [this]() {
+        if (toggleControlsButton.getToggleState()) {
+            setSize(getWidth(), getHeight() + groupHeight + margin);
+            setResizeLimits(640, 250, 1280, 720);
+            for (Component* control : advancedControls) {
+                control->setVisible(true);
+            }
+            
+        } else {
+            setResizeLimits(640, 100, 1280, 720);
+            setSize(getWidth(), getHeight() - groupHeight - margin);
+            for (Component* control : advancedControls) {
+                control->setVisible(false);
+            }
+        }
+        repaint();
+    };
+}
 
 //==============================================================================
 void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
@@ -266,41 +318,51 @@ void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
 //    g.fillAll(Colour(32,32,32));
     g.fillAll(Colour(232, 232, 232));
     
-    auto labelHeight = gainLabel.getHeight();
+//    g.drawImageAt(faceplate, 0, 0);
+    
+//    labelHeight = gainLabel.getHeight();
 
     g.setColour(Colours::black);
-    g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - groupHeight - labelHeight - 3*margin, rgbMeter.getCornerRadius());
-
-  
+    if (toggleControlsButton.getToggleState()) {
+        g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - groupHeight - 3*margin, rgbMeter.getCornerRadius());
+    } else {
+        g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - 2*margin, rgbMeter.getCornerRadius());
+    }
 }
 
 void AuroraAudioProcessorEditor::resized(){
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
-    
-    auto labelHeight = gainLabel.getHeight();
+
+//    auto labelHeight = gainLabel.getHeight();
     audioProcessor.setEditorSize(getWidth(), getHeight());
     
-    darkModeButton.setBounds(margin, margin, paramWidth, paramHeight);
+//    toggleControlsButton.setBounds(0, 0, 50, 25);
     
-    rgbMeter.setBounds(margin, margin, getWidth() - 2*margin, getHeight() - 3*margin - groupHeight - labelHeight);
+//    darkModeButton.setBounds(margin, margin, paramWidth, paramHeight);
+    if (toggleControlsButton.getToggleState()) {
+        rgbMeter.setBounds(margin, margin, getWidth() - 2*margin, getHeight() - 3*margin - groupHeight);
+    } else {
+        rgbMeter.setBounds(margin, margin, getWidth() - 2*margin, getHeight() - 2*margin);
+    }
+    
     
     // Zoom controls
-    zoomGroup.setBounds(getWidth() - margin+2 - groupWidth, getHeight() - margin - groupHeight - labelHeight, groupWidth, groupHeight + labelHeight);
+    zoomGroup.setBounds(getWidth() - margin+2 - groupWidth, getHeight() - margin - groupHeight, groupWidth, groupHeight);
     
     historySlider.setBounds(zoomGroup.getX() + margin, zoomGroup.getY() + labelHeight + margin, paramWidth, paramHeight);
     
     gainSlider.setBounds(historySlider.getX() + paramWidth + margin, historySlider.getY(), paramWidth, paramHeight);
     
     // Crossover controls
-    crossoverGroup.setBounds(margin-2, zoomGroup.getY(), groupWidth, groupHeight + labelHeight);
+    crossoverGroup.setBounds(margin-2, zoomGroup.getY(), groupWidth, groupHeight);
     
     lowCrossoverSlider.setBounds(crossoverGroup.getX() + margin, gainSlider.getY(), paramWidth, paramHeight);
     
     highCrossoverSlider.setBounds(lowCrossoverSlider.getX() + paramWidth + margin, lowCrossoverSlider.getY(), paramWidth, paramHeight);
     
     // Colour controls
-    colourGroup.setBounds(getWidth()/2 - 1.5*paramWidth - 2*margin, crossoverGroup.getY(), 3*paramWidth + 4*margin, groupHeight + labelHeight);
+    colourGroup.setBounds(getWidth()/2 - 1.5*paramWidth - 2*margin, crossoverGroup.getY(), 3*paramWidth + 4*margin, groupHeight);
     
     redSlider.setBounds(colourGroup.getX() + margin, gainSlider.getY(), paramWidth, paramHeight);
     greenSlider.setBounds(redSlider.getX() + paramWidth + margin, redSlider.getY(), paramWidth, paramHeight);

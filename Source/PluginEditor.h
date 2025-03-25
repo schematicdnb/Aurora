@@ -27,6 +27,7 @@ public:
     void initZoomGroup();
     void initCrossoverGroup();
     void initColourGroup();
+    void initControlToggle();
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -44,6 +45,7 @@ private:
     GroupComponent zoomGroup, crossoverGroup, colourGroup;
     int groupWidth = 2*paramWidth + 3*margin;
     int groupHeight = paramHeight + 2*margin;
+    int labelHeight = 0;
     
     Slider lowCrossoverSlider, highCrossoverSlider;
     Label lowCrossoverLabel, highCrossoverLabel;
@@ -66,6 +68,17 @@ private:
     TextButton darkModeButton;
     Label themeLabel;
     std::unique_ptr<ButtonAttachment> darkModeAttachment;
+    
+    TextButton toggleControlsButton;
+    std::unique_ptr<ButtonAttachment> toggleControlsAttachment;
+    
+    TextButton showAdvancedButton;
+    
+    Array<Component*> advancedControls = {&historySlider, &gainSlider, &historyLabel, &gainLabel, &zoomGroup, &crossoverGroup, &colourGroup, &lowCrossoverSlider, &highCrossoverSlider, &lowCrossoverLabel, &highCrossoverLabel, &redSlider, &greenSlider, &blueSlider, &redLabel, &greenLabel, &blueLabel};
+    
+    File img = File("/Users/dan/Library/CloudStorage/OneDrive-Personal/uOttawa/Winter 2025/CSI 4900 Honours Project/Plugin/RGB-Meter/Source/AuroraFaceplate.png");
+    Image faceplate = ImageCache::getFromFile(img).rescaled(640, 320);
+//    Image faceplate = ImageCache::getFromMemory(BinaryData::AuroraFaceplate_png, BinaryData::AuroraFaceplate_pngSize).rescaled(640, 320);
     
     
     

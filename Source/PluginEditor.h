@@ -46,6 +46,7 @@ private:
     int groupWidth = 2*paramWidth + 3*margin;
     int groupHeight = paramHeight + 2*margin;
     int labelHeight = 0;
+    int infoAreaHeight = 6*margin;
     
     Slider lowCrossoverSlider, highCrossoverSlider;
     Label lowCrossoverLabel, highCrossoverLabel;
@@ -69,16 +70,31 @@ private:
     Label themeLabel;
     std::unique_ptr<ButtonAttachment> darkModeAttachment;
     
-    TextButton toggleControlsButton;
+//    TextButton toggleControlsButton;
     std::unique_ptr<ButtonAttachment> toggleControlsAttachment;
     
-    TextButton showAdvancedButton;
+    ToggleButton toggleControlsButton;
+    Label toggleControlsLabel;
     
-    Array<Component*> advancedControls = {&historySlider, &gainSlider, &historyLabel, &gainLabel, &zoomGroup, &crossoverGroup, &colourGroup, &lowCrossoverSlider, &highCrossoverSlider, &lowCrossoverLabel, &highCrossoverLabel, &redSlider, &greenSlider, &blueSlider, &redLabel, &greenLabel, &blueLabel};
+    Array<Component*> controls = {&historySlider, &gainSlider, &historyLabel, &gainLabel, &zoomGroup, &crossoverGroup, &colourGroup, &lowCrossoverSlider, &highCrossoverSlider, &lowCrossoverLabel, &highCrossoverLabel, &redSlider, &greenSlider, &blueSlider, &redLabel, &greenLabel, &blueLabel};
     
-    File img = File("/Users/dan/Library/CloudStorage/OneDrive-Personal/uOttawa/Winter 2025/CSI 4900 Honours Project/Plugin/RGB-Meter/Source/AuroraFaceplate.png");
-    Image faceplate = ImageCache::getFromFile(img).rescaled(640, 320);
+//    File img = File("/Users/dan/Library/CloudStorage/OneDrive-Personal/uOttawa/Winter 2025/CSI 4900 Honours Project/Plugin/RGB-Meter/Source/AuroraFaceplate.png");
+//    Image faceplate = ImageCache::getFromFile(img).rescaled(640, 320);
 //    Image faceplate = ImageCache::getFromMemory(BinaryData::AuroraFaceplate_png, BinaryData::AuroraFaceplate_pngSize).rescaled(640, 320);
+    
+    
+//    float auroraScale = 0.09;
+//    File logoAuroraFile = File("/Users/dan/Library/CloudStorage/OneDrive-Personal/uOttawa/Winter 2025/CSI 4900 Honours Project/Plugin/Logos/AURORA LIGHT MODE/fulllogo_transparent_nobuffer.png");
+//    Image logoAurora = ImageCache::getFromFile(logoAuroraFile).rescaled(std::ceil(1280 * auroraScale), std::ceil(720 * auroraScale));
+//    Image logoAurora = ImageCache::getFromMemory(BinaryData::AuroraLogoLightMode_png, BinaryData::AuroraLogoLightMode_pngSize).rescaled(std::ceil(1280 * auroraScale), std::ceil(720 * auroraScale));
+    Image logoAurora = gin::applyResize(ImageCache::getFromMemory(BinaryData::AuroraLogoLightMode_png, BinaryData::AuroraLogoLightMode_pngSize), 0.09);
+//    gin::applyResize(logoAurora, 0.09);
+
+    
+//    float schematicScale = 0.055;
+//    File logoSchematicFile = File("/Users/dan/Library/CloudStorage/OneDrive-Personal/uOttawa/Winter 2025/CSI 4900 Honours Project/Plugin/Logos/Schematic_Sound_Logo.png");
+//    Image logoSchematic = ImageCache::getFromFile(logoSchematicFile).rescaled(std::ceil(3320 * schematicScale), std::ceil(444 * schematicScale));
+    Image logoSchematic = gin::applyResize(ImageCache::getFromMemory(BinaryData::SchematicSoundLogo_png, BinaryData::SchematicSoundLogo_pngSize), 0.055);
     
     
     

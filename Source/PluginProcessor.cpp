@@ -258,7 +258,7 @@ int AuroraAudioProcessor::getEditorWidth() {
 
 int AuroraAudioProcessor::getEditorHeight() {
     auto size = apvts.state.getOrCreateChildWithName("size", nullptr);
-    return size.getProperty("height", 106);
+    return size.getProperty("height", 160);
 }
 
 void AuroraAudioProcessor::setEditorSize(int width, int height) {

@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="SEhXmX" name="Aurora" projectType="audioplug" useAppConfig="0"
-              jucerFormatVersion="1" version="0.2" companyName="Schematic Sound"
+              jucerFormatVersion="1" version="0.3" companyName="Schematic Sound"
               pluginFormats="buildAU,buildVST3" pluginManufacturerCode="SSND"
               pluginDesc="Waveform visualizer with frequency-based colours inspired by DJ tools."
               pluginVST3Category="Analyzer,Tools" pluginVSTCategory="kPlugCategAnalysis"
-              pluginCode="Arra">
+              pluginCode="Arra" cppLanguageStandard="20">
   <MAINGROUP id="prN6Wm" name="Aurora">
     <GROUP id="{7B1CE658-CB34-AAFD-E5D4-611BE3C4418D}" name="Assets">
+      <FILE id="fjUNJe" name="AuroraLogoLightMode.png" compile="0" resource="1"
+            file="../Logos/AURORA LIGHT MODE/AuroraLogoLightMode.png"/>
+      <FILE id="nLTd9I" name="SchematicSoundLogo.png" compile="0" resource="1"
+            file="../Logos/SchematicSoundLogo.png"/>
       <FILE id="TCTNaE" name="AuroraKnob.png" compile="0" resource="1" file="Source/AuroraKnob.png"/>
     </GROUP>
     <GROUP id="{DD6A068D-F127-8FC1-7C6B-391B81BC2A60}" name="Source">
@@ -36,6 +40,8 @@
     </GROUP>
   </MAINGROUP>
   <MODULES>
+    <MODULE id="gin" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="gin_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
@@ -72,6 +78,8 @@
         <MODULEPATH id="juce_graphics" path="../JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../JUCE/modules"/>
+        <MODULEPATH id="gin_graphics" path="../Gin-master/modules"/>
+        <MODULEPATH id="gin" path="../Gin-master/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2022 targetFolder="Builds/VisualStudio2022">
@@ -93,6 +101,8 @@
         <MODULEPATH id="juce_graphics" path="..\JUCE\modules"/>
         <MODULEPATH id="juce_gui_basics" path="..\JUCE\modules"/>
         <MODULEPATH id="juce_gui_extra" path="..\JUCE\modules"/>
+        <MODULEPATH id="gin_graphics" path="../Gin-master/modules"/>
+        <MODULEPATH id="gin" path="../Gin-master/modules"/>
       </MODULEPATHS>
     </VS2022>
   </EXPORTFORMATS>

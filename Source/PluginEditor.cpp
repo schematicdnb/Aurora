@@ -55,7 +55,7 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     setResizable(true, true);
     
     initControlToggle();
-    setResizeLimits(540, 160, 1280, 720);
+    setResizeLimits(540, 160, 1280, 720 - groupHeight - margin);
     
     
     
@@ -313,8 +313,8 @@ void AuroraAudioProcessorEditor::initControlToggle() {
             }
             
         } else {
-            setResizeLimits(540, 160, 1280, 720 - groupHeight - margin);
             setSize(getWidth(), getHeight() - groupHeight - margin);
+            setResizeLimits(540, 160, 1280, 720 - groupHeight - margin);
             for (Component* control : controls) {
                 control->setVisible(false);
             }

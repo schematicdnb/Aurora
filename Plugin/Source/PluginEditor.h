@@ -98,5 +98,6 @@ private:
     
     URL versions = URL("https://www.schematicsound.com/plugin-versions.php");
     
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuroraAudioProcessorEditor)
 };

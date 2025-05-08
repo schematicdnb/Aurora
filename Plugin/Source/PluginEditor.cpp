@@ -331,8 +331,18 @@ void AuroraAudioProcessorEditor::checkForUpdates() {
         auto latestVersion = response.getProperty(pluginName, "0").toString();
         
         if (currentVersion.compare(latestVersion)) {
-            DBG("Current version: " << currentVersion);
-            DBG("Latest version: " << latestVersion);
+            String versionsMessage = "Current version: ";
+            versionsMessage += currentVersion;
+            versionsMessage += "\nLatest version: ";
+            versionsMessage += latestVersion;
+            
+            AlertWindow alert("Update Available", versionsMessage, MessageBoxIconType::WarningIcon);
+            alert.showOkCancelBox(MessageBoxIconType::WarningIcon, "Update Available", versionsMessage, "Download", "Later", nullptr, ModalCallbackFunction::create([this](int result){
+                if (result == 1) {
+                    URL download = URL("https://www.schematicsound.com/plug-ins/");
+                    download.launchInDefaultBrowser();
+                }
+            }));
         }
         
     }

@@ -58,8 +58,8 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     setResizeLimits(540, 160, 1280, 720 - groupHeight - margin);
     
     
-    
-
+    // Check for updates
+    checkForUpdates();
 }
 
 AuroraAudioProcessorEditor::~AuroraAudioProcessorEditor()
@@ -321,6 +321,22 @@ void AuroraAudioProcessorEditor::initControlToggle() {
         }
         repaint();
     };
+}
+void AuroraAudioProcessorEditor::checkForUpdates() {
+    auto pluginName = ProjectInfo::projectName;
+    auto response = JSON::parse(versions.readEntireTextStream());
+    
+    if (response.isObject() && response.hasProperty(pluginName)) {
+        auto currentVersion = String(ProjectInfo::versionString);
+        auto latestVersion = response.getProperty(pluginName, "0").toString();
+        
+        if (currentVersion.compare(latestVersion)) {
+            DBG("Current version: " << currentVersion);
+            DBG("Latest version: " << latestVersion);
+        }
+        
+    }
+    
 }
 
 //==============================================================================

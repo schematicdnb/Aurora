@@ -337,11 +337,11 @@ void AuroraAudioProcessorEditor::checkForUpdates() {
             versionsMessage += latestVersion;
             
             AlertWindow alert("Update Available", versionsMessage, MessageBoxIconType::WarningIcon);
-            alert.showOkCancelBox(MessageBoxIconType::WarningIcon, "Update Available", versionsMessage, "Download", "Later", nullptr, ModalCallbackFunction::create([this](int result){
-                if (result == 1) {
-                    URL download = URL("https://www.schematicsound.com/plug-ins/");
-                    download.launchInDefaultBrowser();
-                }
+            alert.showOkCancelBox(MessageBoxIconType::WarningIcon, "Update Available", versionsMessage, "Download", "Later", this, ModalCallbackFunction::create([this](int result){
+                    if (result == 1) {
+                        URL download = URL("https://www.schematicsound.com/plug-ins/");
+                        download.launchInDefaultBrowser();
+                    }
             }));
         }
         

@@ -59,7 +59,10 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     
     
     // Check for updates
-    checkForUpdates();
+    if (!audioProcessor.isUpdatesDismissed()) {
+        checkForUpdates();
+    }
+    
 }
 
 AuroraAudioProcessorEditor::~AuroraAudioProcessorEditor()
@@ -322,31 +325,44 @@ void AuroraAudioProcessorEditor::initControlToggle() {
         repaint();
     };
 }
+
 void AuroraAudioProcessorEditor::checkForUpdates() {
     auto pluginName = ProjectInfo::projectName;
-    auto response = JSON::parse(versions.readEntireTextStream());
+    auto currentVersion = String(ProjectInfo::versionString);
+    
+    String versionURL = "https://www.schematicsound.com/plugin-versions.php";
+    String cacheBypass = String(Time::getCurrentTime().toMilliseconds());
+    URL requestURL(versionURL + "?cb=" + cacheBypass);
+    
+    auto response = JSON::parse(requestURL.readEntireTextStream());
     
     if (response.isObject() && response.hasProperty(pluginName)) {
-        auto currentVersion = String(ProjectInfo::versionString);
-        auto latestVersion = response.getProperty(pluginName, "0").toString();
+        
+        auto info = response.getProperty(pluginName, "Update Check Failed.");
+        auto latestVersion = info.getProperty("version", "0").toString();
+        auto notes = info.getProperty("notes", "No info available.").toString();
         
         if (currentVersion.compare(latestVersion)) {
             String versionsMessage = "Current version: ";
             versionsMessage += currentVersion;
             versionsMessage += "\nLatest version: ";
             versionsMessage += latestVersion;
+            versionsMessage += "\n\nChanges:";
+            versionsMessage += notes;
             
             AlertWindow alert("Update Available", versionsMessage, MessageBoxIconType::WarningIcon);
+            alert.setColour(AlertWindow::ColourIds::backgroundColourId, Colour(32,32,32));
+            alert.setColour(AlertWindow::ColourIds::textColourId, Colours::black);
             alert.showOkCancelBox(MessageBoxIconType::WarningIcon, "Update Available", versionsMessage, "Download", "Later", this, ModalCallbackFunction::create([this](int result){
                     if (result == 1) {
                         URL download = URL("https://www.schematicsound.com/plug-ins/");
                         download.launchInDefaultBrowser();
+                    } else {
+                        audioProcessor.dismissUpates();
                     }
             }));
         }
-        
     }
-    
 }
 
 //==============================================================================

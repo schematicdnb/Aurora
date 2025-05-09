@@ -33,6 +33,9 @@ public:
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
+    
+    
+    
     AuroraAudioProcessor& audioProcessor;
     SchematicLookAndFeel customLookAndFeel;
     
@@ -95,9 +98,6 @@ private:
 //    File logoSchematicFile = File("/Users/dan/Library/CloudStorage/OneDrive-Personal/uOttawa/Winter 2025/CSI 4900 Honours Project/Plugin/Logos/Schematic_Sound_Logo.png");
 //    Image logoSchematic = ImageCache::getFromFile(logoSchematicFile).rescaled(std::ceil(3320 * schematicScale), std::ceil(444 * schematicScale));
     Image logoSchematic = gin::applyResize(ImageCache::getFromMemory(BinaryData::SchematicSoundLogo_png, BinaryData::SchematicSoundLogo_pngSize), 0.055);
-    
-    URL versions = URL("https://www.schematicsound.com/plugin-versions.php");
-    
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuroraAudioProcessorEditor)
 };

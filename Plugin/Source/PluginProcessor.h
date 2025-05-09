@@ -67,9 +67,14 @@ public:
     void setEditorSize(int width, int height);
     
     void initDSP();
+    
+    void dismissUpates();
+    bool isUpdatesDismissed();
 
     
 private:
+    
+    bool updatesDismissed = false;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AuroraAudioProcessor)

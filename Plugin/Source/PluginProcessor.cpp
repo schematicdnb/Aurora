@@ -267,6 +267,15 @@ void AuroraAudioProcessor::setEditorSize(int width, int height) {
     size.setProperty("height", height, nullptr);
 }
 
+void AuroraAudioProcessor::dismissUpates() {
+    updatesDismissed = true;
+}
+
+bool AuroraAudioProcessor::isUpdatesDismissed() {
+    if (updatesDismissed) {return true;}
+    return false;
+}
+
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor *JUCE_CALLTYPE createPluginFilter()

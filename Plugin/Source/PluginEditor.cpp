@@ -351,9 +351,8 @@ void AuroraAudioProcessorEditor::checkForUpdates() {
             versionsMessage += notes;
             
             AlertWindow alert("Update Available", versionsMessage, MessageBoxIconType::WarningIcon);
-            alert.setColour(AlertWindow::ColourIds::backgroundColourId, Colour(32,32,32));
-            alert.setColour(AlertWindow::ColourIds::textColourId, Colours::black);
-            alert.showOkCancelBox(MessageBoxIconType::WarningIcon, "Update Available", versionsMessage, "Download", "Later", this, ModalCallbackFunction::create([this](int result){
+
+            alert.showOkCancelBox(MessageBoxIconType::WarningIcon, "Update Available", versionsMessage, "Update", "Dismiss", this, ModalCallbackFunction::create([this](int result){
                     if (result == 1) {
                         URL download = URL("https://www.schematicsound.com/plug-ins/");
                         download.launchInDefaultBrowser();

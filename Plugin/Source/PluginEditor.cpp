@@ -55,7 +55,6 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     setResizable(true, true);
     
     initControlToggle();
-    setResizeLimits(540, 160, 1280, 720 - groupHeight - margin);
     
     
     // Check for updates
@@ -278,13 +277,9 @@ void AuroraAudioProcessorEditor::initControlToggle() {
     
     // add toggle button
     addAndMakeVisible(toggleControlsButton);
-//    toggleControlsButton.setButtonText("Show Controls");
-//    toggleControlsButton.setClickingTogglesState(true);
     toggleControlsButton.setSize(21, 21);
-//    toggleControlsButton.changeWidthToFitText();
     toggleControlsButton.setColour(ToggleButton::tickColourId, Colour(32,32,32));
     toggleControlsButton.setColour(ToggleButton::tickDisabledColourId, Colour(32,32,32));
-//    toggleControlsButton.setColour(TextButton::ColourIds::buttonOnColourId, Colours::green);
     
     // Parameter attachment
     toggleControlsAttachment.reset(new ButtonAttachment(apvts, "showControls", toggleControlsButton));
@@ -292,16 +287,15 @@ void AuroraAudioProcessorEditor::initControlToggle() {
     // Show Controls Label
     addAndMakeVisible(toggleControlsLabel);
     toggleControlsLabel.setSize(75, toggleControlsButton.getHeight());
-//    toggleControlsLabel.attachToComponent(&toggleControlsButton, false);
     toggleControlsLabel.setText("Show Controls", dontSendNotification);
     toggleControlsLabel.setJustificationType(Justification::centred);
     toggleControlsLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
     
     // Hide controls by default
     if (!toggleControlsButton.getToggleState()) {
-        for (Component* control: controls) {
-            control->setVisible(false);
-        }
+        hideControls();
+    } else {
+        setResizeLimits(540, 160 + groupHeight + margin, 1280, 720);
     }
     
     resized(); // force updating bounds
@@ -309,21 +303,28 @@ void AuroraAudioProcessorEditor::initControlToggle() {
     // Click to toggle
     toggleControlsButton.onClick = [this]() {
         if (toggleControlsButton.getToggleState()) {
-            setSize(getWidth(), getHeight() + groupHeight + margin);
-            setResizeLimits(540, 160 + groupHeight + margin, 1280, 720);
-            for (Component* control : controls) {
-                control->setVisible(true);
-            }
-            
+            showControls();
         } else {
-            setSize(getWidth(), getHeight() - groupHeight - margin);
-            setResizeLimits(540, 160, 1280, 720 - groupHeight - margin);
-            for (Component* control : controls) {
-                control->setVisible(false);
-            }
+            hideControls();
         }
         repaint();
     };
+}
+
+void AuroraAudioProcessorEditor::showControls() {
+    setSize(getWidth(), getHeight() + groupHeight + margin);
+    setResizeLimits(540, 160 + groupHeight + margin, 1280, 720);
+    for (Component* control : controls) {
+        control->setVisible(true);
+    }
+}
+
+void AuroraAudioProcessorEditor::hideControls() {
+    setSize(getWidth(), getHeight() - groupHeight - margin);
+    setResizeLimits(540, 160, 1280, 720 - groupHeight - margin);
+    for (Component* control : controls) {
+        control->setVisible(false);
+    }
 }
 
 void AuroraAudioProcessorEditor::checkForUpdates() {

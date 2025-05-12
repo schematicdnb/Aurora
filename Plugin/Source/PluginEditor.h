@@ -29,6 +29,8 @@ public:
     void initColourGroup();
     void initControlToggle();
     void checkForUpdates();
+    void showControls();
+    void hideControls();
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -73,7 +75,6 @@ private:
     Label themeLabel;
     std::unique_ptr<ButtonAttachment> darkModeAttachment;
     
-//    TextButton toggleControlsButton;
     std::unique_ptr<ButtonAttachment> toggleControlsAttachment;
     
     ToggleButton toggleControlsButton;

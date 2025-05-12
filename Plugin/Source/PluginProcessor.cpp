@@ -253,7 +253,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout AuroraAudioProcessor::create
 
 int AuroraAudioProcessor::getEditorWidth() {
     auto size = apvts.state.getOrCreateChildWithName("size", nullptr);
-    return size.getProperty("width", 640);
+    return size.getProperty("width", 540);
 }
 
 int AuroraAudioProcessor::getEditorHeight() {

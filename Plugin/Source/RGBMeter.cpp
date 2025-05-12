@@ -142,7 +142,12 @@ namespace juce
         auto low = lowBuffer.getRMSLevel(0, 0, lowBuffer.getNumSamples());
         auto mid = midBuffer.getRMSLevel(0, 0, midBuffer.getNumSamples());
         auto high = highBuffer.getRMSLevel(0, 0, highBuffer.getNumSamples());
+        
+        // Cut low by 3dB, boost high by 1.5dB
+        low *= Decibels::decibelsToGain(-3);
+        high *= Decibels::decibelsToGain(1.5);
 
+        // apply colour weighting
         low *= lowWeight;
         mid *= midWeight;
         high *= highWeight;

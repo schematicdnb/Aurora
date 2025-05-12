@@ -220,7 +220,7 @@ namespace juce
     }
     void RGBMeter::setGain(float gain)
     {
-        this->gain = Decibels::decibelsToGain(gain / 2);
+        this->gain = Decibels::decibelsToGain(gain);
     }
     void RGBMeter::setLowCrossover(float freq)
     {

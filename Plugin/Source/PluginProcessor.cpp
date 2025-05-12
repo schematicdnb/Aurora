@@ -217,7 +217,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout AuroraAudioProcessor::create
     APVTS::ParameterLayout params;
     
     // History
-    params.add(std::make_unique<AudioParameterInt>(ParameterID("historyLength", 1), "History Length", 1, 20, 8));
+    params.add(std::make_unique<AudioParameterInt>(ParameterID("historyLength", 1), "History Length", 1, 20, 4));
 
     // Gain
     auto gainRange = std::make_unique<NormalisableRange<float>>(-24.0f, 24.0f, 0.1f);

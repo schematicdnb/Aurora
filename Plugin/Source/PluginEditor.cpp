@@ -9,12 +9,66 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+CompanyLogo::CompanyLogo ()
+{
+    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogo_png, BinaryData::SchematicSoundLogo_pngSize);
+
+    #if ANIMATE_COMPANY_LOGO
+        jitterX.reset (15);
+        jitterY.reset (15);
+        startTimerHz (30);
+    #endif
+}
+
+void CompanyLogo::timerCallback ()
+{
+    // this is just a simple example of how to animate the logo... this particular code makes the logo shiver
+    const auto jitterRange = 0.1f;
+    jitterX.setTargetValue (jmap (random.nextFloat(), 0.f, 1.f, -jitterRange, jitterRange));
+    jitterY.setTargetValue (jmap (random.nextFloat(), 0.f, 1.f, -jitterRange, jitterRange));
+    repaint ();
+}
+
+void CompanyLogo::paint (Graphics& g)
+{
+    const auto width = getWidth ();
+    const auto height = getHeight ();
+    auto area = getLocalBounds().toFloat().reduced (height * 0.1f);
+    
+    #if ANIMATE_COMPANY_LOGO
+        const auto currentJitterX = jitterX.getNextValue ();
+        const auto currentJitterY = jitterY.getNextValue ();
+        area = area.translated (width * currentJitterX, height * currentJitterY);
+    #endif
+    
+    if (logo != nullptr)
+        logo->drawWithin (g, area, RectanglePlacement::centred, 1.0f);
+}
+
 //==============================================================================
 AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     : AudioProcessorEditor(&p), audioProcessor(p)
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
+    
+    // Moonbase Activation UI
+    if (activationUI)
+    {
+        // There are a max of 2 lines of text on the welcome screen, define them here
+        activationUI->setWelcomePageText ("Audio will mute occasionally while unactivated.", "");
+
+        // Set the logo inside the spinner (when waiting for web responses)
+        activationUI->setSpinnerLogo (Drawable::createFromImageData (BinaryData::LoadingSpinner_svg, BinaryData::LoadingSpinner_svgSize));
+
+        // Scale the spinner logo as required for your asset if needed. See Submodules/moonbase_JUCEClient/Assets/Source/SVG/OverlayAssets for ideal assets.
+        // activationUI->setSpinnerLogoScale (0.5f);
+        
+        // Set the company logo, this is the logo that is displayed on the welcome screen and the activated info screen
+        activationUI->setCompanyLogo (std::make_unique<CompanyLogo> ());
+        // Scale the company logo as required for your asset if needed.
+        // activationUI->setCompanyLogoScale ((0.25f));
+    }
     
     LookAndFeel::setDefaultLookAndFeel(&customLookAndFeel);
     
@@ -390,6 +444,8 @@ void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
 void AuroraAudioProcessorEditor::resized(){
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
+    
+    MOONBASE_RESIZE_ACTIVATION_UI
     
     auto width = getWidth();
     auto height = getHeight();

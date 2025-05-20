@@ -8,6 +8,12 @@
 
 namespace BinaryData
 {
+    extern const char*   moonbase_api_config_json;
+    const int            moonbase_api_config_jsonSize = 930;
+
+    extern const char*   LoadingSpinner_svg;
+    const int            LoadingSpinner_svgSize = 447;
+
     extern const char*   AuroraLogoLightMode_png;
     const int            AuroraLogoLightMode_pngSize = 213284;
 
@@ -18,7 +24,7 @@ namespace BinaryData
     const int            AuroraKnob_pngSize = 198471;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 3;
+    const int namedResourceListSize = 5;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

@@ -5,9 +5,16 @@
               pluginFormats="buildAU,buildVST3" pluginManufacturerCode="SSND"
               pluginDesc="Waveform visualizer with frequency-based colours inspired by DJ tools."
               pluginVST3Category="Analyzer,Tools" pluginVSTCategory="kPlugCategAnalysis"
-              pluginCode="Arra" cppLanguageStandard="20">
+              pluginCode="Arra" cppLanguageStandard="20" companyWebsite="https://www.schematicsound.com/"
+              companyCopyright="Copyright 2025 Schematic Sound" companyEmail="contact@schematicsound.com">
   <MAINGROUP id="prN6Wm" name="Aurora">
+    <GROUP id="{001912F3-4C44-0C40-3EFF-9E775950FB82}" name="Resources">
+      <FILE id="vwwe7t" name="moonbase_api_config.json" compile="0" resource="1"
+            file="../moonbase_api_config.json"/>
+    </GROUP>
     <GROUP id="{7B1CE658-CB34-AAFD-E5D4-611BE3C4418D}" name="Assets">
+      <FILE id="Ndv7I9" name="LoadingSpinner.svg" compile="0" resource="1"
+            file="../../moonbase_JUCEClient/Assets/Source/SVG/OverlayAssets/LoadingSpinner.svg"/>
       <FILE id="fjUNJe" name="AuroraLogoLightMode.png" compile="0" resource="1"
             file="../Logos/AURORA LIGHT MODE/AuroraLogoLightMode.png"/>
       <FILE id="nLTd9I" name="SchematicSoundLogo.png" compile="0" resource="1"
@@ -50,14 +57,19 @@
     <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_product_unlocking" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="moonbase_JUCEClient" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"
+               MOONBASE_APP_MODE="1"/>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
@@ -80,6 +92,9 @@
         <MODULEPATH id="juce_gui_extra" path="../JUCE/modules"/>
         <MODULEPATH id="gin" path="../../Gin-master/modules"/>
         <MODULEPATH id="gin_graphics" path="../../Gin-master/modules"/>
+        <MODULEPATH id="juce_product_unlocking" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../JUCE/modules"/>
+        <MODULEPATH id="moonbase_JUCEClient" path="../../../Plugins"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2022 targetFolder="Builds/VisualStudio2022">
@@ -103,6 +118,9 @@
         <MODULEPATH id="juce_gui_extra" path="..\JUCE\modules"/>
         <MODULEPATH id="gin" path="../../Gin-master/modules"/>
         <MODULEPATH id="gin_graphics" path="../../Gin-master/modules"/>
+        <MODULEPATH id="juce_product_unlocking" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../JUCE/modules"/>
+        <MODULEPATH id="moonbase_JUCEClient" path="../../../Plugins"/>
       </MODULEPATHS>
     </VS2022>
   </EXPORTFORMATS>

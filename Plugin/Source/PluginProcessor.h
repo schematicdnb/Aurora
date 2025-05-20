@@ -21,6 +21,12 @@ public:
     //==============================================================================
     AuroraAudioProcessor();
     ~AuroraAudioProcessor() override;
+    
+    //==============================================================================
+
+    MOONBASE_DECLARE_LICENSING_USING_JUCE_PROJECTINFO
+
+    //==============================================================================
 
     //==============================================================================
     void prepareToPlay(double sampleRate, int samplesPerBlock) override;
@@ -55,7 +61,7 @@ public:
     void getStateInformation(juce::MemoryBlock &destData) override;
     void setStateInformation(const void *data, int sizeInBytes) override;
 
-    juce::RGBMeter rgbMeter = RGBMeter();
+    RGBMeter rgbMeter = RGBMeter();
 
     using APVTS = juce::AudioProcessorValueTreeState;
     static APVTS::ParameterLayout createParameterLayout();

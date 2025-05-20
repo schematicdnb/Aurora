@@ -9,8 +9,29 @@
 namespace BinaryData
 {
 
-//================== AuroraLogoLightMode.png ==================
+//================== moonbase_api_config.json ==================
 static const unsigned char temp_binary_data_0[] =
+"{\n"
+"  \"productId\" : \"aurora\",\n"
+"  \"licenseFileLocation\" : \"Schematic Sound/aurora/license.mb\",\n"
+"  \"baseUrl\" : \"https://schematicsound.moonbase.sh\",\n"
+"  \"offlineUrl\" : \"https://schematicsound.com/?mb_intent=activate_product\",\n"
+"  \"publicKey\" : \"ZDU0ZjM5YTI2YmZmYTk2YmMyNmI5YWRhZGNmMmQ1OThkN2M2N2I1OGRlYzZhYjE5YWNjMjllMmY0NGNhZTdmOWFhMzdjMzdkZDA3MDIyYTNlNjcwZWRmYTIyMmFjMDhhMTI1ZTU2NzdkYmIzNTgzYWI4ZTI4N2VhNmFhMTkzNjM2OGZiMjZlNDMwMDk5ZWY0ZmIxNzA1ODllMGJhYWUxNmYxN2QwNjU1MGRjYj"
+"gyNjM2YjgxYjcxYjA5YzkxMDA4ZDgyNzNiZjY0YTRlNzgzZTlkMjcxOGQ4MjY5NmQ3ZjgzMjQ4MjY3ZDVjMGM4ZTZmNGE0OGE2NjM1MDE5NjI4ZmU4M2JmYjY5ZTk0YWQwZTAwMzQwOTI5YTM4ODhkMGZhZWRmZTY2ZDVhYmJhMjliMGU0OWIxNjNjZDA5YTUxY2M3Yzg0OTMzZmQ4NGM2YzQ2YmM3NWQ4YjljYmUxNzliYTFjMjM5MzA5"
+"ZTBlODNhZjQzMzhkNzA2NWU2ODQ0Mzg5MDlmMDc5ZTBlOTc4MzdhYjkyNzNhYjc4NjdjNzgzM2Y5MDhjNzJjYzQyYzU4ODczYzZmMzBiYmE4MzdjOTMyYmQ4NTgyM2M2MDUxMjFlNWU2OGQ3ZjYyYjZlMWQ4OTg5OWRlMDc5MzZkMTZjYWU2ODM1MjM4YjI3ZjhlZjIzZTUsNjU1Mzc=\"\n"
+"}";
+
+const char* moonbase_api_config_json = (const char*) temp_binary_data_0;
+
+//================== LoadingSpinner.svg ==================
+static const unsigned char temp_binary_data_1[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?><svg id=\"Layer_2\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 121.5 121.5\"><g id=\"Layer_2-2\"><path d=\"m37.66,83.84c-12.73-12.73-12.73-33.45,0-46.18,12.73-12.73,33.45-12.73,46.18,0,.98.98.98,2.56,"
+"0,3.54s-2.56.98-3.54,0c-10.78-10.78-28.33-10.78-39.11,0s-10.78,28.33,0,39.11c.98.98.98,2.56,0,3.54s-2.56.98-3.54,0Z\" style=\"fill:#353535;\"/><circle cx=\"60.75\" cy=\"60.75\" r=\"60.75\" style=\"fill:none;\"/></g></svg>";
+
+const char* LoadingSpinner_svg = (const char*) temp_binary_data_1;
+
+//================== AuroraLogoLightMode.png ==================
+static const unsigned char temp_binary_data_2[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,5,0,0,0,3,12,8,6,0,0,0,12,246,10,182,0,0,0,9,112,72,89,115,0,0,11,19,0,0,11,19,1,0,154,156,24,0,0,32,0,73,68,65,84,120,156,236,221,251,127,211,245,253,255,255,71,147,215,43,5,117,158,104,147,128,135,57,
 117,182,233,1,15,76,29,61,0,74,193,161,180,80,144,169,180,133,2,45,158,39,77,139,82,116,174,74,65,233,9,5,81,75,161,109,18,72,33,216,214,166,77,74,75,15,180,208,66,143,80,32,64,113,186,77,247,158,59,184,131,110,31,119,112,179,223,203,43,77,210,164,251,
 238,167,61,158,111,186,247,238,215,63,224,118,241,146,11,122,25,247,61,95,207,39,17,0,0,0,0,0,0,252,175,43,165,126,25,63,59,0,0,0,0,0,0,0,0,192,37,212,47,112,164,43,189,230,240,85,34,186,121,52,162,18,209,5,0,0,0,0,0,0,0,0,248,63,199,73,206,43,69,116,
@@ -2961,10 +2982,10 @@ static const unsigned char temp_binary_data_0[] =
 238,180,14,172,93,101,29,228,74,63,60,208,117,135,173,159,54,206,214,79,251,30,254,88,0,0,0,0,0,0,0,0,128,75,108,87,164,231,230,130,145,158,180,11,159,167,47,124,174,247,204,47,28,81,159,25,248,236,25,225,78,194,31,1,0,0,0,0,0,32,93,50,255,11,125,212,
 175,234,76,216,197,140,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* AuroraLogoLightMode_png = (const char*) temp_binary_data_0;
+const char* AuroraLogoLightMode_png = (const char*) temp_binary_data_2;
 
 //================== SchematicSoundLogo.png ==================
-static const unsigned char temp_binary_data_1[] =
+static const unsigned char temp_binary_data_3[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,12,248,0,0,1,188,8,6,0,0,0,249,117,250,2,0,0,0,9,112,72,89,115,0,0,11,19,0,0,11,19,1,0,154,156,24,0,0,11,2,105,84,88,116,88,77,76,58,99,111,109,46,97,100,111,98,101,46,120,109,112,0,0,0,0,0,60,63,120,
 112,97,99,107,101,116,32,98,101,103,105,110,61,34,239,187,191,34,32,105,100,61,34,87,53,77,48,77,112,67,101,104,105,72,122,114,101,83,122,78,84,99,122,107,99,57,100,34,63,62,32,60,120,58,120,109,112,109,101,116,97,32,120,109,108,110,115,58,120,61,34,
 97,100,111,98,101,58,110,115,58,109,101,116,97,47,34,32,120,58,120,109,112,116,107,61,34,65,100,111,98,101,32,88,77,80,32,67,111,114,101,32,54,46,48,45,99,48,48,50,32,55,57,46,49,54,52,52,54,48,44,32,50,48,50,48,47,48,53,47,49,50,45,49,54,58,48,52,58,
@@ -3683,10 +3704,10 @@ static const unsigned char temp_binary_data_1[] =
 0,0,220,133,13,62,0,0,0,0,0,0,0,0,0,0,0,0,64,117,108,244,1,80,166,175,0,0,0,0,128,19,177,193,7,0,0,0,0,0,0,0,0,0,0,0,0,216,221,209,197,251,108,246,1,112,82,223,0,0,0,0,0,167,98,131,15,0,0,0,0,0,0,0,0,0,0,0,0,80,47,54,251,0,92,255,0,0,0,0,80,202,255,7,
 215,234,146,131,30,236,145,129,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* SchematicSoundLogo_png = (const char*) temp_binary_data_1;
+const char* SchematicSoundLogo_png = (const char*) temp_binary_data_3;
 
 //================== AuroraKnob.png ==================
-static const unsigned char temp_binary_data_2[] =
+static const unsigned char temp_binary_data_4[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,64,0,0,16,0,8,6,0,0,0,194,239,231,124,0,0,128,0,73,68,65,84,120,94,236,221,9,152,101,85,117,246,241,83,180,12,42,8,40,200,36,163,136,70,12,32,38,2,81,17,77,34,49,6,212,36,36,81,28,26,77,28,49,113,140,
 56,68,91,80,19,231,168,104,196,1,113,140,3,73,52,162,40,126,138,104,80,84,148,89,197,40,99,43,51,205,208,52,77,15,220,111,255,238,185,111,247,238,195,189,213,85,213,85,69,67,234,60,207,121,170,186,234,222,234,179,214,94,107,237,181,247,94,235,127,155,
 102,238,154,187,230,174,185,107,238,154,187,230,174,89,186,198,202,125,143,114,111,84,238,77,30,240,128,7,220,243,105,79,123,218,54,127,250,167,127,186,173,127,151,123,195,114,207,27,188,238,238,113,29,116,208,65,247,248,212,167,62,181,251,87,191,250,
@@ -6473,7 +6494,7 @@ static const unsigned char temp_binary_data_2[] =
 234,103,12,63,224,226,50,158,31,96,243,194,221,242,3,94,95,58,161,13,109,92,253,85,229,91,140,31,96,100,105,249,1,10,27,25,254,91,142,31,32,179,111,240,3,186,95,219,184,54,174,105,93,255,8,235,186,106,35,31,110,180,153,0,0,0,0,73,69,78,68,174,66,96,130,
 0,0 };
 
-const char* AuroraKnob_png = (const char*) temp_binary_data_2;
+const char* AuroraKnob_png = (const char*) temp_binary_data_4;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes);
@@ -6487,6 +6508,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
     switch (hash)
     {
+        case 0x31eea833:  numBytes = 930; return moonbase_api_config_json;
+        case 0x26839082:  numBytes = 447; return LoadingSpinner_svg;
         case 0x6fd2dd38:  numBytes = 213284; return AuroraLogoLightMode_png;
         case 0x7cdb4d97:  numBytes = 51243; return SchematicSoundLogo_png;
         case 0x3afb2880:  numBytes = 198471; return AuroraKnob_png;
@@ -6499,6 +6522,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 
 const char* namedResourceList[] =
 {
+    "moonbase_api_config_json",
+    "LoadingSpinner_svg",
     "AuroraLogoLightMode_png",
     "SchematicSoundLogo_png",
     "AuroraKnob_png"
@@ -6506,6 +6531,8 @@ const char* namedResourceList[] =
 
 const char* originalFilenames[] =
 {
+    "moonbase_api_config.json",
+    "LoadingSpinner.svg",
     "AuroraLogoLightMode.png",
     "SchematicSoundLogo.png",
     "AuroraKnob.png"

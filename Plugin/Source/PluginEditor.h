@@ -14,6 +14,34 @@
 
 //==============================================================================
 /**
+ * The default moonbase ui integration allows to set a company logo as a component,
+ * so you can define custom animations and behaviours.
+ *
+ * You can change the ANIMATE_COMPANY_LOGO flag below to 1 to enable an example animation that makes the logo shiver.
+*/
+
+#define ANIMATE_COMPANY_LOGO 0
+
+class CompanyLogo : public Component,
+                    private Timer
+{
+public:
+    CompanyLogo ();
+
+private:
+    std::unique_ptr<Drawable> logo;
+    void paint (Graphics& g) override;
+    
+    void timerCallback () override;
+    LinearSmoothedValue<float> jitterX { 0.f };
+    LinearSmoothedValue<float> jitterY { 0.f };
+    Random random;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CompanyLogo)
+};
+
+//==============================================================================
+/**
 */
 class AuroraAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
@@ -36,9 +64,10 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     
-    
-    
     AuroraAudioProcessor& audioProcessor;
+    std::unique_ptr<Moonbase::JUCEClient::ActivationUI> activationUI { audioProcessor.moonbaseClient->createActivationUi(*this)
+    };
+    
     SchematicLookAndFeel customLookAndFeel;
     
     Slider historySlider, gainSlider;
@@ -99,6 +128,7 @@ private:
 //    File logoSchematicFile = File("/Users/dan/Library/CloudStorage/OneDrive-Personal/uOttawa/Winter 2025/CSI 4900 Honours Project/Plugin/Logos/Schematic_Sound_Logo.png");
 //    Image logoSchematic = ImageCache::getFromFile(logoSchematicFile).rescaled(std::ceil(3320 * schematicScale), std::ceil(444 * schematicScale));
     Image logoSchematic = gin::applyResize(ImageCache::getFromMemory(BinaryData::SchematicSoundLogo_png, BinaryData::SchematicSoundLogo_pngSize), 0.055);
+    
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuroraAudioProcessorEditor)
 };

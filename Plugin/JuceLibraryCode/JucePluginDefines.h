@@ -50,10 +50,10 @@
  #define JucePlugin_Manufacturer           "Schematic Sound"
 #endif
 #ifndef  JucePlugin_ManufacturerWebsite
- #define JucePlugin_ManufacturerWebsite    "www.SchematicSound.com"
+ #define JucePlugin_ManufacturerWebsite    "https://www.schematicsound.com/"
 #endif
 #ifndef  JucePlugin_ManufacturerEmail
- #define JucePlugin_ManufacturerEmail      ""
+ #define JucePlugin_ManufacturerEmail      "contact@schematicsound.com"
 #endif
 #ifndef  JucePlugin_ManufacturerCode
  #define JucePlugin_ManufacturerCode       0x53534e44
@@ -155,7 +155,7 @@
  #define JucePlugin_ARAFactoryID           "com.SchematicSound.Aurora.factory"
 #endif
 #ifndef  JucePlugin_ARADocumentArchiveID
- #define JucePlugin_ARADocumentArchiveID   "com.SchematicSound.Aurora.aradocumentarchive.0.3"
+ #define JucePlugin_ARADocumentArchiveID   "com.SchematicSound.Aurora.aradocumentarchive.0.4"
 #endif
 #ifndef  JucePlugin_ARACompatibleArchiveIDs
  #define JucePlugin_ARACompatibleArchiveIDs  ""

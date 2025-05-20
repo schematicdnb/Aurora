@@ -52,46 +52,11 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
     
-    // Moonbase Activation UI
-    if (activationUI)
-    {
-        // There are a max of 2 lines of text on the welcome screen, define them here
-        activationUI->setWelcomePageText ("Audio will mute occasionally while unactivated.", "");
-
-        // Set the logo inside the spinner (when waiting for web responses)
-        activationUI->setSpinnerLogo (Drawable::createFromImageData (BinaryData::LoadingSpinner_svg, BinaryData::LoadingSpinner_svgSize));
-
-        // Scale the spinner logo as required for your asset if needed. See Submodules/moonbase_JUCEClient/Assets/Source/SVG/OverlayAssets for ideal assets.
-        // activationUI->setSpinnerLogoScale (0.5f);
-        
-        // Set the company logo, this is the logo that is displayed on the welcome screen and the activated info screen
-        activationUI->setCompanyLogo (std::make_unique<CompanyLogo> ());
-        // Scale the company logo as required for your asset if needed.
-        // activationUI->setCompanyLogoScale ((0.25f));
-    }
-    
     LookAndFeel::setDefaultLookAndFeel(&customLookAndFeel);
-    
     
     // add meter
     addAndMakeVisible(rgbMeter);
-    
-//    // Dark mode toggle
-////    addAndMakeVisible(themeLabel);
-//    themeLabel.setBounds(margin, margin, 25, margin);
-//    themeLabel.attachToComponent(&darkModeButton, true);
-//    themeLabel.setText("Theme: ", dontSendNotification);
-//    
-////    addAndMakeVisible(darkModeButton);
-//    darkModeButton.setButtonText("Light");
-//    darkModeButton.onClick = [this]() {
-//        customLookAndFeel.toggleTheme();
-//    };
-//    
-//    darkModeAttachment.reset(new ButtonAttachment(apvts, "darkMode", darkModeButton));
-    
-    
-    
+
     
     // init controls
     initZoomGroup();
@@ -110,16 +75,59 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     
     initControlToggle();
     
+    // Moonbase Activation UI
+    activationUI->addListener(this);
+    if (activationUI)
+    {
+        // There are a max of 2 lines of text on the welcome screen, define them here
+        activationUI->setWelcomePageText ("Audio will mute occasionally while unactivated", "");
+
+        // Set the logo inside the spinner (when waiting for web responses)
+        activationUI->setSpinnerLogo (Drawable::createFromImageData (BinaryData::AuroraLogoLightMode_png, BinaryData::AuroraLogoLightMode_pngSize));
+
+        // Scale the spinner logo as required for your asset if needed. See Submodules/moonbase_JUCEClient/Assets/Source/SVG/OverlayAssets for ideal assets.
+        // activationUI->setSpinnerLogoScale (0.5f);
+        
+        // Set the company logo, this is the logo that is displayed on the welcome screen and the activated info screen
+        activationUI->setCompanyLogo (std::make_unique<CompanyLogo> ());
+        // Scale the company logo as required for your asset if needed.
+        // activationUI->setCompanyLogoScale ((0.25f));
+    
+    }
     
     // Check for updates
     if (!audioProcessor.isUpdatesDismissed()) {
         checkForUpdates();
     }
-    
 }
 
 AuroraAudioProcessorEditor::~AuroraAudioProcessorEditor()
 {
+    if (activationUI != nullptr) {
+        activationUI->removeListener(this);
+    }
+}
+
+void AuroraAudioProcessorEditor::onActivationUiVisibilityChanged (const ActivationUI::Visibility& visibility) {
+        jassert (activationUI != nullptr);
+        if (activationUI == nullptr)
+            return;
+
+        const auto activationVisibility = activationUI->getVisibility();
+    
+        if (activationVisibility.isVisible) {
+            restoreWidth = getWidth();
+            restoreHeight = getHeight();
+            setSize(restoreWidth < 600 ? 600 : restoreWidth, restoreHeight < 450 ? 450 : restoreHeight);
+        } else {
+            setSize(restoreWidth, restoreHeight);
+        }
+    
+        DBG (
+            "Activation UI visibility changed.\n"
+            << "        Is visible: " << String (activationVisibility.isVisible  ? "true" : "false")  << "\n"
+            << "   Must be visible: " << String (activationVisibility.mustBeVisible ? "true" : "false")
+        );
 }
 
 void AuroraAudioProcessorEditor::initZoomGroup() {

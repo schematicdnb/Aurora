@@ -43,7 +43,7 @@ private:
 //==============================================================================
 /**
 */
-class AuroraAudioProcessorEditor  : public juce::AudioProcessorEditor
+class AuroraAudioProcessorEditor  : public juce::AudioProcessorEditor, private Moonbase::JUCEClient::ActivationUI::Listener
 {
 public:
     AuroraAudioProcessorEditor (AuroraAudioProcessor&);
@@ -59,14 +59,19 @@ public:
     void checkForUpdates();
     void showControls();
     void hideControls();
+    
+    void onActivationUiVisibilityChanged (const ActivationUI::Visibility& visibility) override;
+
 
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
+//    void onActivationUiVisibilityChanged();
     
     AuroraAudioProcessor& audioProcessor;
     std::unique_ptr<Moonbase::JUCEClient::ActivationUI> activationUI { audioProcessor.moonbaseClient->createActivationUi(*this)
     };
+    int restoreWidth, restoreHeight;
     
     SchematicLookAndFeel customLookAndFeel;
     
@@ -99,34 +104,14 @@ private:
     juce::AudioProcessorValueTreeState &apvts = audioProcessor.apvts;
     juce::RGBMeter &rgbMeter = audioProcessor.rgbMeter;
     
-//    ToggleButton darkModeButton;
-    TextButton darkModeButton;
-    Label themeLabel;
-    std::unique_ptr<ButtonAttachment> darkModeAttachment;
-    
-    std::unique_ptr<ButtonAttachment> toggleControlsAttachment;
-    
     ToggleButton toggleControlsButton;
     Label toggleControlsLabel;
+    std::unique_ptr<ButtonAttachment> toggleControlsAttachment;
     
     Array<Component*> controls = {&historySlider, &gainSlider, &historyLabel, &gainLabel, &zoomGroup, &crossoverGroup, &colourGroup, &lowCrossoverSlider, &highCrossoverSlider, &lowCrossoverLabel, &highCrossoverLabel, &redSlider, &greenSlider, &blueSlider, &redLabel, &greenLabel, &blueLabel};
     
-//    File img = File("/Users/dan/Library/CloudStorage/OneDrive-Personal/uOttawa/Winter 2025/CSI 4900 Honours Project/Plugin/RGB-Meter/Source/AuroraFaceplate.png");
-//    Image faceplate = ImageCache::getFromFile(img).rescaled(640, 320);
-//    Image faceplate = ImageCache::getFromMemory(BinaryData::AuroraFaceplate_png, BinaryData::AuroraFaceplate_pngSize).rescaled(640, 320);
-    
-    
-//    float auroraScale = 0.09;
-//    File logoAuroraFile = File("/Users/dan/Library/CloudStorage/OneDrive-Personal/uOttawa/Winter 2025/CSI 4900 Honours Project/Plugin/Logos/AURORA LIGHT MODE/fulllogo_transparent_nobuffer.png");
-//    Image logoAurora = ImageCache::getFromFile(logoAuroraFile).rescaled(std::ceil(1280 * auroraScale), std::ceil(720 * auroraScale));
-//    Image logoAurora = ImageCache::getFromMemory(BinaryData::AuroraLogoLightMode_png, BinaryData::AuroraLogoLightMode_pngSize).rescaled(std::ceil(1280 * auroraScale), std::ceil(720 * auroraScale));
     Image logoAurora = gin::applyResize(ImageCache::getFromMemory(BinaryData::AuroraLogoLightMode_png, BinaryData::AuroraLogoLightMode_pngSize), 0.09);
-//    gin::applyResize(logoAurora, 0.09);
 
-    
-//    float schematicScale = 0.055;
-//    File logoSchematicFile = File("/Users/dan/Library/CloudStorage/OneDrive-Personal/uOttawa/Winter 2025/CSI 4900 Honours Project/Plugin/Logos/Schematic_Sound_Logo.png");
-//    Image logoSchematic = ImageCache::getFromFile(logoSchematicFile).rescaled(std::ceil(3320 * schematicScale), std::ceil(444 * schematicScale));
     Image logoSchematic = gin::applyResize(ImageCache::getFromMemory(BinaryData::SchematicSoundLogo_png, BinaryData::SchematicSoundLogo_pngSize), 0.055);
     
     

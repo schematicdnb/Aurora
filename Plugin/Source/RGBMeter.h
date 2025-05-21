@@ -15,19 +15,21 @@ namespace juce
     class CircularBuffer
     {
     public:
-        CircularBuffer(int size) : buffer(size), head(0), tail(0), full(false)
+        CircularBuffer(int channels, int size) : buffer(channels, size), head(0), tail(0), full(false)
         {
         }
 
-        void add(T item)
+        void add(int channel, T item)
         {
-            buffer[head] = item;
-            if (full)
-            {
-                tail = (tail + 1) % buffer.size();
-            }
-            head = (head + 1) % buffer.size();
-            full = head == tail;
+            buffer.setSample(channel, head, item);
+//            buffer[head] = item;
+//            if (full)
+//            {
+//                tail = (tail + 1) % buffer.size();
+//            }
+            head = (head + 1 ) % buffer.getNumSamples();
+//            head = (head + 1) % buffer.size();
+//            full = head == tail;
         }
 
         AudioBuffer<T> getBuffer() const
@@ -99,7 +101,8 @@ namespace juce
         }
 
     private:
-        std::vector<T> buffer;
+//        std::vector<T> buffer;
+        AudioBuffer<T> buffer;
         size_t head;
         size_t tail;
         bool full;
@@ -135,8 +138,12 @@ namespace juce
         void setColourWeight(String colour, float weight);
         
     private:
+        
+        dsp::ProcessSpec spec;
+        
         int historyLength; // in seconds
-        int sampleRate;
+//        int sampleRate;
+//        int numSamples;
         int bufferLength;
 
         int width = 0;
@@ -146,7 +153,7 @@ namespace juce
         double chunkCounter;
 
         int freqAnalysisSize = 2048;
-        CircularBuffer<float> freqAnalysisBuffer{freqAnalysisSize};
+        CircularBuffer<float> freqAnalysisBuffer;
         AudioBuffer<float> windowedBuffer;
 
         CircularBuffer<std::tuple<Range<float>, Colour>> displayBuffer{0};

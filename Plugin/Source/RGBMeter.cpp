@@ -66,7 +66,10 @@ namespace juce
         {
             auto sample = buffer.getSample(0, i);
             // add sample to chunk and analysis buffers
-            chunkBuffer.setSample(0, chunkCounter, sample);
+            if (chunkBuffer.getNumChannels() > 0) {
+                chunkBuffer.setSample(0, chunkCounter, sample);
+            }
+            
             freqAnalysisBuffer.add(sample);
 
             // process display chunk

@@ -98,13 +98,10 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     if (!audioProcessor.isUpdatesDismissed()) {
         checkForUpdates();
     }
-    
-//    DBG("End of constructor.");
 }
 
 AuroraAudioProcessorEditor::~AuroraAudioProcessorEditor()
 {
-//    DBG("Destructor.");
     if (activationUI != nullptr) {
         activationUI->removeListener(this);
     }
@@ -118,10 +115,7 @@ void AuroraAudioProcessorEditor::onActivationUiVisibilityChanged (const Activati
     const auto width = getWidth();
     const auto height = getHeight();
 
-    DBG("(" << width << "," << height << ")");
-
     if (visibility.isVisible) {
-        DBG("Activation window visible.");
         auto requiresResize = false;
         if (requiresRestore) {
             setSize(restoreWidth, restoreHeight);
@@ -409,6 +403,8 @@ void AuroraAudioProcessorEditor::checkForUpdates() {
     auto pluginName = ProjectInfo::projectName;
     auto currentVersion = String(ProjectInfo::versionString);
     
+    
+    
     String versionURL = "https://www.schematicsound.com/plugin-versions.php";
     String cacheBypass = String(Time::getCurrentTime().toMilliseconds());
     URL requestURL(versionURL + "?cb=" + cacheBypass);
@@ -422,6 +418,7 @@ void AuroraAudioProcessorEditor::checkForUpdates() {
         auto notes = info.getProperty("notes", "No info available.").toString();
         
         if (currentVersion.compare(latestVersion)) {
+            
             String versionsMessage = "Current version: ";
             versionsMessage += currentVersion;
             versionsMessage += "\nLatest version: ";
@@ -429,15 +426,22 @@ void AuroraAudioProcessorEditor::checkForUpdates() {
             versionsMessage += "\n\nChanges:";
             versionsMessage += notes;
             
-            AlertWindow updateAlert = AlertWindow("Update Available", versionsMessage, MessageBoxIconType::WarningIcon);
-
-            updateAlert.showOkCancelBox(MessageBoxIconType::WarningIcon, "Update Available", versionsMessage, "Update", "Dismiss", this, ModalCallbackFunction::create([this](int result){
-                    if (result == 1) {
-                        URL download = URL("https://www.schematicsound.com/plug-ins/");
-                        download.launchInDefaultBrowser();
-                    } else {
-                        audioProcessor.dismissUpates();
-                    }
+            // Native box
+            auto options = MessageBoxOptions()
+                .withButton("Update")
+                .withButton("Remind Me Later")
+                .withTitle("Aurora: Update Available")
+                .withMessage(versionsMessage)
+                .withIconType(MessageBoxIconType::WarningIcon)
+                .withAssociatedComponent(this);
+            
+            NativeMessageBox::showAsync(options, ModalCallbackFunction::create([this](int result){
+                if (result == 0) {
+                    URL download = URL("https://www.schematicsound.com/plug-ins/");
+                    download.launchInDefaultBrowser();
+                } else {
+                    audioProcessor.dismissUpates();
+                }
             }));
         }
     }
@@ -450,8 +454,6 @@ void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
 //    g.fillAll(Colour(32,32,32));
     g.fillAll(Colour(232, 232, 232));
 
-
-    g.setColour(Colours::black);
     if (toggleControlsButton.getToggleState()) {
         g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - margin - groupHeight - infoAreaHeight, rgbMeter.getCornerRadius());
         
@@ -463,6 +465,14 @@ void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
         g.drawImageAt(logoAurora, margin, getHeight() - infoAreaHeight/2 - logoAurora.getHeight()/2);
         g.drawImageAt(logoSchematic, getWidth() - margin - logoSchematic.getWidth(), getHeight() - infoAreaHeight/2 - logoSchematic.getHeight()/3);
     }
+    
+//    if (updateAvailable) {
+////        DBG("Update available");
+//        g.setColour(Colours::transparentBlack);
+//        g.fillRect(0, 0, getWidth(), getHeight());
+////        g.fillAll(Colours::transparentBlack);
+////        g.drawSingleLineText("Update Available", 0, 0);
+//    }
 }
 
 void AuroraAudioProcessorEditor::resized(){
@@ -476,7 +486,6 @@ void AuroraAudioProcessorEditor::resized(){
 
 //    auto labelHeight = gainLabel.getHeight();
     audioProcessor.setEditorSize(width, height);
-    
     
     
 //    darkModeButton.setBounds(margin, margin, paramWidth, paramHeight);

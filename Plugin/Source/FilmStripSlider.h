@@ -21,4 +21,6 @@ class FilmStripSlider
     int frameCount = 0;
     int frameSize = 0;
     bool isVerticalStrip = false;
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FilmStripSlider)
 };

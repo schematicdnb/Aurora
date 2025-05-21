@@ -27,7 +27,6 @@ class CompanyLogo : public Component,
 {
 public:
     CompanyLogo ();
-
 private:
     std::unique_ptr<Drawable> logo;
     void paint (Graphics& g) override;
@@ -114,6 +113,9 @@ private:
     Image logoAurora = gin::applyResize(ImageCache::getFromMemory(BinaryData::AuroraLogoLightMode_png, BinaryData::AuroraLogoLightMode_pngSize), 0.09);
 
     Image logoSchematic = gin::applyResize(ImageCache::getFromMemory(BinaryData::SchematicSoundLogo_png, BinaryData::SchematicSoundLogo_pngSize), 0.055);
+    
+//    std::unique_ptr<AlertWindow> updateAlert;
+    
     
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuroraAudioProcessorEditor)

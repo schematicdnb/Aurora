@@ -1,3 +1,5 @@
 /Builds
 .DS_Store
 /Plugin/Builds
+*.RPP
+RGB Meter testbench_new.RPP

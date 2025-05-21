@@ -72,6 +72,7 @@ private:
     std::unique_ptr<Moonbase::JUCEClient::ActivationUI> activationUI { audioProcessor.moonbaseClient->createActivationUi(*this)
     };
     int restoreWidth, restoreHeight;
+    bool requiresRestore;
     
     SchematicLookAndFeel customLookAndFeel;
     

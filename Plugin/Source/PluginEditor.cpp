@@ -92,55 +92,42 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
         activationUI->setCompanyLogo (std::make_unique<CompanyLogo> ());
         // Scale the company logo as required for your asset if needed.
         // activationUI->setCompanyLogoScale ((0.25f));
+    
     }
     
     // Check for updates
     if (!audioProcessor.isUpdatesDismissed()) {
         checkForUpdates();
     }
-    
-//    DBG("End of constructor.");
 }
 
 AuroraAudioProcessorEditor::~AuroraAudioProcessorEditor()
 {
-//    DBG("Destructor.");
     if (activationUI != nullptr) {
         activationUI->removeListener(this);
     }
 }
 
 void AuroraAudioProcessorEditor::onActivationUiVisibilityChanged (const ActivationUI::Visibility& visibility) {
-    jassert (activationUI != nullptr);
-    if (activationUI == nullptr)
-        return;
-
-    const auto width = getWidth();
-    const auto height = getHeight();
-
-    DBG("(" << width << "," << height << ")");
-
-    if (visibility.isVisible) {
-        DBG("Activation window visible.");
-        auto requiresResize = false;
-        if (requiresRestore) {
-            setSize(restoreWidth, restoreHeight);
-            requiresRestore = false;
+        jassert (activationUI != nullptr);
+        if (activationUI == nullptr)
             return;
+
+        const auto activationVisibility = activationUI->getVisibility();
+    
+        if (activationVisibility.isVisible) {
+            restoreWidth = getWidth();
+            restoreHeight = getHeight();
+            setSize(restoreWidth < 600 ? 600 : restoreWidth, restoreHeight < 450 ? 450 : restoreHeight);
+        } else {
+            setSize(restoreWidth, restoreHeight);
         }
-        if (width < 600) {
-            restoreWidth = width;
-            requiresResize = true;
-        }
-        if (height < 450) {
-            restoreHeight = height;
-            requiresResize = true;
-        }
-        if (requiresResize) {
-            setSize(600, 450);
-            requiresRestore = true;
-        }
-    }
+    
+        DBG (
+            "Activation UI visibility changed.\n"
+            << "        Is visible: " << String (activationVisibility.isVisible  ? "true" : "false")  << "\n"
+            << "   Must be visible: " << String (activationVisibility.mustBeVisible ? "true" : "false")
+        );
 }
 
 void AuroraAudioProcessorEditor::initZoomGroup() {
@@ -368,10 +355,7 @@ void AuroraAudioProcessorEditor::initControlToggle() {
     
     // Hide controls by default
     if (!toggleControlsButton.getToggleState()) {
-        setResizeLimits(540, 160, 1280, 720 - groupHeight - margin);
-        for (Component* control : controls) {
-            control->setVisible(false);
-        }
+        hideControls();
     } else {
         setResizeLimits(540, 160 + groupHeight + margin, 1280, 720);
     }
@@ -429,9 +413,9 @@ void AuroraAudioProcessorEditor::checkForUpdates() {
             versionsMessage += "\n\nChanges:";
             versionsMessage += notes;
             
-            AlertWindow updateAlert = AlertWindow("Update Available", versionsMessage, MessageBoxIconType::WarningIcon);
+            AlertWindow alert("Update Available", versionsMessage, MessageBoxIconType::WarningIcon);
 
-            updateAlert.showOkCancelBox(MessageBoxIconType::WarningIcon, "Update Available", versionsMessage, "Update", "Dismiss", this, ModalCallbackFunction::create([this](int result){
+            alert.showOkCancelBox(MessageBoxIconType::WarningIcon, "Update Available", versionsMessage, "Update", "Dismiss", this, ModalCallbackFunction::create([this](int result){
                     if (result == 1) {
                         URL download = URL("https://www.schematicsound.com/plug-ins/");
                         download.launchInDefaultBrowser();
@@ -471,8 +455,8 @@ void AuroraAudioProcessorEditor::resized(){
     
     MOONBASE_RESIZE_ACTIVATION_UI
     
-    const auto width = getWidth();
-    const auto height = getHeight();
+    auto width = getWidth();
+    auto height = getHeight();
 
 //    auto labelHeight = gainLabel.getHeight();
     audioProcessor.setEditorSize(width, height);

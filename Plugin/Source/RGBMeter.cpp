@@ -25,13 +25,10 @@ namespace juce
         this->setComponentEffect(&corners);
     }
 
-    void RGBMeter::prepare(dsp::ProcessSpec hostSpec)
+    void RGBMeter::prepare(dsp::ProcessSpec spec)
     {
-        spec = hostSpec;
-        
-//        sampleRate = spec.sampleRate;
+        sampleRate = spec.sampleRate;
         updateState();
-//        numSamples = spec.numChannels;
 
         LP.prepare(spec);
         midLP.prepare(spec);
@@ -41,19 +38,17 @@ namespace juce
 
     void RGBMeter::updateState()
     {
-        bufferLength = historyLength * spec.sampleRate;
-        freqAnalysisBuffer = CircularBuffer<float>(spec.numChannels, freqAnalysisSize);
-        
+        bufferLength = historyLength * sampleRate;
         width = this->getWidth();
-        if (width && width <= 1280) {
+        if (width)
+        {
             if (displayBuffer.size() != width)
             {
                 displayBuffer.resize(width);
             }
             chunkSize = std::floor(bufferLength / width);
-//            if (chunkSize == 0) {return;}
             chunkCounter = 0;
-            chunkBuffer = AudioBuffer<float>(spec.numChannels, chunkSize);
+            chunkBuffer = AudioBuffer<float>(1, chunkSize);
         }
     }
 
@@ -69,11 +64,7 @@ namespace juce
         // Process the incoming buffer
         for (int i = 0; i < buffer.getNumSamples(); i++)
         {
-            float sample = buffer.getSample(0, i);
-//            for (int channel = 0; channel < buffer.getNumChannels(); channel++) {
-//                
-//            }
-            
+            auto sample = buffer.getSample(0, i);
             // add sample to chunk and analysis buffers
             chunkBuffer.setSample(0, chunkCounter, sample);
             freqAnalysisBuffer.add(sample);

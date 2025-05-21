@@ -72,7 +72,6 @@ private:
     std::unique_ptr<Moonbase::JUCEClient::ActivationUI> activationUI { audioProcessor.moonbaseClient->createActivationUi(*this)
     };
     int restoreWidth, restoreHeight;
-    bool requiresRestore;
     
     SchematicLookAndFeel customLookAndFeel;
     
@@ -114,6 +113,7 @@ private:
     Image logoAurora = gin::applyResize(ImageCache::getFromMemory(BinaryData::AuroraLogoLightMode_png, BinaryData::AuroraLogoLightMode_pngSize), 0.09);
 
     Image logoSchematic = gin::applyResize(ImageCache::getFromMemory(BinaryData::SchematicSoundLogo_png, BinaryData::SchematicSoundLogo_pngSize), 0.055);
+    
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuroraAudioProcessorEditor)
 };

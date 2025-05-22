@@ -54,9 +54,8 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     
     LookAndFeel::setDefaultLookAndFeel(&customLookAndFeel);
     
-    // add meter
+    // add RGB Meter
     addAndMakeVisible(rgbMeter);
-
     
     // init controls
     initZoomGroup();
@@ -99,11 +98,13 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
         checkForUpdates();
     }
     
-    if (requiresRestore) {
-        DBG("Restoring size.");
-        setSize(restoreWidth, restoreHeight);
-        requiresRestore = false;
-    }
+    addAndMakeVisible(updateNotifier);
+    
+    //if (requiresRestore) {
+    //    DBG("Restoring size.");
+    //    setSize(restoreWidth, restoreHeight);
+    //    requiresRestore = false;
+    //}
 }
 
 AuroraAudioProcessorEditor::~AuroraAudioProcessorEditor()
@@ -436,54 +437,22 @@ void AuroraAudioProcessorEditor::checkForUpdates() {
                 .withButton("Remind Me Later")
                 .withTitle("Aurora: Update Available")
                 .withMessage(versionsMessage)
-                .withIconType(MessageBoxIconType::InfoIcon)
+                .withIconType(MessageBoxIconType::WarningIcon)
                 .withAssociatedComponent(this);
                 //.withParentComponent(this);
             
 //             Native box
-            NativeMessageBox::showAsync(options, ModalCallbackFunction::create([this](int result){
-                if (result == 0) {
-                    URL download = URL("https://www.schematicsound.com/plug-ins/");
-                    download.launchInDefaultBrowser();
-                } else {
-                    audioProcessor.dismissUpates();
-                }
-            }));
-            
-           
-            // Alert Window (buggy)
-//            getLookAndFeel().setColour(AlertWindow::backgroundColourId, Colour(232,232,232));
-//            getLookAndFeel().setColour(AlertWindow::textColourId, Colour(32,32,32));
-//            getLookAndFeel().setColour(AlertWindow::outlineColourId, Colour(32,32,32));
-//            
-//            const auto width = getWidth();
-//            const auto height = getHeight();
-//
-//            auto requiresResize = false;
-//            if (width < 600 || height < 450) {
-//                restoreWidth = width;
-//                restoreHeight = height;
-//                DBG(restoreWidth << "\n" << restoreHeight);
-//                requiresResize = true;
-//            }
-//            if (requiresResize) {
-//                auto newWidth = std::max(width, 600);
-//                auto newHeight = std::max(height, 450);
-//                DBG(width << "\n" << height);
-//                DBG(newWidth << "\n" << newHeight);
-//                setSize(newWidth, newHeight);
-//            }
-//            
-//            AlertWindow::showAsync(options, ModalCallbackFunction::create([this](int result){
-//                if (result == 1) {
+
+//            NativeMessageBox::showAsync(options, ModalCallbackFunction::create([this](int result){
+//                if (result == 0) {
 //                    URL download = URL("https://www.schematicsound.com/plug-ins/");
 //                    download.launchInDefaultBrowser();
-//                } else if (result == 0){
+//                } else {
 //                    audioProcessor.dismissUpates();
 //                }
-//                requiresRestore = true;
 //            }));
             
+        
  
         }
     }
@@ -525,6 +494,8 @@ void AuroraAudioProcessorEditor::resized(){
     
     const auto width = getWidth();
     const auto height = getHeight();
+    
+    updateNotifier.setBounds(getLocalBounds());
 
 //    auto labelHeight = gainLabel.getHeight();
     audioProcessor.setEditorSize(width, height);

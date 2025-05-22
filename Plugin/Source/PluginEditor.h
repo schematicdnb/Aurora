@@ -39,6 +39,91 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CompanyLogo)
 };
 
+class UpdateNotifier : public Component {
+public:
+    UpdateNotifier() {
+        
+        // Title
+        FontOptions titleFontOptions = FontOptions(24.0f, Font::bold);
+        title.setText("Update Available", NotificationType::dontSendNotification);
+        title.setFont(titleFontOptions);
+        title.setColour(Label::textColourId, Colours::black);
+        addAndMakeVisible(title);
+        
+        // Version labels
+        latestVersionLabel.setText("Latest Version: ", NotificationType::dontSendNotification);
+        latestVersionLabel.setColour(Label::textColourId, Colours::black);
+        addAndMakeVisible(latestVersionLabel);
+        
+        currentVersionLabel.setText("Current Version: ", NotificationType::dontSendNotification);
+        currentVersionLabel.setColour(Label::textColourId, Colours::black);
+        addAndMakeVisible(currentVersionLabel);
+        
+        // Changelog
+        changelog.setText("Changelog: \n Placeholder", NotificationType::dontSendNotification);
+        changelog.setColour(Label::textColourId, Colours::black);
+        addAndMakeVisible(changelog);
+
+        // Buttons
+        updateButton.setButtonText("Update");
+        updateButton.setColour(TextButton::buttonColourId, Colour(32,32,32));
+        updateButton.onClick = [this]() {
+            URL download = URL("https://www.schematicsound.com/plug-ins/");
+            download.launchInDefaultBrowser();
+        };
+        addAndMakeVisible(updateButton);
+        
+        remindButton.setColour(TextButton::buttonColourId, Colour(232, 232, 232));
+        remindButton.setColour(TextButton::textColourOffId, Colours::black);
+        remindButton.setButtonText("Remind Me");
+//        remindButton.onClick = [this]() {
+//            audioProcessor.dismissUpates();
+//        };
+        addAndMakeVisible(remindButton);
+        
+    }
+    
+    void paint(Graphics &g) override {
+        g.fillAll(Colour(232, 232, 232).withAlpha(static_cast<float>(0.95f)));
+    }
+    
+    void resized() override {
+        
+        auto area = getLocalBounds();
+        auto columnWidth = area.getWidth() / 2;
+        
+        auto rightColumn = area.removeFromRight(columnWidth - 20);
+        
+        int buttonWidth = 100;
+        int buttonHeight = 30;
+        int spacing = 20;
+        int leftColumnWidth = 2 * buttonWidth + spacing;
+        
+        auto leftColumnHeight = 120;
+        
+        // Left Column
+        title.setBounds(getWidth() / 2 - leftColumnWidth, getHeight() / 2 - leftColumnHeight / 2, leftColumnWidth, buttonHeight);
+        latestVersionLabel.setBounds(title.getX(), title.getY() + title.getHeight(), leftColumnWidth, buttonHeight);
+        currentVersionLabel.setBounds(title.getX(), latestVersionLabel.getY() + 20, leftColumnWidth, buttonHeight);
+        updateButton.setBounds(title.getX(), currentVersionLabel.getY() + currentVersionLabel.getHeight() + 10, buttonWidth, buttonHeight);
+        remindButton.setBounds(title.getX() + buttonWidth + spacing, updateButton.getY(), buttonWidth, buttonHeight);
+        
+        // Right Column
+        changelog.setBounds(rightColumn);
+        
+    }
+private:
+    Label title;
+    Label currentVersionLabel;
+    Label latestVersionLabel;
+    Label changelog;
+    
+    TextButton updateButton;
+    TextButton remindButton;
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UpdateNotifier)
+};
+
 //==============================================================================
 /**
 */
@@ -71,6 +156,9 @@ private:
     };
     int restoreWidth, restoreHeight;
     bool requiresRestore;
+    
+    UpdateNotifier updateNotifier;
+    bool updateAvailable = true;
     
     SchematicLookAndFeel customLookAndFeel;
     

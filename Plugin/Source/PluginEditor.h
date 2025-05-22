@@ -65,7 +65,6 @@ public:
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-//    void onActivationUiVisibilityChanged();
     
     AuroraAudioProcessor& audioProcessor;
     std::unique_ptr<Moonbase::JUCEClient::ActivationUI> activationUI { audioProcessor.moonbaseClient->createActivationUi(*this)

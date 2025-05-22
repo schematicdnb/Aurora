@@ -426,15 +426,16 @@ void AuroraAudioProcessorEditor::checkForUpdates() {
             versionsMessage += "\n\nChanges:";
             versionsMessage += notes;
             
-            // Native box
             auto options = MessageBoxOptions()
                 .withButton("Update")
                 .withButton("Remind Me Later")
                 .withTitle("Aurora: Update Available")
                 .withMessage(versionsMessage)
-                .withIconType(MessageBoxIconType::WarningIcon)
+                .withIconType(MessageBoxIconType::InfoIcon)
                 .withAssociatedComponent(this);
             
+            
+            // Native box
             NativeMessageBox::showAsync(options, ModalCallbackFunction::create([this](int result){
                 if (result == 0) {
                     URL download = URL("https://www.schematicsound.com/plug-ins/");
@@ -443,6 +444,24 @@ void AuroraAudioProcessorEditor::checkForUpdates() {
                     audioProcessor.dismissUpates();
                 }
             }));
+            
+           
+            // Alert Window (buggy)
+//            AlertWindow updateAlert = AlertWindow("Aurora: Update Available", versionsMessage, MessageBoxIconType::InfoIcon);
+//
+//            getLookAndFeel().setColour(AlertWindow::backgroundColourId, Colours::white);
+//            getLookAndFeel().setColour(AlertWindow::textColourId, Colours::black);
+//            
+//            AlertWindow::showAsync(options, ModalCallbackFunction::create([this](int result){
+//                                if (result == 1) {
+//                                    URL download = URL("https://www.schematicsound.com/plug-ins/");
+//                                    download.launchInDefaultBrowser();
+//                                } else {
+//                                    audioProcessor.dismissUpates();
+//                                }
+//            }));
+            
+ 
         }
     }
 }

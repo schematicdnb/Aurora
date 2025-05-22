@@ -437,8 +437,8 @@ void AuroraAudioProcessorEditor::checkForUpdates() {
                 .withTitle("Aurora: Update Available")
                 .withMessage(versionsMessage)
                 .withIconType(MessageBoxIconType::InfoIcon)
-                .withAssociatedComponent(this)
-                .withParentComponent(this);
+                .withAssociatedComponent(this);
+                //.withParentComponent(this);
             
 //             Native box
             NativeMessageBox::showAsync(options, ModalCallbackFunction::create([this](int result){

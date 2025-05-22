@@ -98,6 +98,12 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     if (!audioProcessor.isUpdatesDismissed()) {
         checkForUpdates();
     }
+    
+    if (requiresRestore) {
+        DBG("Restoring size.");
+        setSize(restoreWidth, restoreHeight);
+        requiresRestore = false;
+    }
 }
 
 AuroraAudioProcessorEditor::~AuroraAudioProcessorEditor()
@@ -122,16 +128,15 @@ void AuroraAudioProcessorEditor::onActivationUiVisibilityChanged (const Activati
             requiresRestore = false;
             return;
         }
-        if (width < 600) {
+        if (width < 600 || height < 450) {
             restoreWidth = width;
-            requiresResize = true;
-        }
-        if (height < 450) {
             restoreHeight = height;
             requiresResize = true;
         }
         if (requiresResize) {
-            setSize(600, 450);
+            auto newWidth = std::max(width, 600);
+            auto newHeight = std::max(height, 450);
+            setSize(newWidth, newHeight);
             requiresRestore = true;
         }
     }
@@ -432,10 +437,10 @@ void AuroraAudioProcessorEditor::checkForUpdates() {
                 .withTitle("Aurora: Update Available")
                 .withMessage(versionsMessage)
                 .withIconType(MessageBoxIconType::InfoIcon)
-                .withAssociatedComponent(this);
+                .withAssociatedComponent(this)
+                .withParentComponent(this);
             
-            
-            // Native box
+//             Native box
             NativeMessageBox::showAsync(options, ModalCallbackFunction::create([this](int result){
                 if (result == 0) {
                     URL download = URL("https://www.schematicsound.com/plug-ins/");
@@ -447,18 +452,36 @@ void AuroraAudioProcessorEditor::checkForUpdates() {
             
            
             // Alert Window (buggy)
-//            AlertWindow updateAlert = AlertWindow("Aurora: Update Available", versionsMessage, MessageBoxIconType::InfoIcon);
+//            getLookAndFeel().setColour(AlertWindow::backgroundColourId, Colour(232,232,232));
+//            getLookAndFeel().setColour(AlertWindow::textColourId, Colour(32,32,32));
+//            getLookAndFeel().setColour(AlertWindow::outlineColourId, Colour(32,32,32));
+//            
+//            const auto width = getWidth();
+//            const auto height = getHeight();
 //
-//            getLookAndFeel().setColour(AlertWindow::backgroundColourId, Colours::white);
-//            getLookAndFeel().setColour(AlertWindow::textColourId, Colours::black);
+//            auto requiresResize = false;
+//            if (width < 600 || height < 450) {
+//                restoreWidth = width;
+//                restoreHeight = height;
+//                DBG(restoreWidth << "\n" << restoreHeight);
+//                requiresResize = true;
+//            }
+//            if (requiresResize) {
+//                auto newWidth = std::max(width, 600);
+//                auto newHeight = std::max(height, 450);
+//                DBG(width << "\n" << height);
+//                DBG(newWidth << "\n" << newHeight);
+//                setSize(newWidth, newHeight);
+//            }
 //            
 //            AlertWindow::showAsync(options, ModalCallbackFunction::create([this](int result){
-//                                if (result == 1) {
-//                                    URL download = URL("https://www.schematicsound.com/plug-ins/");
-//                                    download.launchInDefaultBrowser();
-//                                } else {
-//                                    audioProcessor.dismissUpates();
-//                                }
+//                if (result == 1) {
+//                    URL download = URL("https://www.schematicsound.com/plug-ins/");
+//                    download.launchInDefaultBrowser();
+//                } else if (result == 0){
+//                    audioProcessor.dismissUpates();
+//                }
+//                requiresRestore = true;
 //            }));
             
  

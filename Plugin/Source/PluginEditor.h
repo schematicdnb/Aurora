@@ -56,12 +56,10 @@ public:
     void initCrossoverGroup();
     void initColourGroup();
     void initControlToggle();
-//    void checkForUpdates();
     void showControls();
     void hideControls();
     
     void onActivationUiVisibilityChanged (const ActivationUI::Visibility& visibility) override;
-
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -115,9 +113,6 @@ private:
     Image logoAurora = gin::applyResize(ImageCache::getFromMemory(BinaryData::AuroraLogoLightMode_png, BinaryData::AuroraLogoLightMode_pngSize), 0.09);
 
     Image logoSchematic = gin::applyResize(ImageCache::getFromMemory(BinaryData::SchematicSoundLogo_png, BinaryData::SchematicSoundLogo_pngSize), 0.055);
-    
-//    std::unique_ptr<AlertWindow> updateAlert;
-    
     
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuroraAudioProcessorEditor)

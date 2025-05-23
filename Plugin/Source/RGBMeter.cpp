@@ -54,7 +54,6 @@ namespace juce
 
     void RGBMeter::pushSamples(AudioBuffer<float> &buffer)
     {
-
         mainOutputBuffer = &buffer;
         if (!width)
         {
@@ -182,6 +181,7 @@ namespace juce
 
     void RGBMeter::paint(Graphics &g)
     {
+
         if (!width)
         {
             return;
@@ -195,18 +195,25 @@ namespace juce
             auto min = range.getStart();
             auto max = range.getEnd();
 
+            if (std::isnan(min) || std::isnan(max))
+            {
+                DBG("NaN");
+                continue;
+            }
+
             auto y1 = jmap(min * gain, -1.0f, 1.0f, (float)this->getHeight(), 0.0f);
             auto y2 = jmap(max * gain, -1.0f, 1.0f, (float)this->getHeight(), 0.0f);
 
-            Path p;
-            p.startNewSubPath(i, y1);
-            p.lineTo(i, y2);
-            p.closeSubPath();
+            if (std::isnan(y1) || std::isnan(y2))
+            {
+                DBG("NaN");
+                continue;
+			}
 
             g.setColour(colour);
-            g.strokePath(p, PathStrokeType(1.0f));
-            //            g.strokePath(p, PathStrokeType(1.0f, PathStrokeType::curved, PathStrokeType::butt));
+			g.drawVerticalLine(i, std::min(y1,y2), std::max(y1,y2));
         }
+
     }
 
     void RGBMeter::resized()
@@ -262,6 +269,7 @@ namespace juce
     void RGBMeter::timerCallback()
     {
         repaint();
+
     }
 
 }

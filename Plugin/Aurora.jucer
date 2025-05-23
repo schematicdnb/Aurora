@@ -22,6 +22,10 @@
       <FILE id="TCTNaE" name="AuroraKnob.png" compile="0" resource="1" file="Source/AuroraKnob.png"/>
     </GROUP>
     <GROUP id="{DD6A068D-F127-8FC1-7C6B-391B81BC2A60}" name="Source">
+      <FILE id="AYYWbQ" name="UpdateNotifier.cpp" compile="1" resource="0"
+            file="Source/UpdateNotifier.cpp"/>
+      <FILE id="PzVTnL" name="UpdateNotifier.h" compile="0" resource="0"
+            file="Source/UpdateNotifier.h"/>
       <FILE id="IDwdtP" name="FilmStripSlider.cpp" compile="1" resource="0"
             file="Source/FilmStripSlider.cpp"/>
       <FILE id="m0v3Rm" name="FilmStripSlider.h" compile="0" resource="0"

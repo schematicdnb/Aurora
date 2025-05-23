@@ -74,10 +74,9 @@ public:
     
     void initDSP();
     
-    void dismissUpates();
-    bool isUpdatesDismissed();
+    void dismissUpdate();
+    bool isUpdateDismissed();
 
-    
 private:
     
     bool updatesDismissed = false;

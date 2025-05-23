@@ -94,11 +94,15 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     }
     
     // Check for updates
-    if (!audioProcessor.isUpdatesDismissed()) {
-        checkForUpdates();
+    addChildComponent(updateNotifier);
+    if (!audioProcessor.isUpdateDismissed()) {
+        updateNotifier.checkForUpdates();
+        if (updateNotifier.isUpdateAvailable()) {
+            updateNotifier.setVisible(true);
+        }
     }
     
-    addAndMakeVisible(updateNotifier);
+    
     
     //if (requiresRestore) {
     //    DBG("Restoring size.");
@@ -405,58 +409,58 @@ void AuroraAudioProcessorEditor::hideControls() {
     }
 }
 
-void AuroraAudioProcessorEditor::checkForUpdates() {
-    auto pluginName = ProjectInfo::projectName;
-    auto currentVersion = String(ProjectInfo::versionString);
-    
-    
-    
-    String versionURL = "https://www.schematicsound.com/plugin-versions.php";
-    String cacheBypass = String(Time::getCurrentTime().toMilliseconds());
-    URL requestURL(versionURL + "?cb=" + cacheBypass);
-    
-    auto response = JSON::parse(requestURL.readEntireTextStream());
-    
-    if (response.isObject() && response.hasProperty(pluginName)) {
-        
-        auto info = response.getProperty(pluginName, "Update Check Failed.");
-        auto latestVersion = info.getProperty("version", "0").toString();
-        auto notes = info.getProperty("notes", "No info available.").toString();
-        
-        if (currentVersion.compare(latestVersion)) {
-            
-            String versionsMessage = "Current version: ";
-            versionsMessage += currentVersion;
-            versionsMessage += "\nLatest version: ";
-            versionsMessage += latestVersion;
-            versionsMessage += "\n\nChanges:";
-            versionsMessage += notes;
-            
-            auto options = MessageBoxOptions()
-                .withButton("Update")
-                .withButton("Remind Me Later")
-                .withTitle("Aurora: Update Available")
-                .withMessage(versionsMessage)
-                .withIconType(MessageBoxIconType::WarningIcon)
-                .withAssociatedComponent(this);
-                //.withParentComponent(this);
-            
-//             Native box
-
-//            NativeMessageBox::showAsync(options, ModalCallbackFunction::create([this](int result){
-//                if (result == 0) {
-//                    URL download = URL("https://www.schematicsound.com/plug-ins/");
-//                    download.launchInDefaultBrowser();
-//                } else {
-//                    audioProcessor.dismissUpates();
-//                }
-//            }));
-            
-        
- 
-        }
-    }
-}
+//void AuroraAudioProcessorEditor::checkForUpdates() {
+//    auto pluginName = ProjectInfo::projectName;
+//    auto currentVersion = String(ProjectInfo::versionString);
+//    
+//    
+//    
+//    String versionURL = "https://www.schematicsound.com/plugin-versions.php";
+//    String cacheBypass = String(Time::getCurrentTime().toMilliseconds());
+//    URL requestURL(versionURL + "?cb=" + cacheBypass);
+//    
+//    auto response = JSON::parse(requestURL.readEntireTextStream());
+//    
+//    if (response.isObject() && response.hasProperty(pluginName)) {
+//        
+//        auto info = response.getProperty(pluginName, "Update Check Failed.");
+//        auto latestVersion = info.getProperty("version", "0").toString();
+//        auto notes = info.getProperty("notes", "No info available.").toString();
+//        
+//        if (currentVersion.compare(latestVersion)) {
+//            
+//            String versionsMessage = "Current version: ";
+//            versionsMessage += currentVersion;
+//            versionsMessage += "\nLatest version: ";
+//            versionsMessage += latestVersion;
+//            versionsMessage += "\n\nChanges:";
+//            versionsMessage += notes;
+//            
+//            auto options = MessageBoxOptions()
+//                .withButton("Update")
+//                .withButton("Remind Me Later")
+//                .withTitle("Aurora: Update Available")
+//                .withMessage(versionsMessage)
+//                .withIconType(MessageBoxIconType::WarningIcon)
+//                .withAssociatedComponent(this);
+//                //.withParentComponent(this);
+//            
+////             Native box
+//
+////            NativeMessageBox::showAsync(options, ModalCallbackFunction::create([this](int result){
+////                if (result == 0) {
+////                    URL download = URL("https://www.schematicsound.com/plug-ins/");
+////                    download.launchInDefaultBrowser();
+////                } else {
+////                    audioProcessor.dismissUpates();
+////                }
+////            }));
+//            
+//        
+// 
+//        }
+//    }
+//}
 
 //==============================================================================
 void AuroraAudioProcessorEditor::paint(juce::Graphics &g)

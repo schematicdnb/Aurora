@@ -269,11 +269,10 @@ void AuroraAudioProcessor::setEditorSize(int width, int height) {
     size.setProperty("height", height, nullptr);
 }
 
-void AuroraAudioProcessor::dismissUpates() {
+void AuroraAudioProcessor::dismissUpdate() {
     updatesDismissed = true;
 }
-
-bool AuroraAudioProcessor::isUpdatesDismissed() {
+bool AuroraAudioProcessor::isUpdateDismissed() {
     if (updatesDismissed) {return true;}
     return false;
 }

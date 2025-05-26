@@ -61,7 +61,7 @@ void UpdateNotifier::resized() {
     int spacing = 10;
     int leftColumnWidth = 2 * buttonWidth + spacing;
     
-    auto leftColumnHeight = 120;
+    auto leftColumnHeight = 130;
     
     // Left Column
     title.setBounds(getWidth() / 2 - leftColumnWidth, getHeight() / 2 - leftColumnHeight / 2, leftColumnWidth, buttonHeight);
@@ -71,7 +71,7 @@ void UpdateNotifier::resized() {
     remindButton.setBounds(title.getX() + buttonWidth + spacing, updateButton.getY(), buttonWidth, buttonHeight);
     
     // Right Column
-    changelog.setBounds(getWidth()/2 + 10, title.getY() - title.getHeight(), getWidth()/2 - 20, leftColumnHeight);
+    changelog.setBounds(getWidth()/2 + 10, title.getY(), getWidth()/2 - 20, leftColumnHeight);
 }
 
 bool UpdateNotifier::isUpdateAvailable() {

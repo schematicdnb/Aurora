@@ -264,7 +264,7 @@ void RGBMeter::setColourWeight(String colour, float weight)
     }
 }
 void RGBMeter::setDisplayChannel(bool isRightChannel) {
-    displayChannel = isRightChannel ? 1 : 0;
+    displayChannel = isRightChannel && mainOutputBuffer->getNumChannels() == 2 ? 1 : 0;
 }
 void RGBMeter::timerCallback()
 {

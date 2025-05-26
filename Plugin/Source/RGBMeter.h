@@ -9,166 +9,164 @@
 #include <JuceHeader.h>
 #include "RoundedCornersEffect.h"
 
-namespace juce
+template <typename T>
+class CircularBuffer
 {
-    template <typename T>
-    class CircularBuffer
+public:
+    CircularBuffer(int size) : buffer(size), head(0), tail(0), full(false)
     {
-    public:
-        CircularBuffer(int size) : buffer(size), head(0), tail(0), full(false)
+    }
+
+    void add(T item)
+    {
+        buffer[head] = item;
+        if (full)
         {
+            tail = (tail + 1) % buffer.size();
         }
+        head = (head + 1) % buffer.size();
+        full = head == tail;
+    }
 
-        void add(T item)
+    AudioBuffer<T> getBuffer() const
+    {
+        AudioBuffer<T> audioBuffer(1, (int)size());
+        if (empty())
         {
-            buffer[head] = item;
-            if (full)
-            {
-                tail = (tail + 1) % buffer.size();
-            }
-            head = (head + 1) % buffer.size();
-            full = head == tail;
-        }
-
-        AudioBuffer<T> getBuffer() const
-        {
-            AudioBuffer<T> audioBuffer(1, (int)size());
-            if (empty())
-            {
-                return audioBuffer;
-            }
-
-            size_t current = tail;
-            for (int i = 0; i < size(); i++)
-            {
-                audioBuffer.setSample(0, i, buffer[current]);
-                current = (current + 1) % buffer.size();
-            }
-
             return audioBuffer;
         }
 
-        void resize(size_t size)
+        size_t current = tail;
+        for (int i = 0; i < size(); i++)
         {
-            buffer.resize(size);
-            head = 0;
-            tail = head;
-            full = true;
+            audioBuffer.setSample(0, i, buffer[current]);
+            current = (current + 1) % buffer.size();
         }
 
-        T get(size_t index) const
-        {
-            if (index >= size())
-            {
-                throw std::out_of_range("Index out of range");
-            }
-            return buffer[(tail + index) % buffer.size()];
-        }
+        return audioBuffer;
+    }
 
-        void replace(size_t index, T item)
-        {
-            if (index >= size())
-            {
-                throw std::out_of_range("Index out of range");
-            }
-            buffer[(tail + index) % buffer.size()] = item;
-        }
-        
-
-        size_t size() const
-        {
-            if (full)
-            {
-                return buffer.size();
-            }
-            if (head >= tail)
-            {
-                return head - tail;
-            }
-            return buffer.size() + head - tail;
-        }
-
-        bool empty() const
-        {
-            return (!full && (head == tail));
-        }
-
-        bool isFull() const
-        {
-            return full;
-        }
-
-    private:
-        std::vector<T> buffer;
-        size_t head;
-        size_t tail;
-        bool full;
-    };
-
-    class RGBMeter : public Component, Timer
+    void resize(size_t size)
     {
+        buffer.resize(size);
+        head = 0;
+        tail = head;
+        full = true;
+    }
 
-    public:
-        RGBMeter();
+    T get(size_t index) const
+    {
+        if (index >= size())
+        {
+            throw std::out_of_range("Index out of range");
+        }
+        return buffer[(tail + index) % buffer.size()];
+    }
 
-        void prepare(dsp::ProcessSpec spec);
-        void updateState();
-        void pushSamples(AudioBuffer<float> &buffer);
-        void paint(Graphics &g) override;
-        void timerCallback() override;
-        Colour freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> &midBuffer, AudioBuffer<float> &highBuffer);
-        Colour colourFreqByFiltering(AudioBuffer<float> &buffer);
+    void replace(size_t index, T item)
+    {
+        if (index >= size())
+        {
+            throw std::out_of_range("Index out of range");
+        }
+        buffer[(tail + index) % buffer.size()] = item;
+    }
+    
 
-        void applyWindowing(AudioBuffer<float> &buffer);
+    size_t size() const
+    {
+        if (full)
+        {
+            return buffer.size();
+        }
+        if (head >= tail)
+        {
+            return head - tail;
+        }
+        return buffer.size() + head - tail;
+    }
 
-        void resized() override;
-        int getHistoryLength();
-        void setHistoryLength(int length);
-        float getGain();
-        void setGain(float gain);
-        
-        void setLowCrossover(float freq);
-        void setHighCrossover(float freq);
-        
-        float getCornerRadius();
-        
-        void setColourWeight(String colour, float weight);
-        
-    private:
-        int historyLength; // in seconds
-        int sampleRate;
-        int bufferLength;
+    bool empty() const
+    {
+        return (!full && (head == tail));
+    }
 
-        int width = 0;
+    bool isFull() const
+    {
+        return full;
+    }
 
-        AudioBuffer<float> chunkBuffer;
-        double chunkSize;
-        double chunkCounter;
+private:
+    std::vector<T> buffer;
+    size_t head;
+    size_t tail;
+    bool full;
+};
 
-        int freqAnalysisSize = 2048;
-        CircularBuffer<float> freqAnalysisBuffer{freqAnalysisSize};
-        AudioBuffer<float> windowedBuffer;
+class RGBMeter : public Component, Timer
+{
 
-        CircularBuffer<std::tuple<Range<float>, Colour>> displayBuffer{0};
+public:
+    RGBMeter();
 
-        using Filter = dsp::LinkwitzRileyFilter<float>;
-        Filter LP, midLP, midAP, midHP, HP;
-        
-        float gain;
+    void prepare(dsp::ProcessSpec spec);
+    void updateState();
+    void pushSamples(AudioBuffer<float> &buffer);
+    void paint(Graphics &g) override;
+    void timerCallback() override;
+    Colour freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> &midBuffer, AudioBuffer<float> &highBuffer);
+    Colour colourFreqByFiltering(AudioBuffer<float> &buffer);
 
-        AudioBuffer<float> *mainOutputBuffer;
-        
-        RoundedCornersEffect corners;
-        float cornerRadius = 7;
-        
-        float lowWeight;
-        float midWeight;
-        float highWeight;
-        
-        //==============================================================================
-        
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RGBMeter)
-    };
-    ;
+    void applyWindowing(AudioBuffer<float> &buffer);
 
-}
+    void resized() override;
+    int getHistoryLength();
+    void setHistoryLength(int length);
+    float getGain();
+    void setGain(float gain);
+    
+    void setLowCrossover(float freq);
+    void setHighCrossover(float freq);
+    
+    float getCornerRadius();
+    
+    void setColourWeight(String colour, float weight);
+    void setDisplayChannel(bool isRightChannel);
+    
+private:
+    int historyLength; // in seconds
+    int sampleRate;
+    int bufferLength;
+    int displayChannel;
+
+    int width = 0;
+
+    AudioBuffer<float> chunkBuffer;
+    double chunkSize;
+    double chunkCounter;
+
+    int freqAnalysisSize = 2048;
+    CircularBuffer<float> freqAnalysisBuffer{freqAnalysisSize};
+    AudioBuffer<float> windowedBuffer;
+
+    CircularBuffer<std::tuple<Range<float>, Colour>> displayBuffer{0};
+
+    using Filter = dsp::LinkwitzRileyFilter<float>;
+    Filter LP, midLP, midAP, midHP, HP;
+    
+    float gain;
+
+    AudioBuffer<float> *mainOutputBuffer;
+    
+    RoundedCornersEffect corners;
+    float cornerRadius = 7;
+    
+    float lowWeight;
+    float midWeight;
+    float highWeight;
+    
+    //==============================================================================
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RGBMeter)
+};
+

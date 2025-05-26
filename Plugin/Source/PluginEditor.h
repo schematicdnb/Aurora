@@ -101,12 +101,15 @@ private:
     std::unique_ptr<SliderAttachment> lowCrossoverAttachment, highCrossoverAttachment;
     std::unique_ptr<SliderAttachment> redSliderAttachment, greenSliderAttachment, blueSliderAttachment;
     
-    juce::AudioProcessorValueTreeState &apvts = audioProcessor.apvts;
-    juce::RGBMeter &rgbMeter = audioProcessor.rgbMeter;
+    AudioProcessorValueTreeState &apvts = audioProcessor.apvts;
+    RGBMeter &rgbMeter = audioProcessor.rgbMeter;
     
     ToggleButton toggleControlsButton;
     Label toggleControlsLabel;
     std::unique_ptr<ButtonAttachment> toggleControlsAttachment;
+    
+    TextButton channelButton;
+    std::unique_ptr<ButtonAttachment> channelButtonAttachment;
     
     Array<Component*> controls = {&historySlider, &gainSlider, &historyLabel, &gainLabel, &zoomGroup, &crossoverGroup, &colourGroup, &lowCrossoverSlider, &highCrossoverSlider, &lowCrossoverLabel, &highCrossoverLabel, &redSlider, &greenSlider, &blueSlider, &redLabel, &greenLabel, &blueLabel};
     

@@ -56,6 +56,22 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     
     // add RGB Meter
     addAndMakeVisible(rgbMeter);
+
+    // init channel
+    addAndMakeVisible(channelButton);
+    auto buttonColour = Colours::black.withAlpha(0.5f);
+    channelButton.setColour(TextButton::buttonColourId, buttonColour);
+    channelButton.setColour(TextButton::buttonOnColourId, buttonColour);
+    channelButton.setColour(ComboBox::outlineColourId, buttonColour);
+    channelButton.setToggleable(true);
+    channelButton.setClickingTogglesState(true);
+    channelButtonAttachment.reset(new ButtonAttachment(apvts, "displayChannel", channelButton));
+    channelButton.setButtonText(channelButton.getToggleState() ? "R" : "L");
+    channelButton.onClick = [this]() {
+        auto val = channelButton.getToggleState();
+        channelButton.setButtonText(val ? "R" : "L");
+        rgbMeter.setDisplayChannel(val);
+    };
     
     // init controls
     initZoomGroup();
@@ -434,12 +450,8 @@ void AuroraAudioProcessorEditor::resized(){
     const auto height = getHeight();
     
     updateNotifier.setBounds(getLocalBounds());
-
-//    auto labelHeight = gainLabel.getHeight();
     audioProcessor.setEditorSize(width, height);
     
-    
-//    darkModeButton.setBounds(margin, margin, paramWidth, paramHeight);
     if (toggleControlsButton.getToggleState()) {
         rgbMeter.setBounds(margin, margin, width - 2*margin, height - margin - groupHeight - infoAreaHeight);
         
@@ -452,6 +464,8 @@ void AuroraAudioProcessorEditor::resized(){
         toggleControlsLabel.setBounds(width/2 - toggleControlsLabel.getWidth()/2, toggleControlsButton.getY() - toggleControlsLabel.getHeight(), toggleControlsLabel.getWidth(), toggleControlsLabel.getHeight());
     }
     
+    // Channel selection
+    channelButton.setBounds(2*margin, rgbMeter.getY() + rgbMeter.getHeight()/2 - 15, 30, 30);
     
     // Zoom controls
     zoomGroup.setBounds(width - margin+2 - groupWidth, height - margin - groupHeight, groupWidth, groupHeight);

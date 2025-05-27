@@ -11,7 +11,7 @@
 
 CompanyLogo::CompanyLogo ()
 {
-    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogo_png, BinaryData::SchematicSoundLogo_pngSize);
+    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_png, BinaryData::SchematicSoundLogoWhite_pngSize);
 
     #if ANIMATE_COMPANY_LOGO
         jitterX.reset (15);
@@ -95,18 +95,18 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     if (activationUI)
     {
         // There are a max of 2 lines of text on the welcome screen, define them here
-        activationUI->setWelcomePageText ("Audio will mute occasionally while unactivated", "");
-
-        // Set the logo inside the spinner (when waiting for web responses)
-        activationUI->setSpinnerLogo (Drawable::createFromImageData (BinaryData::AuroraLogoLightMode_png, BinaryData::AuroraLogoLightMode_pngSize));
-
-        // Scale the spinner logo as required for your asset if needed. See Submodules/moonbase_JUCEClient/Assets/Source/SVG/OverlayAssets for ideal assets.
-        // activationUI->setSpinnerLogoScale (0.5f);
+        activationUI->setWelcomePageText ("Audio will mute occasionally while unactivated", "Click below to activate Aurora");
         
         // Set the company logo, this is the logo that is displayed on the welcome screen and the activated info screen
         activationUI->setCompanyLogo (std::make_unique<CompanyLogo> ());
         // Scale the company logo as required for your asset if needed.
-        // activationUI->setCompanyLogoScale ((0.25f));
+         activationUI->setCompanyLogoScale ((7.0f));
+        
+        // Set the logo inside the spinner (when waiting for web responses)
+        activationUI->setSpinnerLogo (Drawable::createFromImageData (BinaryData::SchematicSoundIconWhite_png, BinaryData::SchematicSoundIconWhite_pngSize));
+
+        // Scale the spinner logo as required for your asset if needed.
+//         activationUI->setSpinnerLogoScale (2.0f);
     }
     
     // Check for updates
@@ -430,12 +430,12 @@ void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
         g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - margin - groupHeight - infoAreaHeight, rgbMeter.getCornerRadius());
         
         g.drawImageAt(logoAurora, margin, getHeight() - margin - groupHeight - infoAreaHeight/2 - logoAurora.getHeight()/2);
-        g.drawImageAt(logoSchematic, getWidth() - margin - logoSchematic.getWidth(), getHeight() - margin - groupHeight - infoAreaHeight/2 - logoSchematic.getHeight()/3);
+        g.drawImageAt(logoSchematicBlack, getWidth() - margin - logoSchematicBlack.getWidth(), getHeight() - margin - groupHeight - infoAreaHeight/2 - logoSchematicBlack.getHeight()/3);
     } else {
         g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - infoAreaHeight, rgbMeter.getCornerRadius());
         
         g.drawImageAt(logoAurora, margin, getHeight() - infoAreaHeight/2 - logoAurora.getHeight()/2);
-        g.drawImageAt(logoSchematic, getWidth() - margin - logoSchematic.getWidth(), getHeight() - infoAreaHeight/2 - logoSchematic.getHeight()/3);
+        g.drawImageAt(logoSchematicBlack, getWidth() - margin - logoSchematicBlack.getWidth(), getHeight() - infoAreaHeight/2 - logoSchematicBlack.getHeight()/3);
     }
     
 }

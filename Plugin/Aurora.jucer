@@ -13,12 +13,14 @@
             file="../moonbase_api_config.json"/>
     </GROUP>
     <GROUP id="{7B1CE658-CB34-AAFD-E5D4-611BE3C4418D}" name="Assets">
-      <FILE id="Ndv7I9" name="LoadingSpinner.svg" compile="0" resource="1"
-            file="../../moonbase_JUCEClient/Assets/Source/SVG/OverlayAssets/LoadingSpinner.svg"/>
+      <FILE id="hqZwOu" name="SchematicSoundIconWhite.png" compile="0" resource="1"
+            file="../Logos/SchematicSoundIconWhite.png"/>
+      <FILE id="Ggu1b9" name="SchematicSoundLogoWhite.png" compile="0" resource="1"
+            file="../Logos/SchematicSoundLogoWhite.png"/>
       <FILE id="fjUNJe" name="AuroraLogoLightMode.png" compile="0" resource="1"
             file="../Logos/AURORA LIGHT MODE/AuroraLogoLightMode.png"/>
-      <FILE id="nLTd9I" name="SchematicSoundLogo.png" compile="0" resource="1"
-            file="../Logos/SchematicSoundLogo.png"/>
+      <FILE id="nLTd9I" name="SchematicSoundLogoBlack.png" compile="0" resource="1"
+            file="../Logos/SchematicSoundLogoBlack.png"/>
       <FILE id="TCTNaE" name="AuroraKnob.png" compile="0" resource="1" file="Source/AuroraKnob.png"/>
     </GROUP>
     <GROUP id="{DD6A068D-F127-8FC1-7C6B-391B81BC2A60}" name="Source">

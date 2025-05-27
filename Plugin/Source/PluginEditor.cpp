@@ -11,7 +11,8 @@
 
 CompanyLogo::CompanyLogo ()
 {
-    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_png, BinaryData::SchematicSoundLogoWhite_pngSize);
+//    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_png, BinaryData::SchematicSoundLogoWhite_pngSize);
+    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_Small_png, BinaryData::SchematicSoundLogoWhite_Small_pngSize);
 
     #if ANIMATE_COMPANY_LOGO
         jitterX.reset (15);
@@ -100,7 +101,7 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
         // Set the company logo, this is the logo that is displayed on the welcome screen and the activated info screen
         activationUI->setCompanyLogo (std::make_unique<CompanyLogo> ());
         // Scale the company logo as required for your asset if needed.
-         activationUI->setCompanyLogoScale ((7.0f));
+         activationUI->setCompanyLogoScale (5.0f);
         
         // Set the logo inside the spinner (when waiting for web responses)
         activationUI->setSpinnerLogo (Drawable::createFromImageData (BinaryData::SchematicSoundIconWhite_png, BinaryData::SchematicSoundIconWhite_pngSize));

@@ -29,7 +29,7 @@ private:
     TextButton updateButton;
     TextButton remindButton;
     
-    bool updateAvailable = true;
+    bool updateAvailable = false;
             
     String pluginName;
     String currentVersion;

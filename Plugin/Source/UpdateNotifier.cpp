@@ -33,7 +33,7 @@ UpdateNotifier::UpdateNotifier(AuroraAudioProcessor& p) : ap(p) {
     updateButton.setButtonText("Update");
     updateButton.setColour(TextButton::buttonColourId, Colour(32,32,32));
     updateButton.onClick = [this]() {
-        URL download = URL("https://www.schematicsound.com/plug-ins/");
+        URL download = URL("https://www.schematicsound.com/?mb_intent=view_products");
         download.launchInDefaultBrowser();
         ap.dismissUpdate();
         this->setVisible(false);

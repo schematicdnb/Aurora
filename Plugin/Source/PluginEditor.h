@@ -69,7 +69,7 @@ private:
     std::unique_ptr<Moonbase::JUCEClient::ActivationUI> activationUI { audioProcessor.moonbaseClient->createActivationUi(*this)
     };
     int restoreWidth, restoreHeight;
-    bool requiresRestore;
+    bool requiresRestore = false;
     
     UpdateNotifier updateNotifier = UpdateNotifier(audioProcessor);
     
@@ -114,11 +114,8 @@ private:
     Array<Component*> controls = {&historySlider, &gainSlider, &historyLabel, &gainLabel, &zoomGroup, &crossoverGroup, &colourGroup, &lowCrossoverSlider, &highCrossoverSlider, &lowCrossoverLabel, &highCrossoverLabel, &redSlider, &greenSlider, &blueSlider, &redLabel, &greenLabel, &blueLabel};
     
     Image logoAurora = gin::applyResize(ImageCache::getFromMemory(BinaryData::AuroraLogoLightMode_png, BinaryData::AuroraLogoLightMode_pngSize), 0.09);
-
     Image logoSchematicBlack = gin::applyResize(ImageCache::getFromMemory(BinaryData::SchematicSoundLogoBlack_png, BinaryData::SchematicSoundLogoBlack_pngSize), 0.055);
-    
     Image logoSchematicWhite = gin::applyResize(ImageCache::getFromMemory(BinaryData::SchematicSoundLogoWhite_png, BinaryData::SchematicSoundLogoWhite_pngSize), 0.055);
-//
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuroraAudioProcessorEditor)
 };

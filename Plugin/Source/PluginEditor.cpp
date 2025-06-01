@@ -11,8 +11,8 @@
 
 CompanyLogo::CompanyLogo ()
 {
-//    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_png, BinaryData::SchematicSoundLogoWhite_pngSize);
-    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_Small_png, BinaryData::SchematicSoundLogoWhite_Small_pngSize);
+    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_png, BinaryData::SchematicSoundLogoWhite_pngSize);
+//    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_Small_png, BinaryData::SchematicSoundLogoWhite_Small_pngSize);
 
     #if ANIMATE_COMPANY_LOGO
         jitterX.reset (15);
@@ -91,25 +91,6 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     
     initControlToggle();
     
-    // Moonbase Activation UI
-    activationUI->addListener(this);
-    if (activationUI)
-    {
-        // There are a max of 2 lines of text on the welcome screen, define them here
-        activationUI->setWelcomePageText ("Audio will mute occasionally while unactivated", "Click below to activate Aurora");
-        
-        // Set the company logo, this is the logo that is displayed on the welcome screen and the activated info screen
-        activationUI->setCompanyLogo (std::make_unique<CompanyLogo> ());
-        // Scale the company logo as required for your asset if needed.
-         activationUI->setCompanyLogoScale (5.0f);
-        
-        // Set the logo inside the spinner (when waiting for web responses)
-        activationUI->setSpinnerLogo (Drawable::createFromImageData (BinaryData::SchematicSoundIconWhite_png, BinaryData::SchematicSoundIconWhite_pngSize));
-
-        // Scale the spinner logo as required for your asset if needed.
-//         activationUI->setSpinnerLogoScale (2.0f);
-    }
-    
     // Check for updates
     addChildComponent(updateNotifier);
     if (!audioProcessor.isUpdateDismissed()) {
@@ -118,6 +99,27 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
             updateNotifier.setVisible(true);
         }
     }
+
+    // Moonbase Activation UI
+    activationUI->addListener(this);
+    if (activationUI)
+    {
+        // There are a max of 2 lines of text on the welcome screen, define them here
+        activationUI->setWelcomePageText("Audio will mute occasionally while unactivated", "Click below to activate Aurora");
+
+        // Set the company logo, this is the logo that is displayed on the welcome screen and the activated info screen
+        activationUI->setCompanyLogo(std::make_unique<CompanyLogo>());
+        // Scale the company logo as required for your asset if needed.
+        activationUI->setCompanyLogoScale(5.0f);
+
+        // Set the logo inside the spinner (when waiting for web responses)
+        activationUI->setSpinnerLogo(Drawable::createFromImageData(BinaryData::SchematicSoundIconWhite_png, BinaryData::SchematicSoundIconWhite_pngSize));
+
+        // Scale the spinner logo as required for your asset if needed.
+//         activationUI->setSpinnerLogoScale (2.0f);
+    }
+
+	DBG("Editor created with size: " << getWidth() << "x" << getHeight());
 
 }
 
@@ -128,33 +130,42 @@ AuroraAudioProcessorEditor::~AuroraAudioProcessorEditor()
     }
 }
 
-void AuroraAudioProcessorEditor::onActivationUiVisibilityChanged (const ActivationUI::Visibility& visibility) {
-    jassert (activationUI != nullptr);
-    if (activationUI == nullptr)
-        return;
+void AuroraAudioProcessorEditor::onActivationUiVisibilityChanged (const ActivationUI::Visibility& visibility) {  
+    jassert (activationUI != nullptr);  
+    if (activationUI == nullptr)  
+        return;  
 
-    const auto width = getWidth();
-    const auto height = getHeight();
+    DBG("Activation UI visibility changed: " << (visibility.isVisible ? "true" : "false"));  
 
-    if (visibility.isVisible) {
-        auto requiresResize = false;
+    const auto width = getWidth();  
+    const auto height = getHeight();  
+
+    if (visibility.isVisible) {  
+        auto requiresResize = false;  
         if (requiresRestore) {
-            setSize(restoreWidth, restoreHeight);
+            if (restoreWidth > 0 && restoreHeight > 0) {
+                DBG("Restoring window with size: " << restoreWidth << "x" << restoreHeight);
+                setSize(restoreWidth, restoreHeight); 
+            }
+            DBG("Error restoring window.");
             requiresRestore = false;
             return;
-        }
+        }  
         if (width < 600 || height < 450) {
-            restoreWidth = width;
+            DBG("Too small for activation UI");
+            restoreWidth = width;  
             restoreHeight = height;
-            requiresResize = true;
-        }
+            DBG("Restore size set to: " << restoreWidth << "x" << restoreHeight);
+            requiresResize = true;  
+        }  
         if (requiresResize) {
-            auto newWidth = std::max(width, 600);
+            auto newWidth = std::max(width, 600);  
             auto newHeight = std::max(height, 450);
-            setSize(newWidth, newHeight);
-            requiresRestore = true;
-        }
-    }
+            DBG("Auto resizing window with size: " << newWidth << "x" << newHeight);
+            setSize(newWidth, newHeight);  
+            requiresRestore = true;  
+        }  
+    }  
 }
 
 void AuroraAudioProcessorEditor::initZoomGroup() {
@@ -444,6 +455,8 @@ void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
 void AuroraAudioProcessorEditor::resized(){
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
+
+	DBG("Resized called with size: " << getWidth() << "x" << getHeight());
     
     MOONBASE_RESIZE_ACTIVATION_UI
     

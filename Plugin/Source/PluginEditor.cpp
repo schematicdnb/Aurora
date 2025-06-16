@@ -11,8 +11,7 @@
 
 CompanyLogo::CompanyLogo ()
 {
-    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_png, BinaryData::SchematicSoundLogoWhite_pngSize);
-//    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_Small_png, BinaryData::SchematicSoundLogoWhite_Small_pngSize);
+    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_Small_png, BinaryData::SchematicSoundLogoWhite_Small_pngSize);
 
     #if ANIMATE_COMPANY_LOGO
         jitterX.reset (15);
@@ -113,7 +112,7 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
         activationUI->setCompanyLogoScale(5.0f);
 
         // Set the logo inside the spinner (when waiting for web responses)
-        activationUI->setSpinnerLogo(Drawable::createFromImageData(BinaryData::SchematicSoundIconWhite_png, BinaryData::SchematicSoundIconWhite_pngSize));
+        activationUI->setSpinnerLogo(Drawable::createFromImageData(BinaryData::SchematicSoundIconWhite_Small_png, BinaryData::SchematicSoundIconWhite_Small_pngSize));
 
         // Scale the spinner logo as required for your asset if needed.
 //         activationUI->setSpinnerLogoScale (2.0f);

@@ -9,6 +9,8 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+bool AuroraAudioProcessor::updatesDismissed = false;
+
 //==============================================================================
 AuroraAudioProcessor::AuroraAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations

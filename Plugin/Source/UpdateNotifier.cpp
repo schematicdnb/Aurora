@@ -11,6 +11,7 @@
 #include "UpdateNotifier.h"
 #include <regex>
 
+
 UpdateNotifier::UpdateNotifier(AuroraAudioProcessor& p) : ap(p) {
     // Title
     FontOptions titleFontOptions = FontOptions(24.0f, Font::bold);
@@ -157,7 +158,6 @@ void UpdateNotifier::checkForUpdates() {
         // CRITICAL: Validate and sanitize all fields before use
         if (!response.hasProperty(pluginName)) {
             DBG("Plugin not found in response");
-            
             return;
         }
         

@@ -101,9 +101,9 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     }
 
     // Moonbase Activation UI
-    activationUI->addListener(this);
-    if (activationUI)
+    if (activationUI != nullptr)
     {
+        activationUI->addListener(this);
         // There are a max of 2 lines of text on the welcome screen, define them here
         activationUI->setWelcomePageText("Audio will mute occasionally while unactivated", "Click below to activate Aurora");
 

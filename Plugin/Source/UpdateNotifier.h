@@ -18,6 +18,9 @@ public:
     void resized() override;
     void checkForUpdates();
     bool isUpdateAvailable();
+    bool isVersionStringSafe(const String& version);
+    bool isNewerVersionSafe(const String& current, const String& latest);
+    String sanitizeNotesForDisplay(const String& notes);
     
 private:
     

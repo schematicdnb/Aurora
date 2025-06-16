@@ -9,6 +9,7 @@
 */
 
 #include "UpdateNotifier.h"
+#include <regex>
 
 UpdateNotifier::UpdateNotifier(AuroraAudioProcessor& p) : ap(p) {
     // Title
@@ -83,24 +84,201 @@ void UpdateNotifier::checkForUpdates() {
     currentVersion = String(ProjectInfo::versionString);
     currentVersionLabel.setText("Current Version: " + currentVersion, NotificationType::dontSendNotification);
     
-    String versionURL = "https://www.schematicsound.com/plugin-versions.php";
+    // always uses HTTPS
+    String baseURL = "https://www.schematicsound.com/plugin-versions.php";
     String cacheBypass = String(Time::getCurrentTime().toMilliseconds());
-    URL requestURL(versionURL + "?cb=" + cacheBypass);
+//    URL requestURL(versionURL + "?cb=" + cacheBypass);
+    URL requestURL(baseURL + "?plugin=" + URL::addEscapeChars(pluginName, false) +
+                       "&cb=" + cacheBypass);
     
-    auto response = JSON::parse(requestURL.readEntireTextStream());
+    // Set strict connection options
+    auto options = URL::InputStreamOptions(URL::ParameterHandling::inAddress)
+                      .withConnectionTimeoutMs(10000)  // 10 second timeout - prevent hanging
+                      .withProgressCallback(nullptr)
+                      .withNumRedirectsToFollow(0)     // CRITICAL: No redirects allowed
+                      .withExtraHeaders("User-Agent: " + pluginName + "/" + currentVersion);
     
-    if (response.isObject() && response.hasProperty(pluginName)) {
+    std::unique_ptr<InputStream> stream(requestURL.createInputStream(options));
+    
+    if (stream == nullptr) {
+        DBG("Connection failed - update check skipped");
+        return;
+    }
+    
+    // Limit response size to prevent memory exhaustion
+    const int maxSafeResponseSize = 4096; // 4KB maximum
+    String responseText;
+    
+    try {
+        // Read with strict size limit
+        char buffer[1024];
+        int totalBytesRead = 0;
         
-        auto info = response.getProperty(pluginName, "Update Check Failed.");
-        latestVersion = info.getProperty("version", "0").toString();
+        while (!stream->isExhausted() && totalBytesRead < maxSafeResponseSize) {
+            int bytesToRead = jmin(1024, maxSafeResponseSize - totalBytesRead);
+            int bytesRead = stream->read(buffer, bytesToRead);
+            
+            if (bytesRead <= 0) break;
+            
+            responseText += String(CharPointer_UTF8(buffer), bytesRead);
+            totalBytesRead += bytesRead;
+        }
+        
+        // If we hit the limit, it's suspicious
+        if (totalBytesRead >= maxSafeResponseSize) {
+            DBG("Response too large - aborting.");
+            return;
+        }
+            
+        } catch (...) {
+            DBG("Exception during response reading - aborting.");
+            return;
+        }
+        
+        if (responseText.isEmpty()) {
+            DBG("Empty response.");
+            return;
+        }
+        
+        // CRITICAL: Parse JSON safely with error handling
+        var response;
+        try {
+            response = JSON::parse(responseText);
+        } catch (...) {
+            DBG("JSON parsing failed");
+            return;
+        }
+        
+        if (!response.isObject()) {
+            DBG("Invalid JSON structure");
+            return;
+        }
+        
+        // CRITICAL: Validate and sanitize all fields before use
+        if (!response.hasProperty(pluginName)) {
+            DBG("Plugin not found in response");
+            
+            return;
+        }
+        
+        auto info = response.getProperty(pluginName, var());
+        if (!info.isObject()) {
+            DBG("Invalid plugin info structure");
+            return;
+        }
+        
+        // Extract and validate version string
+        String receivedVersion = info.getProperty("version", "").toString();
+        if (!isVersionStringSafe(receivedVersion)) {
+            DBG("Unsafe version string received");
+            return;
+        }
+        
+        latestVersion = receivedVersion;
         latestVersionLabel.setText("Latest Version: " + latestVersion, NotificationType::dontSendNotification);
-    
-        if (currentVersion.compare(latestVersion)) {
-            auto notes = info.getProperty("notes", "No info available.").toString();
-            changelog.setText(notes, NotificationType::dontSendNotification);
+        
+        // Safely compare versions
+        if (isNewerVersionSafe(currentVersion, latestVersion)) {
+            // Extract and sanitize notes
+            String notes = info.getProperty("notes", "").toString();
+            String safeNotes = sanitizeNotesForDisplay(notes);
+            
+            changelog.setText(safeNotes, NotificationType::dontSendNotification);
             updateAvailable = true;
+            DBG("Update available");
         } else {
             updateAvailable = false;
+            DBG("No updates available");
+    }
+    
+    
+//    auto response = JSON::parse(requestURL.readEntireTextStream());
+//    
+//    if (response.isObject() && response.hasProperty(pluginName)) {
+//        
+//        auto info = response.getProperty(pluginName, "Update Check Failed.");
+//        latestVersion = info.getProperty("version", "0").toString();
+//        latestVersionLabel.setText("Latest Version: " + latestVersion, NotificationType::dontSendNotification);
+//    
+//        if (currentVersion.compare(latestVersion)) {
+//            auto notes = info.getProperty("notes", "No info available.").toString();
+//            changelog.setText(notes, NotificationType::dontSendNotification);
+//            updateAvailable = true;
+//        } else {
+//            updateAvailable = false;
+//        }
+//    }
+}
+
+bool UpdateNotifier::isVersionStringSafe(const String& version) {
+    // Only allow semantic versioning format with reasonable length
+    if (version.length() > 20) return false;  // Prevent long strings
+    if (version.isEmpty()) return false;
+    
+    // Only allow digits and dots
+    for (int i = 0; i < version.length(); ++i) {
+        juce_wchar c = version[i];
+        if (!CharacterFunctions::isDigit(c) && c != '.') {
+            return false;
         }
     }
+    
+    // Must match basic version pattern
+    const std::regex pattern(R"(\d+\.\d+\.\d+)");
+    return std::regex_match(version.toStdString(), pattern);
+}
+
+bool UpdateNotifier::isNewerVersionSafe(const String& current, const String& latest) {
+    
+    // Safe semantic version comparison
+    StringArray currentParts = StringArray::fromTokens(current, ".", "");
+    StringArray latestParts = StringArray::fromTokens(latest, ".", "");
+    
+    // Limit number of parts to prevent algorithmic attacks
+    if (currentParts.size() > 10 || latestParts.size() > 10) {
+        DBG("Invalid version string");
+        return false;
+    }
+    
+    int maxParts = jmin(jmax(currentParts.size(), latestParts.size()), 10);
+    
+    for (int i = 0; i < maxParts; ++i) {
+        int currentPart = (i < currentParts.size()) ? currentParts[i].getIntValue() : 0;
+        int latestPart = (i < latestParts.size()) ? latestParts[i].getIntValue() : 0;
+        
+        // Sanity check on version numbers
+        if (currentPart < 0 || latestPart < 0 || currentPart > 99999 || latestPart > 99999) {
+            DBG("version number sanity check failed");
+            return false;
+        }
+        
+        if (latestPart > currentPart) return true;
+        if (latestPart < currentPart) return false;
+    }
+    return false;
+}
+
+String UpdateNotifier::sanitizeNotesForDisplay(const String& notes) {
+    if (notes.isEmpty()) return "No release notes available.";
+    
+    // CRITICAL: Strict length limit
+    String sanitized = notes.substring(0, 500);  // Max 500 chars
+    
+    // Remove potentially dangerous characters
+    sanitized = sanitized.removeCharacters("\x00-\x08\x0B\x0C\x0E-\x1F\x7F"); // Control chars
+    sanitized = sanitized.replace("\r\n", "\n").replace("\r", "\n"); // Normalize line endings
+    
+    // Limit number of lines to prevent UI issues
+    StringArray lines = StringArray::fromLines(sanitized);
+    if (lines.size() > 20) {
+        lines.removeRange(20, lines.size() - 20);
+        sanitized = lines.joinIntoString("\n") + "\n...";
+    }
+    
+    // Remove any remaining suspicious patterns
+    sanitized = sanitized.replace("javascript:", "");
+    sanitized = sanitized.replace("data:", "");
+    sanitized = sanitized.replace("<script", "");
+    
+    return sanitized.trim();
 }

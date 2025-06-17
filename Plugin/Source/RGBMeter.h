@@ -30,7 +30,7 @@ public:
 
     AudioBuffer<T> getBuffer() const
     {
-        AudioBuffer<T> audioBuffer(1, (int)size());
+        AudioBuffer<T> audioBuffer(1, std::max(0, (int)size()));
         if (empty())
         {
             return audioBuffer;
@@ -142,13 +142,13 @@ private:
 
     int width = 0;
 
-    AudioBuffer<float> chunkBuffer;
+    AudioBuffer<float> chunkBuffer{1, 0};
     double chunkSize;
     double chunkCounter;
 
     int freqAnalysisSize = 2048;
     CircularBuffer<float> freqAnalysisBuffer{freqAnalysisSize};
-    AudioBuffer<float> windowedBuffer;
+    AudioBuffer<float> windowedBuffer{1, 0};
 
     CircularBuffer<std::tuple<Range<float>, Colour>> displayBuffer{0};
 

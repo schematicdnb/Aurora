@@ -45,7 +45,7 @@ void RGBMeter::updateState()
         }
         chunkSize = std::floor(bufferLength / width);
         chunkCounter = 0;
-        chunkBuffer = AudioBuffer<float>(1, chunkSize);
+        chunkBuffer = AudioBuffer<float>(1, std::max(0.0, chunkSize));
     }
 }
 

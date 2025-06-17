@@ -8,9 +8,9 @@
 
 #include "RGBMeter.h"
 
-RGBMeter::RGBMeter()
-{
-    startTimerHz(60);
+RGBMeter::RGBMeter() {
+
+    vBlankAttachment = std::make_unique<VBlankAttachment>(this, [this] {repaint();});
 
     // intialize filter types
     LP.setType(dsp::LinkwitzRileyFilterType::lowpass);
@@ -266,9 +266,3 @@ void RGBMeter::setColourWeight(String colour, float weight)
 void RGBMeter::setDisplayChannel(bool isRightChannel) {
     displayChannel = isRightChannel && mainOutputBuffer->getNumChannels() == 2 ? 1 : 0;
 }
-void RGBMeter::timerCallback()
-{
-    repaint();
-
-}
-

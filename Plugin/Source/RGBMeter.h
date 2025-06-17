@@ -103,7 +103,7 @@ private:
     bool full;
 };
 
-class RGBMeter : public Component, Timer
+class RGBMeter : public Component
 {
 
 public:
@@ -113,7 +113,6 @@ public:
     void updateState();
     void pushSamples(AudioBuffer<float> &buffer);
     void paint(Graphics &g) override;
-    void timerCallback() override;
     Colour freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> &midBuffer, AudioBuffer<float> &highBuffer);
     Colour colourFreqByFiltering(AudioBuffer<float> &buffer);
 
@@ -134,6 +133,8 @@ public:
     void setDisplayChannel(bool isRightChannel);
     
 private:
+    std::unique_ptr<VBlankAttachment> vBlankAttachment;
+
     int historyLength; // in seconds
     int sampleRate;
     int bufferLength;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="SEhXmX" name="Aurora" projectType="audioplug" useAppConfig="0"
-              jucerFormatVersion="1" version="0.4" companyName="Schematic Sound"
+              jucerFormatVersion="1" version="0.5.0" companyName="Schematic Sound"
               pluginFormats="buildAU,buildVST3" pluginManufacturerCode="SSND"
               pluginDesc="Waveform visualizer with frequency-based colours inspired by DJ tools."
               pluginVST3Category="Analyzer,Tools" pluginVSTCategory="kPlugCategAnalysis"

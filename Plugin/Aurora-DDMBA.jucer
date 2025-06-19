@@ -13,6 +13,10 @@
             file="../moonbase_api_config.json"/>
     </GROUP>
     <GROUP id="{7B1CE658-CB34-AAFD-E5D4-611BE3C4418D}" name="Assets">
+      <FILE id="k3XqLZ" name="SchematicSoundIconWhite_Small.png" compile="0"
+            resource="1" file="../Logos/SchematicSoundIconWhite_Small.png"/>
+      <FILE id="ySZ0Ka" name="SchematicSoundLogoWhite_Small.png" compile="0"
+            resource="1" file="../Logos/SchematicSoundLogoWhite_Small.png"/>
       <FILE id="hqZwOu" name="SchematicSoundIconWhite.png" compile="0" resource="1"
             file="../Logos/SchematicSoundIconWhite.png"/>
       <FILE id="Ggu1b9" name="SchematicSoundLogoWhite.png" compile="0" resource="1"

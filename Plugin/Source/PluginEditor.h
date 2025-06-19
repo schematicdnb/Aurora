@@ -113,9 +113,9 @@ private:
     
     Array<Component*> controls = {&historySlider, &gainSlider, &historyLabel, &gainLabel, &zoomGroup, &crossoverGroup, &colourGroup, &lowCrossoverSlider, &highCrossoverSlider, &lowCrossoverLabel, &highCrossoverLabel, &redSlider, &greenSlider, &blueSlider, &redLabel, &greenLabel, &blueLabel};
     
-    Image logoAurora = gin::applyResize(ImageCache::getFromMemory(BinaryData::AuroraLogoLightMode_png, BinaryData::AuroraLogoLightMode_pngSize), 0.09);
-    Image logoSchematicBlack = gin::applyResize(ImageCache::getFromMemory(BinaryData::SchematicSoundLogoBlack_png, BinaryData::SchematicSoundLogoBlack_pngSize), 0.055);
-    Image logoSchematicWhite = gin::applyResize(ImageCache::getFromMemory(BinaryData::SchematicSoundLogoWhite_png, BinaryData::SchematicSoundLogoWhite_pngSize), 0.055);
+    Image logoAurora = ImageCache::getFromMemory(BinaryData::AuroraLogoLightMode_png, BinaryData::AuroraLogoLightMode_pngSize);
+
+    Image logoSchematicBlack = ImageCache::getFromMemory(BinaryData::SchematicSoundLogoBlack_png, BinaryData::SchematicSoundLogoBlack_pngSize);
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuroraAudioProcessorEditor)
 };

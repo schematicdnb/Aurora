@@ -11,7 +11,7 @@
 
 CompanyLogo::CompanyLogo ()
 {
-    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_Small_png, BinaryData::SchematicSoundLogoWhite_Small_pngSize);
+    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_png, BinaryData::SchematicSoundLogoWhite_pngSize);
 
     #if ANIMATE_COMPANY_LOGO
         jitterX.reset (15);
@@ -31,6 +31,8 @@ void CompanyLogo::timerCallback ()
 
 void CompanyLogo::paint (Graphics& g)
 {
+	g.setImageResamplingQuality(Graphics::ResamplingQuality::highResamplingQuality);
+
     const auto width = getWidth ();
     const auto height = getHeight ();
     auto area = getLocalBounds().toFloat().reduced (height * 0.1f);
@@ -113,7 +115,7 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
         activationUI->setCompanyLogoScale(5.0f);
 
         // Set the logo inside the spinner (when waiting for web responses)
-        activationUI->setSpinnerLogo(Drawable::createFromImageData(BinaryData::SchematicSoundIconWhite_Small_png, BinaryData::SchematicSoundIconWhite_Small_pngSize));
+        activationUI->setSpinnerLogo(Drawable::createFromImageData(BinaryData::SchematicSoundIconWhite_png, BinaryData::SchematicSoundIconWhite_pngSize));
 
         // Scale the spinner logo as required for your asset if needed.
 //         activationUI->setSpinnerLogoScale (2.0f);
@@ -437,17 +439,19 @@ void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
   // (Our component is opaque, so we must completely fill the background with a solid colour)
 //    g.fillAll(Colour(32,32,32));
     g.fillAll(Colour(232, 232, 232));
+	g.setImageResamplingQuality(Graphics::ResamplingQuality::highResamplingQuality);
 
     if (toggleControlsButton.getToggleState()) {
         g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - margin - groupHeight - infoAreaHeight, rgbMeter.getCornerRadius());
         
-        g.drawImageAt(logoAurora, margin, getHeight() - margin - groupHeight - infoAreaHeight/2 - logoAurora.getHeight()/2);
-        g.drawImageAt(logoSchematicBlack, getWidth() - margin - logoSchematicBlack.getWidth(), getHeight() - margin - groupHeight - infoAreaHeight/2 - logoSchematicBlack.getHeight()/3);
+        g.drawImageWithin(logoAurora, margin, getHeight() - infoAreaHeight - groupHeight - margin + 20, 150, infoAreaHeight - 30, RectanglePlacement(RectanglePlacement::Flags::xLeft));
+        g.drawImageWithin(logoSchematicBlack, getWidth() - margin - 160, getHeight() - infoAreaHeight - groupHeight - margin, 160, infoAreaHeight+10, RectanglePlacement());
     } else {
         g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - infoAreaHeight, rgbMeter.getCornerRadius());
         
-        g.drawImageAt(logoAurora, margin, getHeight() - infoAreaHeight/2 - logoAurora.getHeight()/2);
-        g.drawImageAt(logoSchematicBlack, getWidth() - margin - logoSchematicBlack.getWidth(), getHeight() - infoAreaHeight/2 - logoSchematicBlack.getHeight()/3);
+		g.drawImageWithin(logoAurora, margin, getHeight() - infoAreaHeight + 20, 150, infoAreaHeight - 30, RectanglePlacement(RectanglePlacement::Flags::xLeft));
+        g.drawImageWithin(logoSchematicBlack, getWidth() - margin - 160, getHeight() - infoAreaHeight, 160, infoAreaHeight+10, RectanglePlacement());
+
     }
     
 }

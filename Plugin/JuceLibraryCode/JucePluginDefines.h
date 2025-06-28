@@ -50,7 +50,7 @@
  #define JucePlugin_Manufacturer           "Schematic Sound"
 #endif
 #ifndef  JucePlugin_ManufacturerWebsite
- #define JucePlugin_ManufacturerWebsite    "https://www.schematicsound.com/"
+ #define JucePlugin_ManufacturerWebsite    "https://www.schematicsound.com"
 #endif
 #ifndef  JucePlugin_ManufacturerEmail
  #define JucePlugin_ManufacturerEmail      "contact@schematicsound.com"

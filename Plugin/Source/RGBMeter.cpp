@@ -28,25 +28,30 @@ void RGBMeter::prepare(dsp::ProcessSpec spec)
     updateState();
 
     LP.prepare(spec);
+    LP.reset();
+    
     midLP.prepare(spec);
+    midLP.reset();
+    
     midHP.prepare(spec);
+    midHP.reset();
+    
     HP.prepare(spec);
+    HP.reset();
 }
 
 void RGBMeter::updateState()
 {
     bufferLength = historyLength * sampleRate;
     width = this->getWidth();
-    if (width)
+    if (!width) return;
+    if (displayBuffer.size() != width)
     {
-        if (displayBuffer.size() != width)
-        {
-            displayBuffer.resize(width);
-        }
-        chunkSize = std::floor(bufferLength / width);
-        chunkCounter = 0;
-        chunkBuffer = AudioBuffer<float>(1, std::max(0.0, chunkSize));
+        displayBuffer.resize(width);
     }
+    chunkSize = std::floor(bufferLength / width);
+    chunkCounter = 0;
+    chunkBuffer = AudioBuffer<float>(1, std::max(0.0, chunkSize));
 }
 
 void RGBMeter::pushSamples(AudioBuffer<float> &buffer)
@@ -62,7 +67,7 @@ void RGBMeter::pushSamples(AudioBuffer<float> &buffer)
     {
         auto sample = buffer.getSample(displayChannel, i);
         // add sample to chunk and analysis buffers
-        if (chunkBuffer.getNumChannels() > 0) {
+        if (chunkBuffer.getNumChannels() > 0 && chunkBuffer.getNumSamples() > 0) {
             chunkBuffer.setSample(0, chunkCounter, sample);
         }
         

@@ -234,12 +234,12 @@ juce::AudioProcessorValueTreeState::ParameterLayout AuroraAudioProcessor::create
     params.add(std::make_unique<AudioParameterFloat>(ParameterID("gain", 1), "Gain", *gainRange, 0.0f));
     
     // Low Crossover
-    auto lowCrossoverRange = std::make_unique<NormalisableRange<float>>(20.0f, 20000.0f, 1.0f, 0.2);
-    params.add(std::make_unique<AudioParameterFloat>(ParameterID("lowCrossover", 1), "Low Crossover", *lowCrossoverRange, 250.0));
+    auto crossoverRange = std::make_unique<NormalisableRange<float>>(20.0f, 20000.0f, 1.0f, 0.2);
+    params.add(std::make_unique<AudioParameterFloat>(ParameterID("lowCrossover", 1), "Low Crossover", *crossoverRange, 250.0));
     
     // High Crossover
-    auto highCrossoverRange = std::make_unique<NormalisableRange<float>>(20.0f, 20000.0f, 1.0f, 3.0);
-    params.add(std::make_unique<AudioParameterFloat>(ParameterID("highCrossover", 1), "High Crossover", *lowCrossoverRange, 2000.0f));
+//    auto highCrossoverRange = std::make_unique<NormalisableRange<float>>(20.0f, 20000.0f, 1.0f, 3.0);
+    params.add(std::make_unique<AudioParameterFloat>(ParameterID("highCrossover", 1), "High Crossover", *crossoverRange, 2000.0f));
     
     // Colour weights
     auto colourWeightRange = std::make_unique<NormalisableRange<float>>(0.0f, 2.0f, 0.01f);

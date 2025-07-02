@@ -130,6 +130,7 @@ AuroraAudioProcessorEditor::~AuroraAudioProcessorEditor()
     if (activationUI != nullptr) {
         activationUI->removeListener(this);
     }
+    LookAndFeel::setDefaultLookAndFeel(nullptr);
 }
 
 void AuroraAudioProcessorEditor::onActivationUiVisibilityChanged (const ActivationUI::Visibility& visibility) {  

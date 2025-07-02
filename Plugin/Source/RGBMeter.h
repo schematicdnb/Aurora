@@ -135,7 +135,7 @@ public:
 private:
     std::unique_ptr<VBlankAttachment> vBlankAttachment;
 
-    int historyLength; // in seconds
+    int historyLength = 4; // in seconds
     int sampleRate;
     int bufferLength;
     int displayChannel;

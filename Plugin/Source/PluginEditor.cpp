@@ -473,7 +473,7 @@ void AuroraAudioProcessorEditor::resized(){
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
 
-	DBG("Resized called with size: " << getWidth() << "x" << getHeight());
+//	DBG("Resized called with size: " << getWidth() << "x" << getHeight());
     
     MOONBASE_RESIZE_ACTIVATION_UI
     

@@ -65,7 +65,7 @@ void RGBMeter::pushSamples(AudioBuffer<float> &buffer)
     // Process the incoming buffer
     for (int i = 0; i < buffer.getNumSamples(); i++)
     {
-        auto sample = buffer.getSample(displayChannel, i);
+        auto sample = buffer.getSample(displayChannel.get(), i);
         // add sample to chunk and analysis buffers
         if (chunkBuffer.getNumChannels() > 0 && chunkBuffer.getNumSamples() > 0) {
             chunkBuffer.setSample(0, chunkCounter, sample);
@@ -269,5 +269,5 @@ void RGBMeter::setColourWeight(String colour, float weight)
     }
 }
 void RGBMeter::setDisplayChannel(bool isRightChannel) {
-    displayChannel = isRightChannel && mainOutputBuffer->getNumChannels() == 2 ? 1 : 0;
+    displayChannel.set(isRightChannel && mainOutputBuffer->getNumChannels() == 2 ? 1 : 0);
 }

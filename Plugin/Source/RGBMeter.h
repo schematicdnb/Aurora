@@ -138,7 +138,7 @@ private:
     int historyLength = 4; // in seconds
     int sampleRate;
     int bufferLength;
-    int displayChannel;
+    Atomic<int> displayChannel{0};
 
     int width = 0;
 

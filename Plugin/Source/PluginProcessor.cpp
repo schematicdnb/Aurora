@@ -9,7 +9,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-bool AuroraAudioProcessor::updatesDismissed = false;
+//bool AuroraAudioProcessor::updatesDismissed = false;
 
 //==============================================================================
 AuroraAudioProcessor::AuroraAudioProcessor()
@@ -277,13 +277,13 @@ void AuroraAudioProcessor::setEditorSize(int width, int height) {
     size.setProperty("height", height, nullptr);
 }
 
-void AuroraAudioProcessor::dismissUpdate() {
-    updatesDismissed = true;
-}
-bool AuroraAudioProcessor::isUpdateDismissed() {
-    if (updatesDismissed) {return true;}
-    return false;
-}
+//void AuroraAudioProcessor::dismissUpdate() {
+//    updatesDismissed = true;
+//}
+//bool AuroraAudioProcessor::isUpdateDismissed() {
+//    if (updatesDismissed) {return true;}
+//    return false;
+//}
 
 //==============================================================================
 // This creates new instances of the plugin..

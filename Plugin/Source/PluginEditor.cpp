@@ -94,10 +94,19 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     initControlToggle();
     
     // Check for updates
+//    addChildComponent(updateNotifier);
+//    if (!audioProcessor.isUpdateDismissed()) {
+//        updateNotifier.checkForUpdates();
+//        if (updateNotifier.isUpdateAvailable()) {
+//            updateNotifier.setVisible(true);
+//        }
+//    }
+    
     addChildComponent(updateNotifier);
-    if (!audioProcessor.isUpdateDismissed()) {
+    if (!updateNotifier.isUpdateDismissed()) {
         updateNotifier.checkForUpdates();
         if (updateNotifier.isUpdateAvailable()) {
+            updateNotifier.setInfo();
             updateNotifier.setVisible(true);
         }
     }

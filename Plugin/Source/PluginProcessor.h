@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "RGBMeter.h"
+//#include "UpdateNotifier.h"
 
 //==============================================================================
 /**
@@ -74,12 +75,14 @@ public:
     
     void initDSP();
     
-    void dismissUpdate();
-    bool isUpdateDismissed();
+//    void dismissUpdate();
+//    bool isUpdateDismissed();
+//    const UpdateNotifier updateNotifier();
 
 private:
     
-    static bool updatesDismissed;
+//    static bool updatesDismissed;
+    
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AuroraAudioProcessor)

@@ -71,7 +71,8 @@ private:
     int restoreWidth, restoreHeight;
     bool requiresRestore = false;
     
-    UpdateNotifier updateNotifier = UpdateNotifier(audioProcessor);
+//    UpdateNotifier updateNotifier = UpdateNotifier(audioProcessor);
+    UpdateNotifier updateNotifier{};
     
     SchematicLookAndFeel customLookAndFeel;
     

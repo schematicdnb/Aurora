@@ -11,8 +11,17 @@
 #include "UpdateNotifier.h"
 #include <regex>
 
+// Shared data
+CriticalSection UpdateNotifier::cs{};
+Atomic<bool> UpdateNotifier::updatesDismissed{false};
+Atomic<bool> UpdateNotifier::updateAvailable{false};
+String UpdateNotifier::latestVersion{""};
+String UpdateNotifier::notes{"No notes available."};
 
-UpdateNotifier::UpdateNotifier(AuroraAudioProcessor& p) : ap(p) {
+UpdateNotifier::UpdateNotifier() {
+    pluginName = ProjectInfo::projectName;
+    currentVersion = String(ProjectInfo::versionString);
+    
     // Title
     FontOptions titleFontOptions = FontOptions(24.0f, Font::bold);
     title.setText("Update Available", NotificationType::dontSendNotification);
@@ -37,7 +46,7 @@ UpdateNotifier::UpdateNotifier(AuroraAudioProcessor& p) : ap(p) {
     updateButton.onClick = [this]() {
         URL download = URL("https://schematicsound.com/aurora/?mb_intent=download_product&mb_product_id=aurora");
         download.launchInDefaultBrowser();
-        ap.dismissUpdate();
+        dismissUpdate();
         this->setVisible(false);
     };
     addAndMakeVisible(updateButton);
@@ -46,7 +55,7 @@ UpdateNotifier::UpdateNotifier(AuroraAudioProcessor& p) : ap(p) {
     remindButton.setColour(TextButton::textColourOffId, Colours::black);
     remindButton.setButtonText("Remind Me");
     remindButton.onClick = [this]() {
-        ap.dismissUpdate();
+        dismissUpdate();
         this->setVisible(false);
     };
     addAndMakeVisible(remindButton);
@@ -77,18 +86,14 @@ void UpdateNotifier::resized() {
 }
 
 bool UpdateNotifier::isUpdateAvailable() {
-    return updateAvailable;
+    return updateAvailable.get();
 }
 
 void UpdateNotifier::checkForUpdates() {
-    pluginName = ProjectInfo::projectName;
-    currentVersion = String(ProjectInfo::versionString);
-    currentVersionLabel.setText("Current Version: " + currentVersion, NotificationType::dontSendNotification);
     
     // always uses HTTPS
     String baseURL = "https://www.schematicsound.com/plugin-versions.php";
     String cacheBypass = String(Time::getCurrentTime().toMilliseconds());
-//    URL requestURL(versionURL + "?cb=" + cacheBypass);
     URL requestURL(baseURL + "?plugin=" + URL::addEscapeChars(pluginName, false) +
                        "&cb=" + cacheBypass);
     
@@ -157,7 +162,7 @@ void UpdateNotifier::checkForUpdates() {
         
         // CRITICAL: Validate and sanitize all fields before use
         if (!response.hasProperty(pluginName)) {
-            DBG("Plugin not found in response");
+            DBG("Rate limited or Plugin not found in response");
             return;
         }
         
@@ -174,40 +179,27 @@ void UpdateNotifier::checkForUpdates() {
             return;
         }
         
-        latestVersion = receivedVersion;
-        latestVersionLabel.setText("Latest Version: " + latestVersion, NotificationType::dontSendNotification);
+    setLatestVersion(receivedVersion);
         
         // Safely compare versions
-        if (isNewerVersionSafe(currentVersion, latestVersion)) {
-            // Extract and sanitize notes
-            String notes = info.getProperty("notes", "").toString();
-            String safeNotes = sanitizeNotesForDisplay(notes);
-            
-            changelog.setText(safeNotes, NotificationType::dontSendNotification);
-            updateAvailable = true;
-            DBG("Update available");
-        } else {
-            updateAvailable = false;
-            DBG("No updates available");
+    if (isNewerVersionSafe(currentVersion, getLatestVersion())) {
+        // Extract and sanitize notes
+        String receivedNotes = info.getProperty("notes", "").toString();
+        setNotes(sanitizeNotesForDisplay(receivedNotes));
+        updateAvailable.set(true);
+        DBG("Update available");
+    } else {
+        updateAvailable.set(false);
+        DBG("No updates available");
     }
     
-    
-//    auto response = JSON::parse(requestURL.readEntireTextStream());
-//    
-//    if (response.isObject() && response.hasProperty(pluginName)) {
-//        
-//        auto info = response.getProperty(pluginName, "Update Check Failed.");
-//        latestVersion = info.getProperty("version", "0").toString();
-//        latestVersionLabel.setText("Latest Version: " + latestVersion, NotificationType::dontSendNotification);
-//    
-//        if (currentVersion.compare(latestVersion)) {
-//            auto notes = info.getProperty("notes", "No info available.").toString();
-//            changelog.setText(notes, NotificationType::dontSendNotification);
-//            updateAvailable = true;
-//        } else {
-//            updateAvailable = false;
-//        }
-//    }
+    setInfo();
+}
+
+void UpdateNotifier::setInfo() {
+    currentVersionLabel.setText("Current Version: " + currentVersion, NotificationType::dontSendNotification);
+    latestVersionLabel.setText("Latest Version: " + getLatestVersion(), NotificationType::dontSendNotification);
+    changelog.setText(getNotes(), NotificationType::dontSendNotification);
 }
 
 bool UpdateNotifier::isVersionStringSafe(const String& version) {
@@ -281,4 +273,29 @@ String UpdateNotifier::sanitizeNotesForDisplay(const String& notes) {
     sanitized = sanitized.replace("<script", "");
     
     return sanitized.trim();
+}
+
+void UpdateNotifier::dismissUpdate() {
+    updatesDismissed.set(true);
+}
+bool UpdateNotifier::isUpdateDismissed() {
+    return updatesDismissed.get();
+}
+
+void UpdateNotifier::setLatestVersion(const String& version) {
+    const ScopedLock lock(cs);
+    latestVersion = version;
+}
+String UpdateNotifier::getLatestVersion() {
+    const ScopedLock lock(cs);
+    return latestVersion;
+}
+
+void UpdateNotifier::setNotes(const String& newNotes) {
+    const ScopedLock lock(cs);
+    notes = newNotes;
+}
+String UpdateNotifier::getNotes() {
+    const ScopedLock lock(cs);
+    return notes;
 }

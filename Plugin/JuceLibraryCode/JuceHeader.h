@@ -52,7 +52,7 @@ namespace ProjectInfo
 {
     const char* const  projectName    = "Aurora";
     const char* const  companyName    = "Schematic Sound";
-    const char* const  versionString  = "0.5.0";
-    const int          versionNumber  = 0x500;
+    const char* const  versionString  = "1.0.0";
+    const int          versionNumber  = 0x10000;
 }
 #endif

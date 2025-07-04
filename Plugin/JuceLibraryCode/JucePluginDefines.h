@@ -155,7 +155,7 @@
  #define JucePlugin_ARAFactoryID           "com.SchematicSound.Aurora.factory"
 #endif
 #ifndef  JucePlugin_ARADocumentArchiveID
- #define JucePlugin_ARADocumentArchiveID   "com.SchematicSound.Aurora.aradocumentarchive.0.5.0"
+ #define JucePlugin_ARADocumentArchiveID   "com.SchematicSound.Aurora.aradocumentarchive.1.0.0"
 #endif
 #ifndef  JucePlugin_ARACompatibleArchiveIDs
  #define JucePlugin_ARACompatibleArchiveIDs  ""

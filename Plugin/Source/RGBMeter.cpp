@@ -61,6 +61,10 @@ void RGBMeter::pushSamples(AudioBuffer<float> &buffer)
     {
         return;
     } // do nothing, no point in processing buffer if can't be displayed
+    
+    // channel safety
+    if (buffer.getNumChannels() == 0) return;
+    if (buffer.getNumChannels() == 1) setDisplayChannel(false);
 
     // Process the incoming buffer
     for (int i = 0; i < buffer.getNumSamples(); i++)
@@ -269,5 +273,5 @@ void RGBMeter::setColourWeight(String colour, float weight)
     }
 }
 void RGBMeter::setDisplayChannel(bool isRightChannel) {
-    displayChannel.set(isRightChannel && mainOutputBuffer->getNumChannels() == 2 ? 1 : 0);
+    displayChannel.set(isRightChannel ? 1 : 0);
 }

@@ -33,7 +33,7 @@ void CompanyLogo::paint (Graphics& g)
 {
 	g.setImageResamplingQuality(Graphics::ResamplingQuality::highResamplingQuality);
 
-    const auto width = getWidth ();
+//    const auto width = getWidth ();
     const auto height = getHeight ();
     auto area = getLocalBounds().toFloat().reduced (height * 0.1f);
     

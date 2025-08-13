@@ -132,6 +132,11 @@ public:
     void setColourWeight(String colour, float weight);
     void setDisplayChannel(bool isRightChannel);
     
+    void renderWaveform(Graphics& g);
+    
+    bool isFrozen;
+    Image cachedWaveform;
+    void cacheWaveform();
     void toggleFreezeWaveform();
     void mouseDown(const MouseEvent&) override;
     

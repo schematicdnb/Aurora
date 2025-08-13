@@ -185,9 +185,7 @@ Colour RGBMeter::freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> 
     return colour;
 }
 
-void RGBMeter::paint(Graphics &g)
-{
-
+void RGBMeter::renderWaveform(Graphics& g) {
     if (!width)
     {
         return;
@@ -219,7 +217,16 @@ void RGBMeter::paint(Graphics &g)
         g.setColour(colour);
         g.drawVerticalLine(i, std::min(y1,y2), std::max(y1,y2));
     }
+}
 
+void RGBMeter::paint(Graphics &g)
+{
+    if (isFrozen && cachedWaveform.isValid()) {
+        g.drawImageAt(cachedWaveform, 0, 0);
+        return;
+    }
+
+    renderWaveform(g);
 }
 
 void RGBMeter::resized()
@@ -276,10 +283,15 @@ void RGBMeter::setDisplayChannel(bool isRightChannel) {
     displayChannel.set(isRightChannel ? 1 : 0);
 }
 
+void RGBMeter::cacheWaveform() {
+    cachedWaveform = Image(Image::ARGB, getWidth(), getHeight(), true);
+    Graphics g(cachedWaveform);
+    renderWaveform(g);
+}
+
 void RGBMeter::toggleFreezeWaveform() {
-    if (!vBlankAttachment) {
-        vBlankAttachment = std::make_unique<VBlankAttachment>(this, [this] {repaint();});
-    } else vBlankAttachment = nullptr;
+    isFrozen = !isFrozen;
+    if (isFrozen) cacheWaveform();
 }
 
 void RGBMeter::mouseDown(const MouseEvent&) {

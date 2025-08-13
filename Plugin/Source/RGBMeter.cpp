@@ -275,3 +275,9 @@ void RGBMeter::setColourWeight(String colour, float weight)
 void RGBMeter::setDisplayChannel(bool isRightChannel) {
     displayChannel.set(isRightChannel ? 1 : 0);
 }
+
+void RGBMeter::toggleFreezeWaveform() {
+    if (!vBlankAttachment) {
+        vBlankAttachment = std::make_unique<VBlankAttachment>(this, [this] {repaint();});
+    } else vBlankAttachment = nullptr;
+}

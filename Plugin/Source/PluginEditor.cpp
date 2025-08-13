@@ -51,14 +51,22 @@ void CompanyLogo::paint (Graphics& g)
 AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     : AudioProcessorEditor(&p), audioProcessor(p)
 {
-  // Make sure that before the constructor has finished, you've set the
-  // editor's size to whatever you need it to be.
-
+    // Make sure that before the constructor has finished, you've set the
+    // editor's size to whatever you need it to be.
+    
     
     LookAndFeel::setDefaultLookAndFeel(&customLookAndFeel);
     
     // add RGB Meter
     addAndMakeVisible(rgbMeter);
+    
+    // freeze function
+    addAndMakeVisible(freezeButton);
+    freezeButton.setColour(TextButton::ColourIds::buttonColourId, Colours::transparentBlack);
+    freezeButton.setColour(ComboBox::outlineColourId, Colours::transparentBlack);
+    freezeButton.onClick = [this]() {
+        rgbMeter.toggleFreezeWaveform();
+    };
 
     // init channel
     addAndMakeVisible(channelButton);
@@ -94,14 +102,6 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     initControlToggle();
     
     // Check for updates
-//    addChildComponent(updateNotifier);
-//    if (!audioProcessor.isUpdateDismissed()) {
-//        updateNotifier.checkForUpdates();
-//        if (updateNotifier.isUpdateAvailable()) {
-//            updateNotifier.setVisible(true);
-//        }
-//    }
-    
     addChildComponent(updateNotifier);
     if (!updateNotifier.isUpdateDismissed()) {
         updateNotifier.checkForUpdates();
@@ -494,6 +494,9 @@ void AuroraAudioProcessorEditor::resized(){
         toggleControlsButton.setBounds(width/2 - toggleControlsButton.getWidth()/2, height - infoAreaHeight/2 + toggleControlsButton.getHeight()/4, toggleControlsButton.getWidth(), toggleControlsButton.getHeight());
         toggleControlsLabel.setBounds(width/2 - toggleControlsLabel.getWidth()/2, toggleControlsButton.getY() - toggleControlsLabel.getHeight(), toggleControlsLabel.getWidth(), toggleControlsLabel.getHeight());
     }
+    
+    // Freeze overlay button
+    freezeButton.setBounds(rgbMeter.getBounds());
     
     // Channel selection
     channelButton.setBounds(2*margin, rgbMeter.getY() + rgbMeter.getHeight()/2 - 15, 30, 30);

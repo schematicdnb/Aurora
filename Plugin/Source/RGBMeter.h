@@ -132,6 +132,8 @@ public:
     void setColourWeight(String colour, float weight);
     void setDisplayChannel(bool isRightChannel);
     
+    void toggleFreezeWaveform();
+    
 private:
     std::unique_ptr<VBlankAttachment> vBlankAttachment;
 

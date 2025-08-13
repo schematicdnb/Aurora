@@ -281,3 +281,7 @@ void RGBMeter::toggleFreezeWaveform() {
         vBlankAttachment = std::make_unique<VBlankAttachment>(this, [this] {repaint();});
     } else vBlankAttachment = nullptr;
 }
+
+void RGBMeter::mouseDown(const MouseEvent&) {
+    toggleFreezeWaveform();
+}

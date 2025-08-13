@@ -59,14 +59,6 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     
     // add RGB Meter
     addAndMakeVisible(rgbMeter);
-    
-    // freeze function
-    addAndMakeVisible(freezeButton);
-    freezeButton.setColour(TextButton::ColourIds::buttonColourId, Colours::transparentBlack);
-    freezeButton.setColour(ComboBox::outlineColourId, Colours::transparentBlack);
-    freezeButton.onClick = [this]() {
-        rgbMeter.toggleFreezeWaveform();
-    };
 
     // init channel
     addAndMakeVisible(channelButton);
@@ -494,9 +486,6 @@ void AuroraAudioProcessorEditor::resized(){
         toggleControlsButton.setBounds(width/2 - toggleControlsButton.getWidth()/2, height - infoAreaHeight/2 + toggleControlsButton.getHeight()/4, toggleControlsButton.getWidth(), toggleControlsButton.getHeight());
         toggleControlsLabel.setBounds(width/2 - toggleControlsLabel.getWidth()/2, toggleControlsButton.getY() - toggleControlsLabel.getHeight(), toggleControlsLabel.getWidth(), toggleControlsLabel.getHeight());
     }
-    
-    // Freeze overlay button
-    freezeButton.setBounds(rgbMeter.getBounds());
     
     // Channel selection
     channelButton.setBounds(2*margin, rgbMeter.getY() + rgbMeter.getHeight()/2 - 15, 30, 30);

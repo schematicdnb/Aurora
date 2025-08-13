@@ -133,6 +133,7 @@ public:
     void setDisplayChannel(bool isRightChannel);
     
     void toggleFreezeWaveform();
+    void mouseDown(const MouseEvent&) override;
     
 private:
     std::unique_ptr<VBlankAttachment> vBlankAttachment;

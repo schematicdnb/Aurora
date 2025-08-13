@@ -109,9 +109,6 @@ private:
     Label toggleControlsLabel;
     std::unique_ptr<ButtonAttachment> toggleControlsAttachment;
     
-    TextButton freezeButton;
-    
-    
     TextButton channelButton;
     std::unique_ptr<ButtonAttachment> channelButtonAttachment;
     

@@ -20,6 +20,15 @@ RGBMeter::RGBMeter() {
 
     corners.setCornerRadius(cornerRadius);
     this->setComponentEffect(&corners);
+    
+    addAndMakeVisible(freezeIndicator);
+    freezeIndicator.setButtonText("PAUSE");
+    freezeIndicator.setVisible(false);
+    auto buttonColour = Colours::black.withAlpha(0.5f);
+    freezeIndicator.setColour(TextButton::buttonColourId, buttonColour);
+    freezeIndicator.setColour(ComboBox::outlineColourId, buttonColour);
+    freezeIndicator.setInterceptsMouseClicks(false, false);
+
 }
 
 void RGBMeter::prepare(dsp::ProcessSpec spec)
@@ -232,6 +241,7 @@ void RGBMeter::paint(Graphics &g)
 void RGBMeter::resized()
 {
     updateState();
+    freezeIndicator.setBounds(getLocalBounds().withSizeKeepingCentre(75, 30));
 }
 
 int RGBMeter::getHistoryLength()
@@ -291,9 +301,22 @@ void RGBMeter::cacheWaveform() {
 
 void RGBMeter::toggleFreezeWaveform() {
     isFrozen = !isFrozen;
-    if (isFrozen) cacheWaveform();
+    if (isFrozen) {
+        freezeIndicator.setButtonText("START");
+        cacheWaveform();
+    } else {
+        freezeIndicator.setButtonText("PAUSE");
+    }
 }
 
 void RGBMeter::mouseDown(const MouseEvent&) {
     toggleFreezeWaveform();
+}
+
+void RGBMeter::mouseEnter(const MouseEvent&) {
+    freezeIndicator.setVisible(true);
+}
+
+void RGBMeter::mouseExit(const MouseEvent&) {
+    freezeIndicator.setVisible(false);
 }

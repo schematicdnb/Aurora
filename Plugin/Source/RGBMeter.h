@@ -133,12 +133,11 @@ public:
     void setDisplayChannel(bool isRightChannel);
     
     void renderWaveform(Graphics& g);
-    
-    bool isFrozen;
-    Image cachedWaveform;
     void cacheWaveform();
     void toggleFreezeWaveform();
     void mouseDown(const MouseEvent&) override;
+    void mouseEnter(const MouseEvent&) override;
+    void mouseExit(const MouseEvent&) override;
     
 private:
     std::unique_ptr<VBlankAttachment> vBlankAttachment;
@@ -173,6 +172,10 @@ private:
     float lowWeight;
     float midWeight;
     float highWeight;
+    
+    bool isFrozen;
+    Image cachedWaveform;
+    TextButton freezeIndicator;
     
     //==============================================================================
     

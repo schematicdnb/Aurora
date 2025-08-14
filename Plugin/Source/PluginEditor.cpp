@@ -467,7 +467,6 @@ void AuroraAudioProcessorEditor::resized(){
 
 //	DBG("Resized called with size: " << getWidth() << "x" << getHeight());
     
-    
     MOONBASE_RESIZE_ACTIVATION_UI
     
     const auto width = getWidth();

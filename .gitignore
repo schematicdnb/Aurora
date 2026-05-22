@@ -1,10 +1,10 @@
 /Builds
 .DS_Store
 /Plugin/Builds
-*.RPP
+/*.RPP
 /Media
 /Backups
 /Coupons
 /Installers
-moonbase_api_config.json
-Aurora.knob
+/moonbase_api_config.json
+/Aurora.knob

@@ -9,43 +9,43 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-CompanyLogo::CompanyLogo ()
-{
-    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_png, BinaryData::SchematicSoundLogoWhite_pngSize);
-
-    #if ANIMATE_COMPANY_LOGO
-        jitterX.reset (15);
-        jitterY.reset (15);
-        startTimerHz (30);
-    #endif
-}
-
-void CompanyLogo::timerCallback ()
-{
-    // this is just a simple example of how to animate the logo... this particular code makes the logo shiver
-    const auto jitterRange = 0.1f;
-    jitterX.setTargetValue (jmap (random.nextFloat(), 0.f, 1.f, -jitterRange, jitterRange));
-    jitterY.setTargetValue (jmap (random.nextFloat(), 0.f, 1.f, -jitterRange, jitterRange));
-    repaint ();
-}
-
-void CompanyLogo::paint (Graphics& g)
-{
-	g.setImageResamplingQuality(Graphics::ResamplingQuality::highResamplingQuality);
-
-//    const auto width = getWidth ();
-    const auto height = getHeight ();
-    auto area = getLocalBounds().toFloat().reduced (height * 0.1f);
-    
-    #if ANIMATE_COMPANY_LOGO
-        const auto currentJitterX = jitterX.getNextValue ();
-        const auto currentJitterY = jitterY.getNextValue ();
-        area = area.translated (width * currentJitterX, height * currentJitterY);
-    #endif
-    
-    if (logo != nullptr)
-        logo->drawWithin (g, area, RectanglePlacement::centred, 1.0f);
-}
+//CompanyLogo::CompanyLogo ()
+//{
+//    logo = Drawable::createFromImageData (BinaryData::SchematicSoundLogoWhite_png, BinaryData::SchematicSoundLogoWhite_pngSize);
+//
+//    #if ANIMATE_COMPANY_LOGO
+//        jitterX.reset (15);
+//        jitterY.reset (15);
+//        startTimerHz (30);
+//    #endif
+//}
+//
+//void CompanyLogo::timerCallback ()
+//{
+//    // this is just a simple example of how to animate the logo... this particular code makes the logo shiver
+//    const auto jitterRange = 0.1f;
+//    jitterX.setTargetValue (jmap (random.nextFloat(), 0.f, 1.f, -jitterRange, jitterRange));
+//    jitterY.setTargetValue (jmap (random.nextFloat(), 0.f, 1.f, -jitterRange, jitterRange));
+//    repaint ();
+//}
+//
+//void CompanyLogo::paint (Graphics& g)
+//{
+//	g.setImageResamplingQuality(Graphics::ResamplingQuality::highResamplingQuality);
+//
+////    const auto width = getWidth ();
+//    const auto height = getHeight ();
+//    auto area = getLocalBounds().toFloat().reduced (height * 0.1f);
+//    
+//    #if ANIMATE_COMPANY_LOGO
+//        const auto currentJitterX = jitterX.getNextValue ();
+//        const auto currentJitterY = jitterY.getNextValue ();
+//        area = area.translated (width * currentJitterX, height * currentJitterY);
+//    #endif
+//    
+//    if (logo != nullptr)
+//        logo->drawWithin (g, area, RectanglePlacement::centred, 1.0f);
+//}
 
 //==============================================================================
 AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
@@ -103,74 +103,74 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
         }
     }
 
-    // Moonbase Activation UI
-    if (activationUI != nullptr)
-    {
-        activationUI->addListener(this);
-        // There are a max of 2 lines of text on the welcome screen, define them here
-        activationUI->setWelcomePageText("Audio will mute occasionally while unactivated", "Click below to activate Aurora");
+//    // Moonbase Activation UI
+//    if (activationUI != nullptr)
+//    {
+//        activationUI->addListener(this);
+//        // There are a max of 2 lines of text on the welcome screen, define them here
+//        activationUI->setWelcomePageText("Audio will mute occasionally while unactivated", "Click below to activate Aurora");
+//
+//        // Set the company logo, this is the logo that is displayed on the welcome screen and the activated info screen
+//        activationUI->setCompanyLogo(std::make_unique<CompanyLogo>());
+//        // Scale the company logo as required for your asset if needed.
+//        activationUI->setCompanyLogoScale(5.0f);
+//
+//        // Set the logo inside the spinner (when waiting for web responses)
+//        activationUI->setSpinnerLogo(Drawable::createFromImageData(BinaryData::SchematicSoundIconWhite_png, BinaryData::SchematicSoundIconWhite_pngSize));
+//
+//        // Scale the spinner logo as required for your asset if needed.
+////         activationUI->setSpinnerLogoScale (2.0f);
+//    }
 
-        // Set the company logo, this is the logo that is displayed on the welcome screen and the activated info screen
-        activationUI->setCompanyLogo(std::make_unique<CompanyLogo>());
-        // Scale the company logo as required for your asset if needed.
-        activationUI->setCompanyLogoScale(5.0f);
-
-        // Set the logo inside the spinner (when waiting for web responses)
-        activationUI->setSpinnerLogo(Drawable::createFromImageData(BinaryData::SchematicSoundIconWhite_png, BinaryData::SchematicSoundIconWhite_pngSize));
-
-        // Scale the spinner logo as required for your asset if needed.
-//         activationUI->setSpinnerLogoScale (2.0f);
-    }
-
-	DBG("Editor created with size: " << getWidth() << "x" << getHeight());
+//	DBG("Editor created with size: " << getWidth() << "x" << getHeight());
 
 }
 
 AuroraAudioProcessorEditor::~AuroraAudioProcessorEditor()
 {
-    if (activationUI != nullptr) {
-        activationUI->removeListener(this);
-    }
+//    if (activationUI != nullptr) {
+//        activationUI->removeListener(this);
+//    }
     LookAndFeel::setDefaultLookAndFeel(nullptr);
 }
 
-void AuroraAudioProcessorEditor::onActivationUiVisibilityChanged (const ActivationUI::Visibility& visibility) {  
-    jassert (activationUI != nullptr);  
-    if (activationUI == nullptr)  
-        return;  
-
-    DBG("Activation UI visibility changed: " << (visibility.isVisible ? "true" : "false"));  
-
-    const auto width = getWidth();  
-    const auto height = getHeight();  
-
-    if (visibility.isVisible) {  
-        auto requiresResize = false;  
-        if (requiresRestore) {
-            if (restoreWidth > 0 && restoreHeight > 0) {
-                DBG("Restoring window with size: " << restoreWidth << "x" << restoreHeight);
-                setSize(restoreWidth, restoreHeight); 
-            }
-            DBG("Error restoring window.");
-            requiresRestore = false;
-            return;
-        }  
-        if (width < 600 || height < 450) {
-            DBG("Too small for activation UI");
-            restoreWidth = width;  
-            restoreHeight = height;
-            DBG("Restore size set to: " << restoreWidth << "x" << restoreHeight);
-            requiresResize = true;  
-        }  
-        if (requiresResize) {
-            auto newWidth = std::max(width, 600);  
-            auto newHeight = std::max(height, 450);
-            DBG("Auto resizing window with size: " << newWidth << "x" << newHeight);
-            setSize(newWidth, newHeight);  
-            requiresRestore = true;  
-        }  
-    }  
-}
+//void AuroraAudioProcessorEditor::onActivationUiVisibilityChanged (const ActivationUI::Visibility& visibility) {  
+//    jassert (activationUI != nullptr);  
+//    if (activationUI == nullptr)  
+//        return;  
+//
+//    DBG("Activation UI visibility changed: " << (visibility.isVisible ? "true" : "false"));  
+//
+//    const auto width = getWidth();  
+//    const auto height = getHeight();  
+//
+//    if (visibility.isVisible) {  
+//        auto requiresResize = false;  
+//        if (requiresRestore) {
+//            if (restoreWidth > 0 && restoreHeight > 0) {
+//                DBG("Restoring window with size: " << restoreWidth << "x" << restoreHeight);
+//                setSize(restoreWidth, restoreHeight); 
+//            }
+//            DBG("Error restoring window.");
+//            requiresRestore = false;
+//            return;
+//        }  
+//        if (width < 600 || height < 450) {
+//            DBG("Too small for activation UI");
+//            restoreWidth = width;  
+//            restoreHeight = height;
+//            DBG("Restore size set to: " << restoreWidth << "x" << restoreHeight);
+//            requiresResize = true;  
+//        }  
+//        if (requiresResize) {
+//            auto newWidth = std::max(width, 600);  
+//            auto newHeight = std::max(height, 450);
+//            DBG("Auto resizing window with size: " << newWidth << "x" << newHeight);
+//            setSize(newWidth, newHeight);  
+//            requiresRestore = true;  
+//        }  
+//    }  
+//}
 
 void AuroraAudioProcessorEditor::initZoomGroup() {
     // Zoom Group
@@ -467,7 +467,7 @@ void AuroraAudioProcessorEditor::resized(){
 
 //	DBG("Resized called with size: " << getWidth() << "x" << getHeight());
     
-    MOONBASE_RESIZE_ACTIVATION_UI
+//    MOONBASE_RESIZE_ACTIVATION_UI
     
     const auto width = getWidth();
     const auto height = getHeight();

@@ -25,7 +25,7 @@ public:
     
     //==============================================================================
 
-    MOONBASE_DECLARE_LICENSING_USING_JUCE_PROJECTINFO
+//    MOONBASE_DECLARE_LICENSING_USING_JUCE_PROJECTINFO
 
     //==============================================================================
 

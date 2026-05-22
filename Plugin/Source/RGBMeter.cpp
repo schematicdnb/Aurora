@@ -118,7 +118,6 @@ void RGBMeter::applyWindowing(AudioBuffer<float> &buffer)
 Colour RGBMeter::colourFreqByFiltering(AudioBuffer<float> &buffer)
 {
 
-    //        applyWindowing(buffer);
     // instantiate band buffers
     AudioBuffer<float> lowBuffer(buffer.getNumChannels(), buffer.getNumSamples());
     AudioBuffer<float> midBuffer(buffer.getNumChannels(), buffer.getNumSamples());
@@ -126,11 +125,6 @@ Colour RGBMeter::colourFreqByFiltering(AudioBuffer<float> &buffer)
     lowBuffer.makeCopyOf(buffer);
     midBuffer.makeCopyOf(buffer);
     highBuffer.makeCopyOf(buffer);
-
-    // DEBUG PROCESSING
-    //        lowBuffer.makeCopyOf(windowedBuffer);
-    //        midBuffer.makeCopyOf(windowedBuffer);
-    //        highBuffer.makeCopyOf(windowedBuffer);
 
     //         instantiate blocks
     auto lowBlock = dsp::AudioBlock<float>(lowBuffer);

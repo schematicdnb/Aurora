@@ -9,8 +9,6 @@
 */
 #pragma once
 #include <JuceHeader.h>
-//#include "PluginProcessor.h"
-
 
 class UpdateNotifier : public Component {
 public:
@@ -25,9 +23,8 @@ public:
     bool isUpdateDismissed();
     void setInfo();
     
-    
 private:
-
+    URL downloadURL = URL("https://dl.schematicsound.com/aurora");
     bool isVersionStringSafe(const String& version);
     bool isNewerVersionSafe(const String& current, const String& latest);
     String sanitizeNotesForDisplay(const String& notes);

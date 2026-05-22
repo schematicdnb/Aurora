@@ -44,8 +44,7 @@ UpdateNotifier::UpdateNotifier() {
     updateButton.setButtonText("Update");
     updateButton.setColour(TextButton::buttonColourId, Colour(32,32,32));
     updateButton.onClick = [this]() {
-        URL download = URL("https://schematicsound.com/aurora/?mb_intent=download_product&mb_product_id=aurora");
-        download.launchInDefaultBrowser();
+        downloadURL.launchInDefaultBrowser();
         dismissUpdate();
         this->setVisible(false);
     };

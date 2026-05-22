@@ -59,6 +59,8 @@
     <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
             useGlobalPath="1"/>
     <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors_headless" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
     <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
@@ -78,7 +80,7 @@
     <XCODE_MAC targetFolder="Builds/MacOSX" hardenedRuntime="1" xcodeValidArchs="arm64,arm64e,i386,x86_64"
                applicationCategory="public.app-category.music">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" osxCompatibility="10.13 SDK"/>
+        <CONFIGURATION isDebug="1" name="Debug" osxCompatibility="10.13 SDK" macOSDeploymentTarget="10.13"/>
         <CONFIGURATION isDebug="0" name="Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -98,6 +100,7 @@
         <MODULEPATH id="juce_product_unlocking" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_cryptography" path="../../JUCE/modules"/>
         <MODULEPATH id="moonbase_JUCEClient" path="../../../Plugins"/>
+        <MODULEPATH id="juce_audio_processors_headless" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2022 targetFolder="Builds/VisualStudio2022">
@@ -122,6 +125,7 @@
         <MODULEPATH id="juce_product_unlocking" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_cryptography" path="../../JUCE/modules"/>
         <MODULEPATH id="moonbase_JUCEClient" path="../../../Plugins"/>
+        <MODULEPATH id="juce_audio_processors_headless" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </VS2022>
   </EXPORTFORMATS>

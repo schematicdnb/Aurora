@@ -160,9 +160,9 @@ Colour RGBMeter::freqToColour(AudioBuffer<float> &lowBuffer, AudioBuffer<float> 
     auto mid = midBuffer.getRMSLevel(0, 0, midBuffer.getNumSamples());
     auto high = highBuffer.getRMSLevel(0, 0, highBuffer.getNumSamples());
     
-    // Cut low by 3dB, boost high by 1.5dB
+    // Cut low by 3dB, boost high by 4.5dB
     low *= Decibels::decibelsToGain(-3);
-    high *= Decibels::decibelsToGain(1.5);
+    high *= Decibels::decibelsToGain(4.5);
 
     // apply colour weighting
     low *= lowWeight;

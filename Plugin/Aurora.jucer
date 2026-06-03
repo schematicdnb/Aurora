@@ -8,17 +8,13 @@
               pluginCode="Arra" cppLanguageStandard="20" companyWebsite="https://www.schematicsound.com"
               companyCopyright="Copyright 2025 Schematic Sound" companyEmail="contact@schematicsound.com">
   <MAINGROUP id="prN6Wm" name="Aurora">
-    <GROUP id="{001912F3-4C44-0C40-3EFF-9E775950FB82}" name="Resources">
-      <FILE id="vwwe7t" name="moonbase_api_config.json" compile="0" resource="1"
-            file="../moonbase_api_config.json"/>
-    </GROUP>
     <GROUP id="{7B1CE658-CB34-AAFD-E5D4-611BE3C4418D}" name="Assets">
-      <FILE id="hqZwOu" name="SchematicSoundIconWhite.png" compile="0" resource="1"
-            file="../Logos/SchematicSoundIconWhite.png"/>
+      <FILE id="OfOLu9" name="AuroraLogoDarkTheme.png" compile="0" resource="1"
+            file="../Logos/AURORA DARK MODE/AuroraLogoDarkTheme.png"/>
       <FILE id="Ggu1b9" name="SchematicSoundLogoWhite.png" compile="0" resource="1"
             file="../Logos/SchematicSoundLogoWhite.png"/>
-      <FILE id="fjUNJe" name="AuroraLogoLightMode.png" compile="0" resource="1"
-            file="../Logos/AURORA LIGHT MODE/AuroraLogoLightMode.png"/>
+      <FILE id="fjUNJe" name="AuroraLogoLightTheme.png" compile="0" resource="1"
+            file="../Logos/AURORA LIGHT MODE/AuroraLogoLightTheme.png"/>
       <FILE id="nLTd9I" name="SchematicSoundLogoBlack.png" compile="0" resource="1"
             file="../Logos/SchematicSoundLogoBlack.png"/>
       <FILE id="TCTNaE" name="AuroraKnob.png" compile="0" resource="1" file="Source/AuroraKnob.png"/>
@@ -32,10 +28,10 @@
             file="Source/FilmStripSlider.cpp"/>
       <FILE id="m0v3Rm" name="FilmStripSlider.h" compile="0" resource="0"
             file="Source/FilmStripSlider.h"/>
-      <FILE id="cufT5S" name="SchematicLookAndFeel.cpp" compile="1" resource="0"
-            file="Source/SchematicLookAndFeel.cpp"/>
-      <FILE id="y8yyyg" name="SchematicLookAndFeel.h" compile="0" resource="0"
-            file="Source/SchematicLookAndFeel.h"/>
+      <FILE id="cufT5S" name="AuroraLookAndFeel.cpp" compile="1" resource="0"
+            file="Source/AuroraLookAndFeel.cpp"/>
+      <FILE id="y8yyyg" name="AuroraLookAndFeel.h" compile="0" resource="0"
+            file="Source/AuroraLookAndFeel.h"/>
       <FILE id="ZDj7Gm" name="RoundedCornersEffect.h" compile="0" resource="0"
             file="Source/RoundedCornersEffect.h"/>
       <FILE id="cGlA5u" name="RoundedCornersEffect.cpp" compile="1" resource="0"

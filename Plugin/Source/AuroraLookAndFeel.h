@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    SchematicLookAndFeel.h
+    AuroraLookAndFeel.h
     Created: 11 Mar 2025 5:03:36pm
     Author:  Dan Dubois
 
@@ -10,7 +10,7 @@
 #include <JuceHeader.h>
 #include "FilmStripSlider.h"
 
-class SchematicLookAndFeel : public juce::LookAndFeel_V4
+class AuroraLookAndFeel : public juce::LookAndFeel_V4
 {
     public:
     
@@ -22,6 +22,7 @@ class SchematicLookAndFeel : public juce::LookAndFeel_V4
     void drawRotarySlider (Graphics& g, int x, int y, int width, int height, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, Slider& slider) override;
     
     void setTheme(Theme t);
+    Theme getTheme();
     
     private:
     Image schematicKnob = ImageCache::getFromMemory(BinaryData::AuroraKnob_png, BinaryData::AuroraKnob_pngSize);
@@ -31,5 +32,5 @@ class SchematicLookAndFeel : public juce::LookAndFeel_V4
 
     //==============================================================================
 
-    JUCE_LEAK_DETECTOR (SchematicLookAndFeel);
+    JUCE_LEAK_DETECTOR (AuroraLookAndFeel);
 };

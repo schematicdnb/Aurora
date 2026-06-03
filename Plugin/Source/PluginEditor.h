@@ -10,7 +10,7 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "SchematicLookAndFeel.h"
+#include "AuroraLookAndFeel.h"
 #include "UpdateNotifier.h"
 
 //==============================================================================
@@ -42,7 +42,7 @@ private:
     
     UpdateNotifier updateNotifier{};
     
-    SchematicLookAndFeel customLookAndFeel;
+    AuroraLookAndFeel auroraLookAndFeel;
     bool darkTheme = true;
     
     Slider historySlider, gainSlider;
@@ -83,9 +83,11 @@ private:
     
     Array<Component*> controls = {&historySlider, &gainSlider, &historyLabel, &gainLabel, &zoomGroup, &crossoverGroup, &colourGroup, &lowCrossoverSlider, &highCrossoverSlider, &lowCrossoverLabel, &highCrossoverLabel, &redSlider, &greenSlider, &blueSlider, &redLabel, &greenLabel, &blueLabel};
     
-    Image logoAurora = ImageCache::getFromMemory(BinaryData::AuroraLogoLightMode_png, BinaryData::AuroraLogoLightMode_pngSize);
+    Image logoAuroraLightTheme = ImageCache::getFromMemory(BinaryData::AuroraLogoLightTheme_png, BinaryData::AuroraLogoLightTheme_pngSize);
+    Image logoAuroraDarkTheme = ImageCache::getFromMemory(BinaryData::AuroraLogoDarkTheme_png, BinaryData::AuroraLogoDarkTheme_pngSize);
 
-    Image logoSchematicBlack = ImageCache::getFromMemory(BinaryData::SchematicSoundLogoBlack_png, BinaryData::SchematicSoundLogoBlack_pngSize);
+    Image logoSchematicLightTheme = ImageCache::getFromMemory(BinaryData::SchematicSoundLogoBlack_png, BinaryData::SchematicSoundLogoBlack_pngSize);
+    Image logoSchematicDarkTheme = ImageCache::getFromMemory(BinaryData::SchematicSoundLogoWhite_png, BinaryData::SchematicSoundLogoWhite_pngSize);
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuroraAudioProcessorEditor)
 };

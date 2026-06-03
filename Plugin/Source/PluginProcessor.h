@@ -10,7 +10,6 @@
 
 #include <JuceHeader.h>
 #include "RGBMeter.h"
-//#include "UpdateNotifier.h"
 
 //==============================================================================
 /**
@@ -22,13 +21,6 @@ public:
     //==============================================================================
     AuroraAudioProcessor();
     ~AuroraAudioProcessor() override;
-    
-    //==============================================================================
-
-//    MOONBASE_DECLARE_LICENSING_USING_JUCE_PROJECTINFO
-
-    //==============================================================================
-
     //==============================================================================
     void prepareToPlay(double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
@@ -75,13 +67,7 @@ public:
     
     void initDSP();
     
-//    void dismissUpdate();
-//    bool isUpdateDismissed();
-//    const UpdateNotifier updateNotifier();
-
 private:
-    
-//    static bool updatesDismissed;
     
     
     //==============================================================================

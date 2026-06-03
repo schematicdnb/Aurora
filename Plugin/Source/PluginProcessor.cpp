@@ -119,8 +119,6 @@ void AuroraAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    
-//    MOONBASE_PREPARE_TO_PLAY (sampleRate, samplesPerBlock);
 
     juce::dsp::ProcessSpec spec;
     spec.sampleRate = sampleRate;
@@ -179,8 +177,6 @@ void AuroraAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer, juce::
     //=====================================================
 
     rgbMeter.pushSamples(buffer);
-    
-//    MOONBASE_PROCESS (buffer);
 }
 
 //==============================================================================
@@ -276,14 +272,6 @@ void AuroraAudioProcessor::setEditorSize(int width, int height) {
     size.setProperty("width", width, nullptr);
     size.setProperty("height", height, nullptr);
 }
-
-//void AuroraAudioProcessor::dismissUpdate() {
-//    updatesDismissed = true;
-//}
-//bool AuroraAudioProcessor::isUpdateDismissed() {
-//    if (updatesDismissed) {return true;}
-//    return false;
-//}
 
 //==============================================================================
 // This creates new instances of the plugin..

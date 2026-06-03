@@ -43,6 +43,7 @@ private:
     UpdateNotifier updateNotifier{};
     
     SchematicLookAndFeel customLookAndFeel;
+    bool darkTheme = true;
     
     Slider historySlider, gainSlider;
     Label historyLabel, gainLabel;

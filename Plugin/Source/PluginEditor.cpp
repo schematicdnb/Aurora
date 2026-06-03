@@ -63,6 +63,8 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
             updateNotifier.setVisible(true);
         }
     }
+    
+    customLookAndFeel.setTheme(SchematicLookAndFeel::Theme::Light);
 
 }
 
@@ -76,7 +78,7 @@ void AuroraAudioProcessorEditor::initZoomGroup() {
     addAndMakeVisible(zoomGroup);
     zoomGroup.setText("Zoom");
     zoomGroup.setTextLabelPosition(Justification::centredBottom);
-    zoomGroup.setColour(GroupComponent::ColourIds::textColourId, Colour(32,32,32));
+//    zoomGroup.setColour(GroupComponent::ColourIds::textColourId, Colour(32,32,32));
     
     // Gain parameter
     addAndMakeVisible(gainSlider);
@@ -84,15 +86,15 @@ void AuroraAudioProcessorEditor::initZoomGroup() {
     gainSlider.setSize(paramWidth, paramHeight);
     gainSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
     gainSlider.setTextValueSuffix(" dB");
-    gainSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
-    gainSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
+//    gainSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
+//    gainSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
 
     // Gain Label
     addAndMakeVisible(gainLabel);
     gainLabel.attachToComponent(&gainSlider, false);
     gainLabel.setText("Gain", dontSendNotification);
     gainLabel.setJustificationType(Justification::centred);
-    gainLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
+//    gainLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
     
     // Gain Attachment
     gainSliderAttachment.reset(new SliderAttachment(apvts, "gain", gainSlider));
@@ -108,15 +110,15 @@ void AuroraAudioProcessorEditor::initZoomGroup() {
     historySlider.setSize(paramWidth, paramHeight);
     historySlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
     historySlider.setTextValueSuffix(" sec");
-    historySlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
-    historySlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
+//    historySlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
+//    historySlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
     
     // History Label
     addAndMakeVisible(historyLabel);
     historyLabel.attachToComponent(&historySlider, false);
     historyLabel.setText("History", dontSendNotification);
     historyLabel.setJustificationType(Justification::centred);
-    historyLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
+//    historyLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
     
     // History Attachment
     historySliderAttachment.reset(new SliderAttachment(apvts, "historyLength", historySlider));
@@ -132,7 +134,7 @@ void AuroraAudioProcessorEditor::initCrossoverGroup() {
     addAndMakeVisible(crossoverGroup);
     crossoverGroup.setText("Crossovers");
     crossoverGroup.setTextLabelPosition(Justification::centredBottom);
-    crossoverGroup.setColour(GroupComponent::ColourIds::textColourId, Colour(32,32,32));
+//    crossoverGroup.setColour(GroupComponent::ColourIds::textColourId, Colour(32,32,32));
     
     // Low Crossover
     addAndMakeVisible(lowCrossoverSlider);
@@ -140,15 +142,15 @@ void AuroraAudioProcessorEditor::initCrossoverGroup() {
     lowCrossoverSlider.setSize(paramWidth, paramHeight);
     lowCrossoverSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
     lowCrossoverSlider.setTextValueSuffix(" Hz");
-    lowCrossoverSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
-    lowCrossoverSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
+//    lowCrossoverSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
+//    lowCrossoverSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
     
     // Low crossover label
     addAndMakeVisible(lowCrossoverLabel);
     lowCrossoverLabel.attachToComponent(&lowCrossoverSlider, false);
     lowCrossoverLabel.setText("Low", dontSendNotification);
     lowCrossoverLabel.setJustificationType(Justification::centred);
-    lowCrossoverLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
+//    lowCrossoverLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
     
     // Low crossover attachment
     lowCrossoverAttachment.reset(new SliderAttachment(apvts, "lowCrossover", lowCrossoverSlider));
@@ -170,15 +172,15 @@ void AuroraAudioProcessorEditor::initCrossoverGroup() {
     highCrossoverSlider.setSize(paramWidth, paramHeight);
     highCrossoverSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
     highCrossoverSlider.setTextValueSuffix(" Hz");
-    highCrossoverSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
-    highCrossoverSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
+//    highCrossoverSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
+//    highCrossoverSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
     
     // High Crossover label
     addAndMakeVisible(highCrossoverLabel);
     highCrossoverLabel.attachToComponent(&highCrossoverSlider, false);
     highCrossoverLabel.setText("High", dontSendNotification);
     highCrossoverLabel.setJustificationType(Justification::centred);
-    highCrossoverLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
+//    highCrossoverLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
     
     // High Crossover attachment
     highCrossoverAttachment.reset(new SliderAttachment(apvts, "highCrossover", highCrossoverSlider));
@@ -199,7 +201,7 @@ void AuroraAudioProcessorEditor::initColourGroup() {
     addAndMakeVisible(colourGroup);
     colourGroup.setText("Colour Mixer");
     colourGroup.setTextLabelPosition(Justification::centredBottom);
-    colourGroup.setColour(GroupComponent::ColourIds::textColourId, Colour(32,32,32));
+//    colourGroup.setColour(GroupComponent::ColourIds::textColourId, Colour(32,32,32));
     
     
     // Red Slider
@@ -208,15 +210,15 @@ void AuroraAudioProcessorEditor::initColourGroup() {
     redSlider.setSize(paramWidth, paramHeight);
     redSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
     redSlider.setTextValueSuffix(" %");
-    redSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
-    redSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
+//    redSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
+//    redSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
     
     // Red Label
     addAndMakeVisible(redLabel);
     redLabel.attachToComponent(&redSlider, false);
     redLabel.setText("Red", dontSendNotification);
     redLabel.setJustificationType(Justification::centred);
-    redLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
+//    redLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
     
     // Red Attachment
     redSliderAttachment.reset(new SliderAttachment(apvts, "redWeight", redSlider));
@@ -233,15 +235,15 @@ void AuroraAudioProcessorEditor::initColourGroup() {
     greenSlider.setSize(paramWidth, paramHeight);
     greenSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
     greenSlider.setTextValueSuffix(" %");
-    greenSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
-    greenSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
+//    greenSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
+//    greenSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
     
     // Green Label
     addAndMakeVisible(greenLabel);
     greenLabel.attachToComponent(&greenSlider, false);
     greenLabel.setText("Green", dontSendNotification);
     greenLabel.setJustificationType(Justification::centred);
-    greenLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
+//    greenLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
     
     // Green Attachment
     greenSliderAttachment.reset(new SliderAttachment(apvts, "greenWeight", greenSlider));
@@ -258,15 +260,15 @@ void AuroraAudioProcessorEditor::initColourGroup() {
     blueSlider.setSize(paramWidth, paramHeight);
     blueSlider.setTextBoxStyle(Slider::TextBoxBelow, false, paramWidth, 24);
     blueSlider.setTextValueSuffix(" %");
-    blueSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
-    blueSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
+//    blueSlider.setColour(Slider::ColourIds::textBoxTextColourId, Colour(32,32,32));
+//    blueSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colour(32,32,32));
     
     // Green Label
     addAndMakeVisible(blueLabel);
     blueLabel.attachToComponent(&blueSlider, false);
     blueLabel.setText("Blue", dontSendNotification);
     blueLabel.setJustificationType(Justification::centred);
-    blueLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
+//    blueLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
     
     // Green Attachment
     blueSliderAttachment.reset(new SliderAttachment(apvts, "blueWeight", blueSlider));
@@ -281,8 +283,8 @@ void AuroraAudioProcessorEditor::initControlToggle() {
     // add toggle button
     addAndMakeVisible(toggleControlsButton);
     toggleControlsButton.setSize(21, 21);
-    toggleControlsButton.setColour(ToggleButton::tickColourId, Colour(32,32,32));
-    toggleControlsButton.setColour(ToggleButton::tickDisabledColourId, Colour(32,32,32));
+//    toggleControlsButton.setColour(ToggleButton::tickColourId, Colour(32,32,32));
+//    toggleControlsButton.setColour(ToggleButton::tickDisabledColourId, Colour(32,32,32));
     
     // Parameter attachment
     toggleControlsAttachment.reset(new ButtonAttachment(apvts, "showControls", toggleControlsButton));
@@ -292,7 +294,7 @@ void AuroraAudioProcessorEditor::initControlToggle() {
     toggleControlsLabel.setSize(75, toggleControlsButton.getHeight());
     toggleControlsLabel.setText("Show Controls", dontSendNotification);
     toggleControlsLabel.setJustificationType(Justification::centred);
-    toggleControlsLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
+//    toggleControlsLabel.setColour(Label::ColourIds::textColourId, Colour(32,32,32));
     
     // Hide controls by default
     if (!toggleControlsButton.getToggleState()) {
@@ -339,7 +341,8 @@ void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
 {
   // (Our component is opaque, so we must completely fill the background with a solid colour)
 //    g.fillAll(Colour(32,32,32));
-    g.fillAll(Colour(232, 232, 232));
+//    g.fillAll(Colour(232, 232, 232));
+    g.fillAll(findColour (juce::ResizableWindow::backgroundColourId));
 	g.setImageResamplingQuality(Graphics::ResamplingQuality::highResamplingQuality);
 
 	g.setColour(Colour(10, 10, 10));

@@ -58,7 +58,7 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
 
 AuroraAudioProcessorEditor::~AuroraAudioProcessorEditor()
 {
-    LookAndFeel::setDefaultLookAndFeel(nullptr);
+    setLookAndFeel(nullptr);
 }
 
 void AuroraAudioProcessorEditor::initThemeToggle() {

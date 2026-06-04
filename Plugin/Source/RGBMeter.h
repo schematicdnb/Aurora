@@ -177,6 +177,8 @@ private:
     Image cachedWaveform;
     TextButton freezeIndicator;
     
+    bool isResizing = false;
+    
     //==============================================================================
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RGBMeter)

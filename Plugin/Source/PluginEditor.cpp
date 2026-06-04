@@ -433,5 +433,4 @@ void AuroraAudioProcessorEditor::resized(){
     greenSlider.setBounds(redSlider.getX() + paramWidth + margin, redSlider.getY(), paramWidth, paramHeight);
     blueSlider.setBounds(greenSlider.getX() + paramWidth + margin, greenSlider.getY(), paramWidth, paramHeight);
     
-    
 }

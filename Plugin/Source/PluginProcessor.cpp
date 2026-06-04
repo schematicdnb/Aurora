@@ -234,7 +234,6 @@ juce::AudioProcessorValueTreeState::ParameterLayout AuroraAudioProcessor::create
     params.add(std::make_unique<AudioParameterFloat>(ParameterID("lowCrossover", 1), "Low Crossover", *crossoverRange, 250.0));
     
     // High Crossover
-//    auto highCrossoverRange = std::make_unique<NormalisableRange<float>>(20.0f, 20000.0f, 1.0f, 3.0);
     params.add(std::make_unique<AudioParameterFloat>(ParameterID("highCrossover", 1), "High Crossover", *crossoverRange, 2000.0f));
     
     // Colour weights
@@ -250,8 +249,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout AuroraAudioProcessor::create
     params.add(std::make_unique<AudioParameterFloat>(ParameterID("greenWeight", 1), "Green Weight", *colourWeightRange, 1.0f, percent));
     params.add(std::make_unique<AudioParameterFloat>(ParameterID("blueWeight", 1), "Blue Weight", *colourWeightRange, 1.0f, percent));
     
-    params.add(std::make_unique<AudioParameterBool>(ParameterID("darkMode", 1), "Dark Mode", false));
+    // Theme
+    params.add(std::make_unique<AudioParameterBool>(ParameterID("theme", 1), "Theme", false));
     
+    // Controls
     params.add(std::make_unique<AudioParameterBool>(ParameterID("showControls", 1), "Show Controls", false));
     
     return params;

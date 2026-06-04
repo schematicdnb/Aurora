@@ -17,26 +17,15 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     // editor's size to whatever you need it to be.
     
     setLookAndFeel(&auroraLookAndFeel);
-    auroraLookAndFeel.setTheme(AuroraLookAndFeel::Theme::Dark);
     
+    // init theme control
+    initThemeToggle();
+
     // add RGB Meter
     addAndMakeVisible(rgbMeter);
 
     // init channel
-    addAndMakeVisible(channelButton);
-    auto buttonColour = Colours::black.withAlpha(0.5f);
-    channelButton.setColour(TextButton::buttonColourId, buttonColour);
-    channelButton.setColour(TextButton::buttonOnColourId, buttonColour);
-    channelButton.setColour(ComboBox::outlineColourId, buttonColour);
-    channelButton.setToggleable(true);
-    channelButton.setClickingTogglesState(true);
-    channelButtonAttachment.reset(new ButtonAttachment(apvts, "displayChannel", channelButton));
-    channelButton.setButtonText(channelButton.getToggleState() ? "R" : "L");
-    channelButton.onClick = [this]() {
-        auto val = channelButton.getToggleState();
-        channelButton.setButtonText(val ? "R" : "L");
-        rgbMeter.setDisplayChannel(val);
-    };
+    initChannelSelect();
     
     // init controls
     initZoomGroup();
@@ -46,13 +35,13 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
     labelHeight = gainLabel.getHeight();
     groupHeight += labelHeight;
     
-
     // Set window size
     setSize(audioProcessor.getEditorWidth(), audioProcessor.getEditorHeight());
     
     // make window resizable
     setResizable(true, true);
     
+    // init controls toggle
     initControlToggle();
     
     // Check for updates
@@ -65,13 +54,56 @@ AuroraAudioProcessorEditor::AuroraAudioProcessorEditor(AuroraAudioProcessor &p)
         }
     }
     
-    
-
 }
 
 AuroraAudioProcessorEditor::~AuroraAudioProcessorEditor()
 {
     LookAndFeel::setDefaultLookAndFeel(nullptr);
+}
+
+void AuroraAudioProcessorEditor::initThemeToggle() {
+    addAndMakeVisible(themeToggleButton);
+    themeToggleButton.setToggleable(true);
+    themeToggleButton.setClickingTogglesState(true);
+    themeToggleAttachment.reset(new ButtonAttachment(apvts, "theme", themeToggleButton));
+    themeToggleButton.setButtonText(themeToggleButton.getToggleState() ? "Dark" : "Light");
+
+    themeToggleButton.onClick = [this]() {
+        auto val = themeToggleButton.getToggleState();
+        themeToggleButton.setButtonText(val ? "Dark" : "Light");
+        auroraLookAndFeel.setTheme(val ? AuroraLookAndFeel::Theme::Dark : AuroraLookAndFeel::Theme::Light);
+        
+        for (auto* child : getChildren())
+            if (auto* s = dynamic_cast<juce::Slider*>(child))
+                s->lookAndFeelChanged();
+         
+        repaint();
+    };
+    
+    // Label
+    themeToggleLabel.setText("Theme", dontSendNotification);
+    themeToggleLabel.attachToComponent(&themeToggleButton, false);
+    // init current theme from saved state
+    auroraLookAndFeel.setTheme(themeToggleButton.getToggleState() ? AuroraLookAndFeel::Theme::Dark : AuroraLookAndFeel::Theme::Light);
+}
+
+void AuroraAudioProcessorEditor::initChannelSelect() {
+    addAndMakeVisible(channelButton);
+    auto buttonColour = Colours::black.withAlpha(0.5f);
+    channelButton.setColour(TextButton::buttonColourId, buttonColour);
+    channelButton.setColour(TextButton::buttonOnColourId, buttonColour);
+    channelButton.setColour(ComboBox::outlineColourId, buttonColour);
+    channelButton.setColour(TextButton::textColourOnId, Colour(232,232,232));
+    channelButton.setColour(TextButton::textColourOffId, Colour(232,232,232));
+    channelButton.setToggleable(true);
+    channelButton.setClickingTogglesState(true);
+    channelButtonAttachment.reset(new ButtonAttachment(apvts, "displayChannel", channelButton));
+    channelButton.setButtonText(channelButton.getToggleState() ? "R" : "L");
+    channelButton.onClick = [this]() {
+        auto val = channelButton.getToggleState();
+        channelButton.setButtonText(val ? "R" : "L");
+        rgbMeter.setDisplayChannel(val);
+    };
 }
 
 void AuroraAudioProcessorEditor::initZoomGroup() {
@@ -259,15 +291,18 @@ void AuroraAudioProcessorEditor::initControlToggle() {
     
     // add toggle button
     addAndMakeVisible(toggleControlsButton);
-    toggleControlsButton.setSize(21, 21);
+    toggleControlsButton.setSize(50, 25);
+    toggleControlsButton.setToggleable(true);
+    toggleControlsButton.setClickingTogglesState(true);
     
     // Parameter attachment
     toggleControlsAttachment.reset(new ButtonAttachment(apvts, "showControls", toggleControlsButton));
     
     // Show Controls Label
     addAndMakeVisible(toggleControlsLabel);
+    toggleControlsLabel.attachToComponent(&toggleControlsButton, false);
     toggleControlsLabel.setSize(75, toggleControlsButton.getHeight());
-    toggleControlsLabel.setText("Show Controls", dontSendNotification);
+    toggleControlsLabel.setText("Settings", dontSendNotification);
     toggleControlsLabel.setJustificationType(Justification::centred);
     
     // Hide controls by default
@@ -276,8 +311,10 @@ void AuroraAudioProcessorEditor::initControlToggle() {
         for (Component* control : controls) {
             control->setVisible(false);
         }
+        toggleControlsButton.setButtonText("Show");
     } else {
         setResizeLimits(540, 160 + groupHeight + margin, 1280, 720);
+        toggleControlsButton.setButtonText("Hide");
     }
     
     resized(); // force updating bounds
@@ -298,6 +335,7 @@ void AuroraAudioProcessorEditor::showControls() {
     for (Component* control : controls) {
         control->setVisible(true);
     }
+    toggleControlsButton.setButtonText("Hide");
 }
 
 void AuroraAudioProcessorEditor::hideControls() {
@@ -306,6 +344,7 @@ void AuroraAudioProcessorEditor::hideControls() {
     for (Component* control : controls) {
         control->setVisible(false);
     }
+    toggleControlsButton.setButtonText("Show");
 }
 
 
@@ -360,14 +399,15 @@ void AuroraAudioProcessorEditor::resized(){
     if (toggleControlsButton.getToggleState()) {
         rgbMeter.setBounds(margin, margin, width - 2*margin, height - margin - groupHeight - infoAreaHeight);
         
-        toggleControlsButton.setBounds(width/2 - toggleControlsButton.getWidth()/2, height - margin -  groupHeight - infoAreaHeight/2 + toggleControlsButton.getHeight()/4, toggleControlsButton.getWidth(), toggleControlsButton.getHeight());
-        toggleControlsLabel.setBounds(width/2 - toggleControlsLabel.getWidth()/2, toggleControlsButton.getY() - toggleControlsLabel.getHeight(), toggleControlsLabel.getWidth(), toggleControlsLabel.getHeight());
+        toggleControlsButton.setBounds(width/2 + 5, height - margin - groupHeight - infoAreaHeight/2 + toggleControlsButton.getHeight()/4, toggleControlsButton.getWidth(), toggleControlsButton.getHeight());
     } else {
         rgbMeter.setBounds(margin, margin, width- 2*margin, height - infoAreaHeight);
         
-        toggleControlsButton.setBounds(width/2 - toggleControlsButton.getWidth()/2, height - infoAreaHeight/2 + toggleControlsButton.getHeight()/4, toggleControlsButton.getWidth(), toggleControlsButton.getHeight());
-        toggleControlsLabel.setBounds(width/2 - toggleControlsLabel.getWidth()/2, toggleControlsButton.getY() - toggleControlsLabel.getHeight(), toggleControlsLabel.getWidth(), toggleControlsLabel.getHeight());
+        toggleControlsButton.setBounds(width/2 + 5, height - infoAreaHeight/2 + toggleControlsButton.getHeight()/4, toggleControlsButton.getWidth(), toggleControlsButton.getHeight());
     }
+    
+    // Theme selection
+    themeToggleButton.setBounds(width/2 - 55, toggleControlsButton.getY(), 50, 25);
     
     // Channel selection
     channelButton.setBounds(2*margin, rgbMeter.getY() + rgbMeter.getHeight()/2 - 15, 30, 30);
@@ -392,4 +432,6 @@ void AuroraAudioProcessorEditor::resized(){
     redSlider.setBounds(colourGroup.getX() + margin, gainSlider.getY(), paramWidth, paramHeight);
     greenSlider.setBounds(redSlider.getX() + paramWidth + margin, redSlider.getY(), paramWidth, paramHeight);
     blueSlider.setBounds(greenSlider.getX() + paramWidth + margin, greenSlider.getY(), paramWidth, paramHeight);
+    
+    
 }

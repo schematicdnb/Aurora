@@ -27,6 +27,8 @@ RGBMeter::RGBMeter() {
     auto buttonColour = Colours::black.withAlpha(0.5f);
     freezeIndicator.setColour(TextButton::buttonColourId, buttonColour);
     freezeIndicator.setColour(ComboBox::outlineColourId, buttonColour);
+    freezeIndicator.setColour(TextButton::textColourOnId, Colour(232,232,232));
+    freezeIndicator.setColour(TextButton::textColourOffId, Colour(232,232,232));
     freezeIndicator.setInterceptsMouseClicks(false, false);
 
 }

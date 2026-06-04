@@ -25,6 +25,8 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    void initThemeToggle();
+    void initChannelSelect();
     void initZoomGroup();
     void initCrossoverGroup();
     void initColourGroup();
@@ -43,7 +45,6 @@ private:
     UpdateNotifier updateNotifier{};
     
     AuroraLookAndFeel auroraLookAndFeel;
-    bool darkTheme = true;
     
     Slider historySlider, gainSlider;
     Label historyLabel, gainLabel;
@@ -67,6 +68,10 @@ private:
     typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
     typedef juce::AudioProcessorValueTreeState::ButtonAttachment ButtonAttachment;
     
+    TextButton themeToggleButton;
+    Label themeToggleLabel;
+    std::unique_ptr<ButtonAttachment> themeToggleAttachment;
+    
     std::unique_ptr<SliderAttachment> historySliderAttachment, gainSliderAttachment;
     std::unique_ptr<SliderAttachment> lowCrossoverAttachment, highCrossoverAttachment;
     std::unique_ptr<SliderAttachment> redSliderAttachment, greenSliderAttachment, blueSliderAttachment;
@@ -74,7 +79,7 @@ private:
     AudioProcessorValueTreeState &apvts = audioProcessor.apvts;
     RGBMeter &rgbMeter = audioProcessor.rgbMeter;
     
-    ToggleButton toggleControlsButton;
+    TextButton toggleControlsButton;
     Label toggleControlsLabel;
     std::unique_ptr<ButtonAttachment> toggleControlsAttachment;
     

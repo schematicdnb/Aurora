@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="SEhXmX" name="Aurora" projectType="audioplug" useAppConfig="0"
-              jucerFormatVersion="1" version="1.0.1" companyName="Schematic Sound"
+              jucerFormatVersion="1" version="1.1.0" companyName="Schematic Sound"
               pluginFormats="buildAU,buildVST3" pluginManufacturerCode="SSND"
               pluginDesc="Waveform visualizer with frequency-based colours inspired by DJ tools."
               pluginVST3Category="Analyzer,Tools" pluginVSTCategory="kPlugCategAnalysis"
               pluginCode="Arra" cppLanguageStandard="20" companyWebsite="https://www.schematicsound.com"
-              companyCopyright="Copyright 2025 Schematic Sound" companyEmail="contact@schematicsound.com">
+              companyCopyright="Copyright 2026 Schematic Sound" companyEmail="contact@schematicsound.com">
   <MAINGROUP id="prN6Wm" name="Aurora">
-    <GROUP id="{7B1CE658-CB34-AAFD-E5D4-611BE3C4418D}" name="Assets">
-      <FILE id="OfOLu9" name="AuroraLogoDarkTheme.png" compile="0" resource="1"
-            file="../Logos/AURORA DARK MODE/AuroraLogoDarkTheme.png"/>
-      <FILE id="Ggu1b9" name="SchematicSoundLogoWhite.png" compile="0" resource="1"
-            file="../Logos/SchematicSoundLogoWhite.png"/>
-      <FILE id="fjUNJe" name="AuroraLogoLightTheme.png" compile="0" resource="1"
-            file="../Logos/AURORA LIGHT MODE/AuroraLogoLightTheme.png"/>
-      <FILE id="nLTd9I" name="SchematicSoundLogoBlack.png" compile="0" resource="1"
-            file="../Logos/SchematicSoundLogoBlack.png"/>
-      <FILE id="TCTNaE" name="AuroraKnob.png" compile="0" resource="1" file="Source/AuroraKnob.png"/>
+    <GROUP id="{7B1CE658-CB34-AAFD-E5D4-611BE3C4418D}" name="Resources">
+      <FILE id="OPBFFD" name="AuroraKnob.png" compile="0" resource="1" file="Resources/AuroraKnob.png"/>
+      <FILE id="XzB1Yl" name="AuroraLogoDarkTheme.png" compile="0" resource="1"
+            file="Resources/AuroraLogoDarkTheme.png"/>
+      <FILE id="jBvdzd" name="AuroraLogoLightTheme.png" compile="0" resource="1"
+            file="Resources/AuroraLogoLightTheme.png"/>
+      <FILE id="MsKwdA" name="SchematicSoundLogoWhite.png" compile="0" resource="1"
+            file="Resources/SchematicSoundLogoWhite.png"/>
+      <FILE id="X7WuLf" name="SchematicSoundLogoBlack.png" compile="0" resource="1"
+            file="Resources/SchematicSoundLogoBlack.png"/>
     </GROUP>
     <GROUP id="{DD6A068D-F127-8FC1-7C6B-391B81BC2A60}" name="Source">
       <FILE id="AYYWbQ" name="UpdateNotifier.cpp" compile="1" resource="0"

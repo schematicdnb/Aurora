@@ -33,7 +33,9 @@ AuroraAudioProcessor::~AuroraAudioProcessor()
 
 void AuroraAudioProcessor::initDSP() {
     // set channel
-    rgbMeter.setDisplayChannel(static_cast<bool>(*apvts.getRawParameterValue("displayChannel")));
+    auto* channelMode = static_cast<AudioParameterChoice*>(apvts.getParameter("channelMode"));
+    int index = channelMode->getIndex();
+    rgbMeter.setChannelMode(channelMode->choices[index]);
     
     // set History Length
     rgbMeter.setHistoryLength(static_cast<int>(*apvts.getRawParameterValue("historyLength")));
@@ -220,7 +222,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout AuroraAudioProcessor::create
     APVTS::ParameterLayout params;
     
     // Channel
-    params.add(std::make_unique<AudioParameterBool>(ParameterID("displayChannel", 1), "Channel", false));
+    params.add(std::make_unique<AudioParameterChoice>((ParameterID("channelMode", 1)), "Channel", StringArray{"L","M","R"}, 1));
     
     // History
     params.add(std::make_unique<AudioParameterInt>(ParameterID("historyLength", 1), "History Length", 1, 20, 4));

@@ -75,12 +75,25 @@ void RGBMeter::pushSamples(AudioBuffer<float> &buffer)
     
     // channel safety
     if (buffer.getNumChannels() == 0) return;
-    if (buffer.getNumChannels() == 1) setDisplayChannel(false);
+    else if (buffer.getNumChannels() == 1) {
+        setChannelMode("L");
+        singleChannel = true;
+    } else {
+        singleChannel = false;
+    }
 
     // Process the incoming buffer
     for (int i = 0; i < buffer.getNumSamples(); i++)
     {
-        auto sample = buffer.getSample(displayChannel.get(), i);
+        float sample;
+        if (channelMode == "L" || singleChannel) {
+            sample = buffer.getSample(0, i);
+        } else if (channelMode == "R" && !singleChannel) {
+            sample = buffer.getSample(1, i);
+        } else if (channelMode == "M" && !singleChannel) {
+            sample = (buffer.getSample(0, i) + buffer.getSample(1, i)) * (Decibels::decibelsToGain(-6.0f));
+        }
+
         // add sample to chunk and analysis buffers
         if (chunkBuffer.getNumChannels() > 0 && chunkBuffer.getNumSamples() > 0) {
             chunkBuffer.setSample(0, chunkCounter, sample);
@@ -287,8 +300,9 @@ void RGBMeter::setColourWeight(String colour, float weight)
         highWeight = weight;
     }
 }
-void RGBMeter::setDisplayChannel(bool isRightChannel) {
-    displayChannel.set(isRightChannel ? 1 : 0);
+
+void RGBMeter::setChannelMode(String c) {
+    channelMode = c;
 }
 
 void RGBMeter::cacheWaveform() {

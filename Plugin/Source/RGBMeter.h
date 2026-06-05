@@ -130,7 +130,7 @@ public:
     float getCornerRadius();
     
     void setColourWeight(String colour, float weight);
-    void setDisplayChannel(bool isRightChannel);
+    void setChannelMode(String c);
     
     void renderWaveform(Graphics& g);
     void cacheWaveform();
@@ -145,7 +145,8 @@ private:
     int historyLength = 4; // in seconds
     int sampleRate;
     int bufferLength;
-    Atomic<int> displayChannel{0};
+    String channelMode;
+    bool singleChannel = false;
 
     int width = 0;
 

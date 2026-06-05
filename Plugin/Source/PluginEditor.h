@@ -84,7 +84,6 @@ private:
     std::unique_ptr<ButtonAttachment> toggleControlsAttachment;
     
     TextButton channelButton;
-    std::unique_ptr<ButtonAttachment> channelButtonAttachment;
     
     Array<Component*> controls = {&historySlider, &gainSlider, &historyLabel, &gainLabel, &zoomGroup, &crossoverGroup, &colourGroup, &lowCrossoverSlider, &highCrossoverSlider, &lowCrossoverLabel, &highCrossoverLabel, &redSlider, &greenSlider, &blueSlider, &redLabel, &greenLabel, &blueLabel};
     

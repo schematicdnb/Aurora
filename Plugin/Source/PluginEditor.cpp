@@ -88,6 +88,8 @@ void AuroraAudioProcessorEditor::initThemeToggle() {
 }
 
 void AuroraAudioProcessorEditor::initChannelSelect() {
+    auto* channelMode = dynamic_cast<AudioParameterChoice*>(apvts.getParameter("channelMode"));
+    
     addAndMakeVisible(channelButton);
     auto buttonColour = Colours::black.withAlpha(0.5f);
     channelButton.setColour(TextButton::buttonColourId, buttonColour);
@@ -95,14 +97,12 @@ void AuroraAudioProcessorEditor::initChannelSelect() {
     channelButton.setColour(ComboBox::outlineColourId, buttonColour);
     channelButton.setColour(TextButton::textColourOnId, Colour(232,232,232));
     channelButton.setColour(TextButton::textColourOffId, Colour(232,232,232));
-    channelButton.setToggleable(true);
-    channelButton.setClickingTogglesState(true);
-    channelButtonAttachment.reset(new ButtonAttachment(apvts, "displayChannel", channelButton));
-    channelButton.setButtonText(channelButton.getToggleState() ? "R" : "L");
-    channelButton.onClick = [this]() {
-        auto val = channelButton.getToggleState();
-        channelButton.setButtonText(val ? "R" : "L");
-        rgbMeter.setDisplayChannel(val);
+    channelButton.setButtonText(channelMode->getCurrentChoiceName());
+    channelButton.onClick = [this, channelMode]() {
+        int next = (channelMode->getIndex() + 1) % channelMode->choices.size();
+        channelMode->setValueNotifyingHost(channelMode->convertTo0to1(next));
+        rgbMeter.setChannelMode(channelMode->choices[next]);
+        channelButton.setButtonText(channelMode->choices[next]);
     };
 }
 

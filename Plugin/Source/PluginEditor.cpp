@@ -358,8 +358,6 @@ void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
     
     g.fillAll(findColour (juce::ResizableWindow::backgroundColourId));
 	g.setImageResamplingQuality(Graphics::ResamplingQuality::highResamplingQuality);
-
-	g.setColour(Colour(10, 10, 10));
     
     Image *auroraLogo;
     Image *schematicLogo;
@@ -373,16 +371,10 @@ void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
     }
 
     if (toggleControlsButton.getToggleState()) {
-		// Draw background
-        g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - margin - groupHeight - infoAreaHeight, rgbMeter.getCornerRadius());
-        
         // Draw Logos
         g.drawImageWithin(*auroraLogo, margin, getHeight() - infoAreaHeight - groupHeight - margin + 20, 150, infoAreaHeight - 30, RectanglePlacement(RectanglePlacement::Flags::xLeft));
         g.drawImageWithin(*schematicLogo, getWidth() - margin - 160, getHeight() - infoAreaHeight - groupHeight - margin, 160, infoAreaHeight+10, RectanglePlacement());
     } else {
-		// Draw background
-        g.fillRoundedRectangle(margin, margin, getWidth() - 2*margin, getHeight() - infoAreaHeight, rgbMeter.getCornerRadius());
-        
 		// Draw Logos
 		g.drawImageWithin(*auroraLogo, margin, getHeight() - infoAreaHeight + 20, 150, infoAreaHeight - 30, RectanglePlacement(RectanglePlacement::Flags::xLeft));
         g.drawImageWithin(*schematicLogo, getWidth() - margin - 160, getHeight() - infoAreaHeight, 160, infoAreaHeight+10, RectanglePlacement());

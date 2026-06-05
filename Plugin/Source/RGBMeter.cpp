@@ -239,6 +239,8 @@ void RGBMeter::renderWaveform(Graphics& g) {
 
 void RGBMeter::paint(Graphics &g)
 {
+    g.fillAll(Colour(10, 10, 10));
+    
     if (isFrozen && cachedWaveform.isValid()) {
         g.drawImageAt(cachedWaveform, 0, 0);
         return;

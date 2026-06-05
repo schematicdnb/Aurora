@@ -39,8 +39,6 @@ private:
     // access the processor object that created it.
     AuroraAudioProcessor& audioProcessor;
     
-    bool freezeLayout = false;
-    
     UpdateNotifier updateNotifier{};
     
     AuroraLookAndFeel auroraLookAndFeel;

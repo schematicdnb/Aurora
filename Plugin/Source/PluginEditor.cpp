@@ -330,9 +330,13 @@ void AuroraAudioProcessorEditor::initControlToggle() {
 }
 
 void AuroraAudioProcessorEditor::showControls() {
+    int w = getWidth();
+    int h = getHeight();
+    int vMin = 160 + groupHeight + margin;
+    int vGrow = h + groupHeight + margin;
     
-    setSize(getWidth(), getHeight() + groupHeight + margin);
-    setResizeLimits(540, 160 + groupHeight + margin, 1280, 720);
+    setResizeLimits(540, vMin, 1280, 720);
+    setSize(w, vGrow);
     
     for (Component* control : controls) {
         control->setVisible(true);
@@ -341,23 +345,25 @@ void AuroraAudioProcessorEditor::showControls() {
 }
 
 void AuroraAudioProcessorEditor::hideControls() {
-    freezeLayout = true;
+    int w = getWidth();
+    int h = getHeight();
+    int vMax = 720 - groupHeight - margin;
+    int vShrink = h - groupHeight - margin;
+    
+    setResizeLimits(540, 160, 1280, vMax);
+    setSize(w, vShrink);
     
     for (Component* control : controls) {
         control->setVisible(false);
     }
-    setSize(getWidth(), getHeight() - groupHeight - margin);
-    setResizeLimits(540, 160, 1280, 720 - groupHeight - margin);
-    
     toggleControlsButton.setButtonText("Show");
-    
-    freezeLayout = false;
 }
 
 
 //==============================================================================
 void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
 {
+
     g.fillAll(findColour (juce::ResizableWindow::backgroundColourId));
 	g.setImageResamplingQuality(Graphics::ResamplingQuality::highResamplingQuality);
     
@@ -382,9 +388,10 @@ void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
     }
 }
 
-void AuroraAudioProcessorEditor::resized(){
-    if (freezeLayout) return;
-    
+void AuroraAudioProcessorEditor::resized()
+{
+
+
     const auto width = getWidth();
     const auto height = getHeight();
     
@@ -400,6 +407,7 @@ void AuroraAudioProcessorEditor::resized(){
         
         toggleControlsButton.setBounds(width/2 + 5, height - infoAreaHeight/2 + toggleControlsButton.getHeight()/4, toggleControlsButton.getWidth(), toggleControlsButton.getHeight());
     }
+    
     
     // Theme selection
     themeToggleButton.setBounds(width/2 - 55, toggleControlsButton.getY(), 50, 25);
@@ -428,3 +436,4 @@ void AuroraAudioProcessorEditor::resized(){
     greenSlider.setBounds(redSlider.getX() + paramWidth + margin, redSlider.getY(), paramWidth, paramHeight);
     blueSlider.setBounds(greenSlider.getX() + paramWidth + margin, greenSlider.getY(), paramWidth, paramHeight);
 }
+

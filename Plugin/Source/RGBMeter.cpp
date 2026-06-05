@@ -249,10 +249,8 @@ void RGBMeter::paint(Graphics &g)
 
 void RGBMeter::resized()
 {
-    isResizing = true;
     updateState();
     freezeIndicator.setBounds(getLocalBounds().withSizeKeepingCentre(75, 30));
-    juce::Timer::callAfterDelay(1, [this] { isResizing = false; });
 }
 
 int RGBMeter::getHistoryLength()
@@ -326,11 +324,9 @@ void RGBMeter::mouseDown(const MouseEvent&) {
 }
 
 void RGBMeter::mouseEnter(const MouseEvent&) {
-    if (isResizing) return;
     freezeIndicator.setVisible(true);
 }
 
 void RGBMeter::mouseExit(const MouseEvent&) {
-    if (isResizing) return;
     freezeIndicator.setVisible(false);
 }

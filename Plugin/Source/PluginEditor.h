@@ -39,8 +39,7 @@ private:
     // access the processor object that created it.
     AuroraAudioProcessor& audioProcessor;
     
-    int restoreWidth, restoreHeight;
-    bool requiresRestore = false;
+    bool freezeLayout = false;
     
     UpdateNotifier updateNotifier{};
     

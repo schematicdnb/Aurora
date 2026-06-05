@@ -339,12 +339,15 @@ void AuroraAudioProcessorEditor::showControls() {
 }
 
 void AuroraAudioProcessorEditor::hideControls() {
-    setSize(getWidth(), getHeight() - groupHeight - margin);
-    setResizeLimits(540, 160, 1280, 720 - groupHeight - margin);
+    freezeLayout = true;
     for (Component* control : controls) {
         control->setVisible(false);
     }
+    setSize(getWidth(), getHeight() - groupHeight - margin);
+    setResizeLimits(540, 160, 1280, 720 - groupHeight - margin);
+    
     toggleControlsButton.setButtonText("Show");
+    freezeLayout = false;
 }
 
 
@@ -352,6 +355,7 @@ void AuroraAudioProcessorEditor::hideControls() {
 void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
 {
   // (Our component is opaque, so we must completely fill the background with a solid colour)
+    
     g.fillAll(findColour (juce::ResizableWindow::backgroundColourId));
 	g.setImageResamplingQuality(Graphics::ResamplingQuality::highResamplingQuality);
 
@@ -389,6 +393,7 @@ void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
 void AuroraAudioProcessorEditor::resized(){
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
+    if (freezeLayout) return;
     
     const auto width = getWidth();
     const auto height = getHeight();

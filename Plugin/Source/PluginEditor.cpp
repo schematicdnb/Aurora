@@ -330,8 +330,10 @@ void AuroraAudioProcessorEditor::initControlToggle() {
 }
 
 void AuroraAudioProcessorEditor::showControls() {
+    
     setSize(getWidth(), getHeight() + groupHeight + margin);
     setResizeLimits(540, 160 + groupHeight + margin, 1280, 720);
+    
     for (Component* control : controls) {
         control->setVisible(true);
     }
@@ -340,6 +342,7 @@ void AuroraAudioProcessorEditor::showControls() {
 
 void AuroraAudioProcessorEditor::hideControls() {
     freezeLayout = true;
+    
     for (Component* control : controls) {
         control->setVisible(false);
     }
@@ -347,6 +350,7 @@ void AuroraAudioProcessorEditor::hideControls() {
     setResizeLimits(540, 160, 1280, 720 - groupHeight - margin);
     
     toggleControlsButton.setButtonText("Show");
+    
     freezeLayout = false;
 }
 
@@ -354,8 +358,6 @@ void AuroraAudioProcessorEditor::hideControls() {
 //==============================================================================
 void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
 {
-  // (Our component is opaque, so we must completely fill the background with a solid colour)
-    
     g.fillAll(findColour (juce::ResizableWindow::backgroundColourId));
 	g.setImageResamplingQuality(Graphics::ResamplingQuality::highResamplingQuality);
     
@@ -370,21 +372,17 @@ void AuroraAudioProcessorEditor::paint(juce::Graphics &g)
         schematicLogo = &logoSchematicLightTheme;
     }
 
+    // Draw logos
     if (toggleControlsButton.getToggleState()) {
-        // Draw Logos
         g.drawImageWithin(*auroraLogo, margin, getHeight() - infoAreaHeight - groupHeight - margin + 20, 150, infoAreaHeight - 30, RectanglePlacement(RectanglePlacement::Flags::xLeft));
         g.drawImageWithin(*schematicLogo, getWidth() - margin - 160, getHeight() - infoAreaHeight - groupHeight - margin, 160, infoAreaHeight+10, RectanglePlacement());
     } else {
-		// Draw Logos
 		g.drawImageWithin(*auroraLogo, margin, getHeight() - infoAreaHeight + 20, 150, infoAreaHeight - 30, RectanglePlacement(RectanglePlacement::Flags::xLeft));
         g.drawImageWithin(*schematicLogo, getWidth() - margin - 160, getHeight() - infoAreaHeight, 160, infoAreaHeight+10, RectanglePlacement());
     }
-    
 }
 
 void AuroraAudioProcessorEditor::resized(){
-  // This is generally where you'll want to lay out the positions of any
-  // subcomponents in your editor..
     if (freezeLayout) return;
     
     const auto width = getWidth();
@@ -429,5 +427,4 @@ void AuroraAudioProcessorEditor::resized(){
     redSlider.setBounds(colourGroup.getX() + margin, gainSlider.getY(), paramWidth, paramHeight);
     greenSlider.setBounds(redSlider.getX() + paramWidth + margin, redSlider.getY(), paramWidth, paramHeight);
     blueSlider.setBounds(greenSlider.getX() + paramWidth + margin, greenSlider.getY(), paramWidth, paramHeight);
-    
 }

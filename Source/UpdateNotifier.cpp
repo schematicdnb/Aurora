@@ -91,7 +91,7 @@ bool UpdateNotifier::isUpdateAvailable() {
 void UpdateNotifier::checkForUpdates() {
     
     // always uses HTTPS
-    String baseURL = "https://www.schematicsound.com/plugin-versions.php";
+    String baseURL = "https://schematicsound.com/plugin-versions.php";
     String cacheBypass = String(Time::getCurrentTime().toMilliseconds());
     URL requestURL(baseURL + "?plugin=" + URL::addEscapeChars(pluginName, false) +
                        "&cb=" + cacheBypass);

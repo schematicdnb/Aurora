@@ -2,7 +2,8 @@
 
 DJ-style frequency-coloured waveforms for your DAW. A VST3/AU plugin for Windows and macOS, built with JUCE.
 
-![Aurora main interface](https://i0.wp.com/schematicsound.com/wp-content/uploads/2025/05/Screenshot-2025-05-28-at-12.23.52%E2%80%AFPM-e1748449762516.png?resize=540%2C308&ssl=1)
+![Aurora main interface](https://i0.wp.com/schematicsound.com/wp-content/uploads/2026/06/Aurora_expanded_cropped.png?w=540&ssl=1)
+![Aurora compact interface](https://i0.wp.com/schematicsound.com/wp-content/uploads/2026/06/Aurora_compact_cropped.png?w=540&ssl=1)
 
 ## What is it?
 
